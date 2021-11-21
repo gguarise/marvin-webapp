@@ -1,0 +1,18 @@
+.ng-container {
+  margin-right: 50px !important;
+}
+
+.mat-table {
+  max-width: 100%;
+}
+
+.mat-toolbar {
+  max-height: 45px !important;
+}
+
+.mat-toolbar i {
+  font-size: 10;
+  margin-right: 1%;
+  cursor: pointer;
+  color: var(--client-color-orange);
+}
