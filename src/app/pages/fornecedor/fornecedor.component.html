@@ -1,22 +1,19 @@
 <div class="container text-center">
 
-    <app-page-title title="Fornecedor"></app-page-title>
+    <app-page-header title="Fornecedor"
+                     (undoEvent)="undo()"></app-page-header>
 
     <mat-toolbar>
-        <i class="material-icons"
-           (click)="addRowData()">
-            add_circle
-        </i>
-        <i class="material-icons">
-            delete
-        </i>
+        <mat-icon (click)="addRow()">add_circle</mat-icon>
+        <mat-icon (click)="deleteRow()">delete</mat-icon>
     </mat-toolbar>
 
     <mat-table [dataSource]="dataSource"
                class="my-table mat-elevation-z4">
 
         <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-        <mat-row *matRowDef="let row; columns: displayedColumns;">
+        <mat-row *matRowDef="let row; columns: displayedColumns;"
+                 (click)="!!row && !row.new && !row.modified ? setRowAsModified(row) : null">
         </mat-row>
 
         <ng-container matColumnDef="select">
@@ -29,37 +26,82 @@
             <mat-cell fxFlex="60px"
                       fxLayoutAlign="start center"
                       *matCellDef="let element">
-                <mat-checkbox>
+                <mat-checkbox [(ngModel)]="element.select">
                 </mat-checkbox>
             </mat-cell>
         </ng-container>
 
-        <ng-container matColumnDef="id">
-            <mat-header-cell fxFlex="20"
-                             fxLayoutAlign="start center"
-                             *matHeaderCellDef> ID. </mat-header-cell>
-            <mat-cell fxFlex="20"
-                      fxLayoutAlign="start center"
-                      *matCellDef="let element">
-                <mat-form-field fxFlex
-                                fxLayout="column">
-                    <input matInput
-                           [value]="!!element.id ? element.id : ''" />
-                </mat-form-field>
-            </mat-cell>
-        </ng-container>
-
-        <ng-container matColumnDef="name">
+        <ng-container matColumnDef="nome">
             <mat-header-cell fxFlex
                              fxLayoutAlign="start center"
-                             *matHeaderCellDef> Name </mat-header-cell>
+                             *matHeaderCellDef> Nome </mat-header-cell>
             <mat-cell fxFlex
                       fxLayoutAlign="start center"
                       *matCellDef="let element">
                 <mat-form-field fxFlex
                                 fxLayout="column">
                     <input matInput
-                           [value]="!!element.name ? element.name : ''" />
+                           [value]="!!element.nome ? element.nome : ''" />
+                </mat-form-field>
+            </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="cnpj">
+            <mat-header-cell fxFlex
+                             fxLayoutAlign="start center"
+                             *matHeaderCellDef> CNPJ </mat-header-cell>
+            <mat-cell fxFlex
+                      fxLayoutAlign="start center"
+                      *matCellDef="let element">
+                <mat-form-field fxFlex
+                                fxLayout="column">
+                    <input matInput
+                           [value]="!!element.cnpj ? element.cnpj : ''" />
+                </mat-form-field>
+            </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="telefone">
+            <mat-header-cell fxFlex
+                             fxLayoutAlign="start center"
+                             *matHeaderCellDef> Telefone </mat-header-cell>
+            <mat-cell fxFlex
+                      fxLayoutAlign="start center"
+                      *matCellDef="let element">
+                <mat-form-field fxFlex
+                                fxLayout="column">
+                    <input matInput
+                           [value]="!!element.telefone ? element.telefone : ''" />
+                </mat-form-field>
+            </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="email">
+            <mat-header-cell fxFlex
+                             fxLayoutAlign="start center"
+                             *matHeaderCellDef> E-mail </mat-header-cell>
+            <mat-cell fxFlex
+                      fxLayoutAlign="start center"
+                      *matCellDef="let element">
+                <mat-form-field fxFlex
+                                fxLayout="column">
+                    <input matInput
+                           [value]="!!element.email ? element.email : ''" />
+                </mat-form-field>
+            </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="tipo">
+            <mat-header-cell fxFlex
+                             fxLayoutAlign="start center"
+                             *matHeaderCellDef> Tipo </mat-header-cell>
+            <mat-cell fxFlex
+                      fxLayoutAlign="start center"
+                      *matCellDef="let element">
+                <mat-form-field fxFlex
+                                fxLayout="column">
+                    <input matInput
+                           [value]="!!element.tipo ? element.tipo : ''" />
                 </mat-form-field>
             </mat-cell>
         </ng-container>
