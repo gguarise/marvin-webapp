@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { catchError, Observable } from 'rxjs';
+import { catchError, map, Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { Fornecedor } from '../models/fornecedor';
 import { BaseService } from './base.service';
@@ -19,6 +19,42 @@ export class FornecedorService extends BaseService {
     return this.http
       .get<Fornecedor[]>(`${this.fornecedorUrl}`)
       .pipe(catchError(this.handleServiceError<any>()));
+  }
+
+  postFornecedor(payload: any): Observable<any> {
+    return this.http.post(`${this.fornecedorUrl}`, payload).pipe(
+      map((ent) => {
+        if (ent) {
+          return ent;
+        }
+        return;
+      }),
+      catchError(this.handleServiceError<any>())
+    );
+  }
+
+  putFornecedor(payload: any): Observable<any> {
+    return this.http.put(`${this.fornecedorUrl}`, payload).pipe(
+      map((ent) => {
+        if (ent) {
+          return ent;
+        }
+        return;
+      }),
+      catchError(this.handleServiceError<any>())
+    );
+  }
+
+  deleteFornecedor(id: string): Observable<any> {
+    return this.http.delete(`${this.fornecedorUrl}/${id}`).pipe(
+      map((ent) => {
+        if (ent) {
+          return ent;
+        }
+        return;
+      }),
+      catchError(this.handleServiceError<any>())
+    );
   }
 
   // getByParent(empresa: number): Observable<ConfiguracaoAplicativo[]> {

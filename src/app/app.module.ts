@@ -24,6 +24,7 @@ import { PageHeaderComponent } from './templates/page-header/page-header.compone
 import { BaseComponent } from './pages/base/base.component';
 import { TextFieldComponent } from './shared/fields/text-field/text-field.component';
 import { MatIconModule } from '@angular/material/icon';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @NgModule({
   declarations: [
@@ -56,6 +57,7 @@ import { MatIconModule } from '@angular/material/icon';
     MatInputModule,
     MatCheckboxModule,
     MatIconModule,
+    MatTooltipModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

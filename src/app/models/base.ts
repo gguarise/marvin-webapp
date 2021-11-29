@@ -1,5 +1,5 @@
 export class BaseModel {
-  // select: boolean;
+  select: boolean;
   modified: boolean;
   new: boolean;
 }

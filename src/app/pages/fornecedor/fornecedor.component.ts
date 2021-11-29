@@ -1,5 +1,5 @@
-import { Component, ElementRef } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { ChangeDetectorRef, Component, ElementRef } from '@angular/core';
+import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { FornecedorService } from 'src/app/services/fornecedor.service';
 import { BaseComponent } from '../base/base.component';
 
@@ -30,9 +30,23 @@ export class FornecedorComponent extends BaseComponent {
 
   constructor(
     elementRef: ElementRef,
+    fb: FormBuilder,
+    cdr: ChangeDetectorRef,
     public fornecedorService: FornecedorService
   ) {
-    super(elementRef);
+    super(elementRef, fb, cdr);
+    this.formGroupConfig = {
+      select: [false],
+      id: [],
+      tel: [],
+      nome: [],
+      cnpj: [],
+      telefone: [],
+      email: [],
+      tipo: [],
+      modified: [],
+      new: [],
+    };
   }
 
   override select() {
@@ -40,5 +54,33 @@ export class FornecedorComponent extends BaseComponent {
       next: (x) => super.select(x),
       error: (e) => console.error(e),
     });
+  }
+
+  override async save() {
+    const data = this.formArray.getRawValue();
+    let error: string = '';
+    await data.forEach(async (item) => {
+      if (item.new) {
+        await this.fornecedorService.postFornecedor(item).subscribe({
+          next: (x) => console.log(x),
+          error: (e) => (error = e.error.detail),
+        });
+      } else if (item.modified) {
+        await this.fornecedorService.putFornecedor(item).subscribe({
+          next: (x) => console.log(x),
+          error: (e) => (error = e.error.detail),
+        });
+      }
+    });
+    if (error.length > 0) {
+      // mostrar erro
+    } else if (this.deletedData.length > 0) {
+      await this.deletedData.forEach(async (id) => {
+        await this.fornecedorService.deleteFornecedor(id).subscribe({
+          next: (x) => console.log(x),
+          error: (e) => (error = e.error.detail),
+        });
+      });
+    }
   }
 }
