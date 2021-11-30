@@ -25,6 +25,9 @@ import { BaseComponent } from './pages/base/base.component';
 import { TextFieldComponent } from './shared/fields/text-field/text-field.component';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { ConfirmDialogComponent } from './shared/dialogs/confirm-dialog/confirm-dialog.component';
+import { ToastrModule } from 'ngx-toastr';
+import { TextMaskModule } from 'angular2-text-mask';
 
 @NgModule({
   declarations: [
@@ -37,6 +40,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     PageHeaderComponent,
     BaseComponent,
     TextFieldComponent,
+    ConfirmDialogComponent,
   ],
   imports: [
     BrowserModule,
@@ -58,6 +62,11 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     MatCheckboxModule,
     MatIconModule,
     MatTooltipModule,
+    TextMaskModule,
+    ToastrModule.forRoot({
+      timeOut: 8000,
+      positionClass: 'toast-top-center',
+    }),
   ],
   providers: [],
   bootstrap: [AppComponent],

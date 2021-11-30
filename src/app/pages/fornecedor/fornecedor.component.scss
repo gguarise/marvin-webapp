@@ -23,3 +23,10 @@
 .orange-icon {
   color: var(--client-color-orange);
 }
+
+.invalid-table-row {
+  border-width: 1px !important;
+  border-color: red !important;
+  border-radius: 5px;
+  background-color: rgba(255, 0, 0, 0.15) !important;
+}

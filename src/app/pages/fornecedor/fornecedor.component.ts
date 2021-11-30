@@ -1,6 +1,10 @@
 import { ChangeDetectorRef, Component, ElementRef } from '@angular/core';
-import { FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { FormBuilder, Validators } from '@angular/forms';
+import { MatDialog } from '@angular/material/dialog';
+import { ToastrService } from 'ngx-toastr';
+import { Fornecedor } from 'src/app/models/fornecedor';
 import { FornecedorService } from 'src/app/services/fornecedor.service';
+import { CNPJValidator } from 'src/core/validators/cnpj-validator';
 import { BaseComponent } from '../base/base.component';
 
 @Component({
@@ -9,16 +13,6 @@ import { BaseComponent } from '../base/base.component';
   styleUrls: ['./fornecedor.component.scss'],
 })
 export class FornecedorComponent extends BaseComponent {
-  // form: FormGroup = new FormGroup({
-  //   select: new FormControl(false),
-  //   tel: new FormControl(),
-  //   nome: new FormControl(),
-  //   cnpj: new FormControl(),
-  //   telefone: new FormControl(),
-  //   email: new FormControl(),
-  //   tipo: new FormControl(),
-  // });
-
   displayedColumns: string[] = [
     'select',
     'nome',
@@ -29,21 +23,28 @@ export class FornecedorComponent extends BaseComponent {
   ];
 
   constructor(
+    dialog: MatDialog,
     elementRef: ElementRef,
     fb: FormBuilder,
     cdr: ChangeDetectorRef,
+    toastr: ToastrService,
     public fornecedorService: FornecedorService
   ) {
-    super(elementRef, fb, cdr);
+    super(dialog, elementRef, fb, toastr, cdr);
     this.formGroupConfig = {
       select: [false],
       id: [],
-      tel: [],
-      nome: [],
-      cnpj: [],
+      nome: [
+        null,
+        Validators.compose([Validators.required, Validators.maxLength(50)]),
+      ],
+      cnpj: [null, CNPJValidator],
       telefone: [],
-      email: [],
-      tipo: [],
+      email: [
+        null,
+        Validators.compose([Validators.email, Validators.maxLength(50)]),
+      ],
+      tipo: [null, Validators.maxLength(10)],
       modified: [],
       new: [],
     };
@@ -51,36 +52,90 @@ export class FornecedorComponent extends BaseComponent {
 
   override select() {
     this.fornecedorService.getAll().subscribe({
-      next: (x) => super.select(x),
+      next: (x) => {
+        if (!!x) {
+          // Ordenar pelo nome do Fornecedor
+          x.sort((a, b) => (a.nome > b.nome ? 1 : b.nome > a.nome ? -1 : 0));
+          super.select(x);
+        }
+      },
       error: (e) => console.error(e),
     });
   }
 
   override async save() {
-    const data = this.formArray.getRawValue();
-    let error: string = '';
-    await data.forEach(async (item) => {
+    const data = this.getRawData();
+    const errosSalvar = new Array();
+    const errosDeletar = new Array();
+
+    const promises = data.map(async (item) => {
       if (item.new) {
-        await this.fornecedorService.postFornecedor(item).subscribe({
-          next: (x) => console.log(x),
-          error: (e) => (error = e.error.detail),
-        });
+        await this.fornecedorService
+          .postFornecedor(item)
+          .toPromise()
+          .then()
+          .catch((e) => {
+            const index = data.findIndex((x) => x === item);
+            errosSalvar.push(index);
+          });
       } else if (item.modified) {
-        await this.fornecedorService.putFornecedor(item).subscribe({
-          next: (x) => console.log(x),
-          error: (e) => (error = e.error.detail),
-        });
+        await this.fornecedorService
+          .putFornecedor(item)
+          .toPromise()
+          .then()
+          .catch((e) => {
+            const index = data.findIndex((x) => x === item);
+            errosSalvar.push(index);
+          });
       }
     });
-    if (error.length > 0) {
-      // mostrar erro
-    } else if (this.deletedData.length > 0) {
-      await this.deletedData.forEach(async (id) => {
-        await this.fornecedorService.deleteFornecedor(id).subscribe({
-          next: (x) => console.log(x),
-          error: (e) => (error = e.error.detail),
-        });
-      });
+
+    if (this.deletedData.length > 0) {
+      for (const id of this.deletedData) {
+        await this.fornecedorService
+          .deleteFornecedor(id)
+          .toPromise()
+          .then()
+          .catch((e) => {
+            this.originalDataSource.forEach((x: Fornecedor) => {
+              if (x.id === id) {
+                errosDeletar.push(x.nome);
+              }
+            });
+          });
+      }
     }
+
+    await Promise.all(promises);
+
+    if (errosSalvar.length > 0) {
+      let message = `Ocorreram erros ao salvar a(s) linha(s): ${errosSalvar.map(
+        (x) => ` ${--x}`
+      )}`;
+      if (errosDeletar.length > 0) {
+        message += ` e ao deletar o(s) fornecedor(es): ${errosDeletar.map(
+          (x) => ` ${x}`
+        )}`;
+      }
+      this.toastr.error(message);
+    } else if (errosDeletar.length > 0) {
+      this.toastr.error(
+        `Ocorreram erros ao deletar o(s) fornecedor(es): ${errosDeletar.map(
+          (x) => x
+        )}`
+      );
+    } else {
+      this.toastr.success('Lista de Fornecedores atualizada com sucesso.');
+      super.save();
+    }
+  }
+
+  getRawData() {
+    const payload = this.formArray.getRawValue();
+    payload.map((fornecedor: Fornecedor) => {
+      fornecedor.cnpj = fornecedor.cnpj.replace(/\D/g, '');
+      fornecedor.telefone = fornecedor.telefone.replace(/\D/g, '');
+    });
+    return payload;
   }
 }
