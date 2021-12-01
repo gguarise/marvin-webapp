@@ -59,7 +59,8 @@ export class FornecedorComponent extends BaseComponent {
           super.select(x);
         }
       },
-      error: (e) => console.error(e),
+      error: (e) =>
+        this.toastr.error('Um erro ocorreu ao buscar os fornecedores'),
     });
   }
 
@@ -110,7 +111,7 @@ export class FornecedorComponent extends BaseComponent {
 
     if (errosSalvar.length > 0) {
       let message = `Ocorreram erros ao salvar a(s) linha(s): ${errosSalvar.map(
-        (x) => ` ${--x}`
+        (x) => ` ${++x}`
       )}`;
       if (errosDeletar.length > 0) {
         message += ` e ao deletar o(s) fornecedor(es): ${errosDeletar.map(
@@ -133,8 +134,8 @@ export class FornecedorComponent extends BaseComponent {
   getRawData() {
     const payload = this.formArray.getRawValue();
     payload.map((fornecedor: Fornecedor) => {
-      fornecedor.cnpj = fornecedor.cnpj.replace(/\D/g, '');
-      fornecedor.telefone = fornecedor.telefone.replace(/\D/g, '');
+      fornecedor.cnpj = fornecedor.cnpj?.replace(/\D/g, '');
+      fornecedor.telefone = fornecedor.telefone?.replace(/\D/g, '');
     });
     return payload;
   }

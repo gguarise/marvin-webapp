@@ -1,0 +1,26 @@
+.sidenav {
+  background-color: var(--client-color-black);
+  width: 200px;
+}
+
+.sidenav a {
+  color: var(--client-color-lightgrey);
+}
+
+// mouse over
+.sidenav a:hover {
+  background-color: #2b2d30;
+}
+
+.sidenav .mat-icon {
+  padding-right: 10px;
+}
+
+.content {
+  padding: 16px;
+  background-color: #fff;
+}
+
+.is-active {
+  color: var(--client-color-orange) !important;
+}

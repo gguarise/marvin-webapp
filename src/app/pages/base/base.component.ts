@@ -3,9 +3,11 @@ import {
   Component,
   ElementRef,
   OnInit,
+  ViewChild,
 } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
+import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { cloneDeep } from 'lodash';
 import { ToastrService } from 'ngx-toastr';
@@ -24,6 +26,8 @@ export class BaseComponent implements OnInit {
   originalDataSource: any;
   formGroupConfig: any;
   lastAddedItem: FormGroup;
+
+  @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
 
   constructor(
     public dialog: MatDialog,
@@ -56,7 +60,10 @@ export class BaseComponent implements OnInit {
       });
       this.formArray.patchValue(items);
       this.formArray.markAsPristine();
-      this.dataSource = new MatTableDataSource(this.formArray.controls);
+      this.updateDataSource();
+      if (!!this.paginator) {
+        this.paginator.firstPage();
+      }
     }
     this.onClear();
   }
@@ -114,10 +121,14 @@ export class BaseComponent implements OnInit {
       Object.assign({}, cloneDeep(this.formGroupConfig))
     );
     if (newItem) {
+      if (!!this.paginator) {
+        this.paginator.length = this.paginator.length + 1;
+        this.paginator.lastPage();
+      }
       this.lastAddedItem.get('new')?.setValue(true);
-      this.dataSource = new MatTableDataSource(this.formArray.controls);
     }
     this.formArray.push(this.lastAddedItem);
+    this.updateDataSource();
   }
 
   setRowsAsModified() {
@@ -125,6 +136,13 @@ export class BaseComponent implements OnInit {
       this.formArray.controls.forEach((x) => {
         (x as FormGroup).controls['modified']?.setValue(x.dirty);
       });
+    }
+  }
+
+  updateDataSource() {
+    this.dataSource = new MatTableDataSource(this.formArray.controls);
+    if (!!this.paginator) {
+      this.dataSource.paginator = this.paginator;
     }
   }
   // #endregion
@@ -203,23 +221,25 @@ export class BaseComponent implements OnInit {
   allComplete: boolean = false;
 
   updateAllComplete() {
-    this.allComplete = this.dataSource.data.every((t) => t.get('select').value);
+    this.allComplete = this.dataSource?.data.every(
+      (t) => t.get('select').value
+    );
   }
 
   someComplete(): boolean {
     return (
-      this.dataSource.data.filter((t) => t.get('select').value).length > 0 &&
+      this.dataSource?.data.filter((t) => t.get('select').value).length > 0 &&
       !this.allComplete
     );
   }
 
   setAll(completed: boolean) {
     this.allComplete = completed;
-    this.dataSource.data.forEach((t) => t.get('select').setValue(completed));
+    this.dataSource?.data.forEach((t) => t.get('select').setValue(completed));
   }
 
   deleteSelectedRows() {
-    const selectedItems = this.dataSource.data.filter(
+    const selectedItems = this.dataSource?.data.filter(
       (item) => item.get('select')?.value
     );
 
@@ -228,9 +248,9 @@ export class BaseComponent implements OnInit {
         if (!!item.get('id')?.value) {
           this.deletedData.push(item.get('id').value);
         }
-        const index = this.dataSource.data.findIndex((x) => x === item);
+        const index = this.dataSource?.data.findIndex((x) => x === item);
         this.formArray.removeAt(index);
-        this.dataSource = new MatTableDataSource(this.formArray.controls);
+        this.updateDataSource();
       });
     } else {
       this.toastr.warning(

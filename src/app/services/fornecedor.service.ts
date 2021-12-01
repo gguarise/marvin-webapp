@@ -9,7 +9,7 @@ import { BaseService } from './base.service';
   providedIn: 'root',
 })
 export class FornecedorService extends BaseService {
-  private fornecedorUrl = `${environment.apiUrl.fornecedor}fornecedor`;
+  private fornecedorUrl = `${environment.apiUrl.estoque}fornecedor`;
 
   constructor(private http: HttpClient) {
     super();

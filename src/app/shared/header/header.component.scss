@@ -1,0 +1,15 @@
+.mat-toolbar {
+  background-color: var(--client-color-black);
+}
+
+.header .logo {
+  text-decoration: none;
+  max-height: 60px;
+}
+
+.mat-icon {
+  font-size: 15 !important;
+  margin-right: 3%;
+  cursor: pointer;
+  align-self: center;
+}

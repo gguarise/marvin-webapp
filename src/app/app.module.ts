@@ -4,11 +4,11 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { HeaderComponent } from './templates/header/header.component';
+import { HeaderComponent } from './shared/header/header.component';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { FooterComponent } from './templates/footer/footer.component';
-import { MenuComponent } from './templates/menu/menu.component';
+import { FooterComponent } from './shared/footer/footer.component';
+import { MenuComponent } from './shared/menu/menu.component';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { FornecedorComponent } from './pages/fornecedor/fornecedor.component';
@@ -20,7 +20,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { PageHeaderComponent } from './templates/page-header/page-header.component';
+import { PageHeaderComponent } from './shared/page-header/page-header.component';
 import { BaseComponent } from './pages/base/base.component';
 import { TextFieldComponent } from './shared/fields/text-field/text-field.component';
 import { MatIconModule } from '@angular/material/icon';
@@ -28,6 +28,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { ConfirmDialogComponent } from './shared/dialogs/confirm-dialog/confirm-dialog.component';
 import { ToastrModule } from 'ngx-toastr';
 import { TextMaskModule } from 'angular2-text-mask';
+import { MatPaginatorModule } from '@angular/material/paginator';
 
 @NgModule({
   declarations: [
@@ -67,6 +68,7 @@ import { TextMaskModule } from 'angular2-text-mask';
       timeOut: 8000,
       positionClass: 'toast-top-center',
     }),
+    MatPaginatorModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

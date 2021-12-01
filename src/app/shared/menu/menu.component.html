@@ -1,0 +1,27 @@
+<app-header (toggleMenuEvent)="toggleMenu()"></app-header>
+
+<mat-sidenav-container>
+    <mat-sidenav class="sidenav"
+                 mode="side"
+                 [opened]="openedMenu"
+                 fixedInViewport="true"
+                 fixedTopGap="56">
+        <mat-nav-list class="nav-list">
+            <a mat-list-item
+               routerLink="/fornecedor"
+               [routerLinkActive]="['is-active']">
+                <mat-icon>people_alt</mat-icon>
+                Fornecedores
+            </a>
+            <a mat-list-item
+               routerLink="/produto"
+               [routerLinkActive]="['is-active']">
+                <mat-icon>inventory</mat-icon>
+                Produtos
+            </a>
+        </mat-nav-list>
+    </mat-sidenav>
+    <mat-sidenav-content class="content">
+        <router-outlet></router-outlet>
+    </mat-sidenav-content>
+</mat-sidenav-container>
