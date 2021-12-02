@@ -59,8 +59,7 @@
                 <mat-cell fxFlex="20"
                           *matCellDef="let element"
                           [formGroup]="element">
-                    <mat-form-field fxFlex
-                                    fxLayout="column">
+                    <mat-form-field fxLayout="column">
                         <input matInput
                                formControlName="nome" />
                         <mat-error *ngIf="element.get('nome').invalid">{{getErrorMessage(element.get('nome'))}}
@@ -76,8 +75,7 @@
                 <mat-cell fxFlex="15"
                           *matCellDef="let element"
                           [formGroup]="element">
-                    <mat-form-field fxFlex
-                                    fxLayout="column">
+                    <mat-form-field fxLayout="column">
                         <input matInput
                                formControlName="tipo">
                         <mat-error *ngIf="element.get('tipo').invalid">{{getErrorMessage(element.get('tipo'))}}
@@ -93,8 +91,7 @@
                 <mat-cell fxFlex="15"
                           *matCellDef="let element"
                           [formGroup]="element">
-                    <mat-form-field fxFlex
-                                    fxLayout="column">
+                    <mat-form-field fxLayout="column">
                         <input matInput
                                formControlName="descricao">
                         <mat-error *ngIf="element.get('descricao').invalid">
@@ -105,17 +102,17 @@
             </ng-container>
 
             <ng-container matColumnDef="quantidadeEstoque">
-                <mat-header-cell fxFlex
+                <mat-header-cell fxFlex="10"
                                  fxLayoutAlign="center center"
                                  *matHeaderCellDef> Qtde. Estoque </mat-header-cell>
-                <mat-cell fxFlex
+                <mat-cell fxFlex="10"
                           *matCellDef="let element"
                           [formGroup]="element">
-                    <mat-form-field fxFlex
-                                    fxLayout="column">
+                    <mat-form-field fxLayout="column">
                         <input matInput
                                formControlName="quantidadeEstoque"
-                               type="number" />
+                               currencyMask
+                               [options]="{ prefix: '', thousands: '', decimal: '', allowNegative: false, precision: 0 }" />
                         <mat-error *ngIf="element.get('quantidadeEstoque').invalid">
                             {{getErrorMessage(element.get('quantidadeEstoque'))}}</mat-error>
                     </mat-form-field>
@@ -123,18 +120,17 @@
             </ng-container>
 
             <ng-container matColumnDef="valorUnitario">
-                <mat-header-cell fxFlex
+                <mat-header-cell fxFlex="10"
                                  fxLayoutAlign="center center"
                                  *matHeaderCellDef> Valor Unitário </mat-header-cell>
-                <mat-cell fxFlex
+                <mat-cell fxFlex="10"
                           *matCellDef="let element"
                           [formGroup]="element">
-                    <mat-form-field fxFlex
-                                    fxLayout="column">
+                    <mat-form-field fxLayout="column">
                         <input matInput
                                formControlName="valorUnitario"
                                currencyMask
-                               [options]="{ prefix: '', thousands: '.', decimal: ',', allowNegative: false }" />
+                               [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', allowNegative: false, precision: 2 }" />
                         <mat-error *ngIf="element.get('valorUnitario').invalid">
                             {{getErrorMessage(element.get('valorUnitario'))}}
                         </mat-error>
@@ -143,16 +139,17 @@
             </ng-container>
 
             <ng-container matColumnDef="valorCobrado">
-                <mat-header-cell fxFlex
+                <mat-header-cell fxFlex="10"
                                  fxLayoutAlign="center center"
                                  *matHeaderCellDef> Valor Cobrado </mat-header-cell>
-                <mat-cell fxFlex
+                <mat-cell fxFlex="10"
                           *matCellDef="let element"
                           [formGroup]="element">
-                    <mat-form-field fxFlex
-                                    fxLayout="column">
+                    <mat-form-field fxLayout="column">
                         <input matInput
-                               formControlName="valorCobrado" />
+                               formControlName="valorCobrado"
+                               currencyMask
+                               [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', allowNegative: false, precision: 2 }" />
                         <mat-error *ngIf="element.get('valorCobrado').invalid">
                             {{getErrorMessage(element.get('valorCobrado'))}}
                         </mat-error>
@@ -167,8 +164,7 @@
                 <mat-cell fxFlex="15"
                           *matCellDef="let element"
                           [formGroup]="element">
-                    <mat-form-field fxFlex
-                                    fxLayout="column">
+                    <mat-form-field fxLayout="column">
                         <mat-select formControlName="fornecedor">
                             <mat-option *ngFor="let fornecedor of fornecedores$ | async"
                                         [value]="fornecedor">

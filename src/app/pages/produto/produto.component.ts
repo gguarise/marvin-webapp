@@ -164,16 +164,7 @@ export class ProdutoComponent extends BaseComponent {
   }
 
   getRawData() {
-    const payload = this.formArray.getRawValue();
-    payload.map((produto: Produto) => {
-      produto.valorCobrado = this.transformStringToDecimalNumber(
-        produto.valorCobrado.toString()
-      );
-      produto.valorUnitario = this.transformStringToDecimalNumber(
-        produto.valorUnitario.toString()
-      );
-    });
-    return payload;
+    return this.formArray.getRawValue();
   }
 
   transformStringToDecimalNumber(value: string) {
