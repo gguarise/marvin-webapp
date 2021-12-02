@@ -43,7 +43,7 @@
                                   [disabled]="this.formArray.disabled">
                     </mat-checkbox>
                 </mat-header-cell>
-                <mat-cell fxFlex="60px"
+                <mat-cell fxFlex="48px"
                           fxLayoutAlign="center center"
                           *matCellDef="let element"
                           [formGroup]="element">
@@ -53,11 +53,10 @@
             </ng-container>
 
             <ng-container matColumnDef="nome">
-                <mat-header-cell fxFlex
+                <mat-header-cell fxFlex="20"
                                  fxLayoutAlign="center center"
                                  *matHeaderCellDef> Nome </mat-header-cell>
-                <mat-cell fxFlex
-                          fxLayoutAlign="center center"
+                <mat-cell fxFlex="20"
                           *matCellDef="let element"
                           [formGroup]="element">
                     <mat-form-field fxFlex
@@ -71,11 +70,10 @@
             </ng-container>
 
             <ng-container matColumnDef="tipo">
-                <mat-header-cell fxFlex
+                <mat-header-cell fxFlex="15"
                                  fxLayoutAlign="center center"
                                  *matHeaderCellDef> Tipo </mat-header-cell>
-                <mat-cell fxFlex
-                          fxLayoutAlign="center center"
+                <mat-cell fxFlex="15"
                           *matCellDef="let element"
                           [formGroup]="element">
                     <mat-form-field fxFlex
@@ -89,11 +87,10 @@
             </ng-container>
 
             <ng-container matColumnDef="descricao">
-                <mat-header-cell fxFlex
+                <mat-header-cell fxFlex="15"
                                  fxLayoutAlign="center center"
                                  *matHeaderCellDef> Descrição </mat-header-cell>
-                <mat-cell fxFlex
-                          fxLayoutAlign="center center"
+                <mat-cell fxFlex="15"
                           *matCellDef="let element"
                           [formGroup]="element">
                     <mat-form-field fxFlex
@@ -108,11 +105,10 @@
             </ng-container>
 
             <ng-container matColumnDef="quantidadeEstoque">
-                <mat-header-cell fxFlex="12"
+                <mat-header-cell fxFlex
                                  fxLayoutAlign="center center"
                                  *matHeaderCellDef> Qtde. Estoque </mat-header-cell>
-                <mat-cell fxFlex="12"
-                          fxLayoutAlign="center center"
+                <mat-cell fxFlex
                           *matCellDef="let element"
                           [formGroup]="element">
                     <mat-form-field fxFlex
@@ -127,17 +123,18 @@
             </ng-container>
 
             <ng-container matColumnDef="valorUnitario">
-                <mat-header-cell fxFlex="15"
+                <mat-header-cell fxFlex
                                  fxLayoutAlign="center center"
                                  *matHeaderCellDef> Valor Unitário </mat-header-cell>
-                <mat-cell fxFlex="15"
-                          fxLayoutAlign="center center"
+                <mat-cell fxFlex
                           *matCellDef="let element"
                           [formGroup]="element">
                     <mat-form-field fxFlex
                                     fxLayout="column">
                         <input matInput
-                               formControlName="valorUnitario" />
+                               formControlName="valorUnitario"
+                               currencyMask
+                               [options]="{ prefix: '', thousands: '.', decimal: ',', allowNegative: false }" />
                         <mat-error *ngIf="element.get('valorUnitario').invalid">
                             {{getErrorMessage(element.get('valorUnitario'))}}
                         </mat-error>
@@ -146,11 +143,10 @@
             </ng-container>
 
             <ng-container matColumnDef="valorCobrado">
-                <mat-header-cell fxFlex="15"
+                <mat-header-cell fxFlex
                                  fxLayoutAlign="center center"
                                  *matHeaderCellDef> Valor Cobrado </mat-header-cell>
-                <mat-cell fxFlex="15"
-                          fxLayoutAlign="center center"
+                <mat-cell fxFlex
                           *matCellDef="let element"
                           [formGroup]="element">
                     <mat-form-field fxFlex
@@ -164,27 +160,32 @@
                 </mat-cell>
             </ng-container>
 
-
-
-            <!-- <ng-container matColumnDef="email">
-            <mat-header-cell fxFlex
-                             fxLayoutAlign="center center"
-                             *matHeaderCellDef> E-mail </mat-header-cell>
-            <mat-cell fxFlex
-                      fxLayoutAlign="center center"
-                      *matCellDef="let element"
-                      [formGroup]="element">
-                <mat-form-field fxFlex
-                                fxLayout="column">
-                    <input matInput
-                           formControlName="email" />
-                    <mat-error *ngIf="element.get('email').invalid">{{getErrorMessage(element.get('email'))}}
-                    </mat-error>
-                </mat-form-field>
-            </mat-cell>
-        </ng-container>
- -->
+            <ng-container matColumnDef="fornecedor">
+                <mat-header-cell fxFlex="15"
+                                 fxLayoutAlign="center center"
+                                 *matHeaderCellDef> Fornecedor </mat-header-cell>
+                <mat-cell fxFlex="15"
+                          *matCellDef="let element"
+                          [formGroup]="element">
+                    <mat-form-field fxFlex
+                                    fxLayout="column">
+                        <mat-select formControlName="fornecedor">
+                            <mat-option *ngFor="let fornecedor of fornecedores$ | async"
+                                        [value]="fornecedor">
+                                {{fornecedor.nome}}
+                            </mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="element.get('fornecedor').invalid">
+                            {{getErrorMessage(element.get('fornecedor'))}}
+                        </mat-error>
+                    </mat-form-field>
+                </mat-cell>
+            </ng-container>
 
         </mat-table>
+    </div>
+    <div [class.mat-elevation-z2]="true">
+        <mat-paginator [pageSize]="10"
+                       [pageSizeOptions]="[5, 10, 30]"></mat-paginator>
     </div>
 </div>

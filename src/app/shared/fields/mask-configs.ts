@@ -52,4 +52,26 @@ export class MaskConfig {
     /\d/,
     /\d/,
   ];
+  // decimal = [
+  //   \d{1,3}(?:\.\d{3})+,\d{2}$
+  //  ];
+  inteiro = {
+    prefix: '',
+    thousandsSeparatorSymbol: '',
+    integerLimit: 10,
+    allowNegative: true,
+  };
+  decimal = {
+    prefix: '',
+    suffix: '',
+    includeThousandsSeparator: true,
+    thousandsSeparatorSymbol: '.',
+    allowDecimal: true,
+    decimalSymbol: ',',
+    decimalLimit: 2,
+    integerLimit: null,
+    requireDecimal: false,
+    allowNegative: false,
+    allowLeadingZeroes: false,
+  };
 }

@@ -22,13 +22,14 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { PageHeaderComponent } from './shared/page-header/page-header.component';
 import { BaseComponent } from './pages/base/base.component';
-import { TextFieldComponent } from './shared/fields/text-field/text-field.component';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ConfirmDialogComponent } from './shared/dialogs/confirm-dialog/confirm-dialog.component';
 import { ToastrModule } from 'ngx-toastr';
 import { TextMaskModule } from 'angular2-text-mask';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatSelectModule } from '@angular/material/select';
+import { CurrencyMaskModule } from 'ng2-currency-mask';
 
 @NgModule({
   declarations: [
@@ -40,7 +41,6 @@ import { MatPaginatorModule } from '@angular/material/paginator';
     ProdutoComponent,
     PageHeaderComponent,
     BaseComponent,
-    TextFieldComponent,
     ConfirmDialogComponent,
   ],
   imports: [
@@ -69,6 +69,8 @@ import { MatPaginatorModule } from '@angular/material/paginator';
       positionClass: 'toast-top-center',
     }),
     MatPaginatorModule,
+    MatSelectModule,
+    CurrencyMaskModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

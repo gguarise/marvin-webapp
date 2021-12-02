@@ -165,17 +165,20 @@ export class BaseComponent implements OnInit {
   // #endregion
 
   // #region Configuração dos Campos
-  cnpjMaskConfig = new MaskConfig().cnpj;
-  telefoneMaskConfig = new MaskConfig().telefone9;
-  // telefone8Mask = new MaskConfig().telefone8;
-  // telefone9Mask = new MaskConfig().telefone9;
+  maskConfig = new MaskConfig();
+  cnpjMaskConfig = this.maskConfig.cnpj;
+  telefoneMaskConfig = this.maskConfig.telefone9;
 
-  // getTelefoneMask(element: any) {
-  //   if (!!element) {
-  //     const number = element.get('telefone').value.replace(/\D/g, '');
-  //     return number.length > 9 ? this.telefone9Mask : this.telefone8Mask;
+  // getMask(type: string): any {
+  //   let mask = '';
+  //   switch (type) {
+  //     case 'decimal':
+  //       mask = createNumberMask(this.maskConfig.decimal);
+  //       break;
+  //     default:
+  //       mask = createNumberMask(this.maskConfig.inteiro);
   //   }
-  //   return this.telefone8Mask;
+  //   return mask;
   // }
 
   getErrorMessage(control: FormControl) {

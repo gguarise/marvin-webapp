@@ -2,7 +2,10 @@ import { ChangeDetectorRef, Component, ElementRef } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
+import { Observable, of } from 'rxjs';
+import { Fornecedor } from 'src/app/models/fornecedor';
 import { Produto } from 'src/app/models/produto';
+import { FornecedorService } from 'src/app/services/fornecedor.service';
 import { ProdutoService } from 'src/app/services/produto.service';
 import { BaseComponent } from '../base/base.component';
 
@@ -20,8 +23,9 @@ export class ProdutoComponent extends BaseComponent {
     'quantidadeEstoque',
     'valorUnitario',
     'valorCobrado',
-    // 'fornecedor',
+    'fornecedor',
   ];
+  fornecedores$: Observable<Fornecedor[]>;
 
   constructor(
     dialog: MatDialog,
@@ -29,7 +33,8 @@ export class ProdutoComponent extends BaseComponent {
     fb: FormBuilder,
     cdr: ChangeDetectorRef,
     toastr: ToastrService,
-    public produtoService: ProdutoService
+    public produtoService: ProdutoService,
+    public fornecedorService: FornecedorService
   ) {
     super(dialog, elementRef, fb, toastr, cdr);
     this.formGroupConfig = {
@@ -46,7 +51,11 @@ export class ProdutoComponent extends BaseComponent {
       descricao: [null, Validators.maxLength(500)],
       quantidadeEstoque: [
         null,
-        Validators.compose([Validators.min(0), Validators.max(2147483647)]),
+        Validators.compose([
+          Validators.required,
+          Validators.min(0),
+          Validators.max(2147483647),
+        ]),
       ],
       valorUnitario: [
         null,
@@ -58,12 +67,20 @@ export class ProdutoComponent extends BaseComponent {
       ],
       valorCobrado: [
         null,
-        Validators.compose([Validators.min(0), Validators.max(9999999999.99)]),
+        Validators.compose([
+          Validators.required,
+          Validators.min(0),
+          Validators.max(9999999999.99),
+        ]),
       ],
-      fornecedor: [],
+      fornecedor: [null, Validators.required],
       modified: [],
       new: [],
     };
+
+    fornecedorService.getAll().subscribe((t) => {
+      this.fornecedores$ = of(t);
+    });
   }
 
   override select() {
@@ -149,9 +166,21 @@ export class ProdutoComponent extends BaseComponent {
   getRawData() {
     const payload = this.formArray.getRawValue();
     payload.map((produto: Produto) => {
-      // produto.cnpj = produto.cnpj?.replace(/\D/g, '');
-      // produto.telefone = produto.telefone?.replace(/\D/g, '');
+      produto.valorCobrado = this.transformStringToDecimalNumber(
+        produto.valorCobrado.toString()
+      );
+      produto.valorUnitario = this.transformStringToDecimalNumber(
+        produto.valorUnitario.toString()
+      );
     });
     return payload;
+  }
+
+  transformStringToDecimalNumber(value: string) {
+    if (value.length > 0) {
+      value = value.replace('.', '').replace(',', '.');
+      return Number(value);
+    }
+    return 0;
   }
 }
