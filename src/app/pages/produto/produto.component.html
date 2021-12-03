@@ -1,12 +1,15 @@
 <div class="container text-center">
 
-    <app-page-header title="Produto"
+    <app-page-header title="Produtos"
                      [showSaveButton]="this.formArray.enabled"
                      [showEditButton]="this.formArray.disabled"
                      [showUndoButton]="this.formArray.enabled"
+                     dialogComponentButton="Cadastrar Fornecedor"
                      (saveEvent)="beforeSave()"
                      (editEvent)="edit()"
-                     (undoEvent)="beforeUndo()"></app-page-header>
+                     (undoEvent)="beforeUndo()"
+                     (openDialogEvent)="openFornecedorDialog()">
+    </app-page-header>
 
     <mat-toolbar *ngIf="this.formArray.disabled">
         <mat-icon class="lightgrey-icon"
@@ -34,16 +37,11 @@
             </mat-row>
 
             <ng-container matColumnDef="select">
-                <mat-header-cell fxFlex="60px"
+                <mat-header-cell fxFlex="50px"
                                  fxLayoutAlign="center center"
                                  *matHeaderCellDef>
-                    <mat-checkbox [checked]="allComplete"
-                                  [indeterminate]="someComplete()"
-                                  (change)="setAll($event.checked)"
-                                  [disabled]="this.formArray.disabled">
-                    </mat-checkbox>
                 </mat-header-cell>
-                <mat-cell fxFlex="48px"
+                <mat-cell fxFlex="50px"
                           fxLayoutAlign="center center"
                           *matCellDef="let element"
                           [formGroup]="element">
@@ -165,10 +163,11 @@
                           *matCellDef="let element"
                           [formGroup]="element">
                     <mat-form-field fxLayout="column">
-                        <mat-select formControlName="fornecedor">
+                        <mat-select formControlName="fornecedor"
+                                    [compareWith]="compareFornecedor">
                             <mat-option *ngFor="let fornecedor of fornecedores$ | async"
                                         [value]="fornecedor">
-                                {{fornecedor.nome}}
+                                {{fornecedor?.nome}}
                             </mat-option>
                         </mat-select>
                         <mat-error *ngIf="element.get('fornecedor').invalid">
@@ -182,6 +181,6 @@
     </div>
     <div [class.mat-elevation-z2]="true">
         <mat-paginator [pageSize]="10"
-                       [pageSizeOptions]="[5, 10, 30]"></mat-paginator>
+                       [pageSizeOptions]="[5, 10]"></mat-paginator>
     </div>
 </div>

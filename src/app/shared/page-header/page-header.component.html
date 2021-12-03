@@ -1,8 +1,5 @@
 <mat-toolbar fxLayout="row">
     <mat-toolbar-row fxLayoutAlign="start center">
-        <h1 class="title">{{title}}</h1>
-    </mat-toolbar-row>
-    <mat-toolbar-row fxLayoutAlign="end center">
         <div>
             <button *ngIf="showEditButton"
                     mat-icon-button
@@ -26,5 +23,17 @@
                 <mat-icon class="icons">cancel</mat-icon>
             </button>
         </div>
+    </mat-toolbar-row>
+    <mat-toolbar-row fxLayoutAlign="center center">
+        <h1 class="title">{{title}}</h1>
+    </mat-toolbar-row>
+    <mat-toolbar-row fxLayoutAlign="end center">
+        <button *ngIf="!!dialogComponentButton"
+                class="dialogButton"
+                mat-raised-button
+                color="primary"
+                (click)="emitOpenDialogEvent()">
+            {{dialogComponentButton}}
+        </button>
     </mat-toolbar-row>
 </mat-toolbar>

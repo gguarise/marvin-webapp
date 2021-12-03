@@ -11,10 +11,12 @@ export class PageHeaderComponent {
   @Input() showEditButton = true;
   @Input() showSaveButton = true;
   @Input() showUndoButton = true;
+  @Input() dialogComponentButton: string;
 
   @Output() editEvent = new EventEmitter();
   @Output() saveEvent = new EventEmitter();
   @Output() undoEvent = new EventEmitter();
+  @Output() openDialogEvent = new EventEmitter();
 
   constructor() {}
 
@@ -35,6 +37,13 @@ export class PageHeaderComponent {
   emitUndoEvent() {
     if (this.showUndoButton) {
       this.undoEvent.emit('undo');
+    }
+    return true;
+  }
+
+  emitOpenDialogEvent() {
+    if (!!this.dialogComponentButton) {
+      this.openDialogEvent.emit();
     }
     return true;
   }

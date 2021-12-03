@@ -70,7 +70,12 @@ body {
     overflow: hidden;
     vertical-align: middle;
   }
+
   .input {
     max-width: auto !important;
+  }
+
+  .ngx-toastr {
+    width: 1000px !important;
   }
 }

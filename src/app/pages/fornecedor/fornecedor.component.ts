@@ -16,9 +16,10 @@ export class FornecedorComponent extends BaseComponent {
   displayedColumns: string[] = [
     'select',
     'nome',
-    'cnpj',
     'telefone',
     'email',
+    'cnpj',
+    'endereco',
     'tipo',
   ];
 
@@ -45,6 +46,7 @@ export class FornecedorComponent extends BaseComponent {
         Validators.compose([Validators.email, Validators.maxLength(50)]),
       ],
       tipo: [null, Validators.maxLength(10)],
+      endereco: [null, Validators.maxLength(150)],
       modified: [],
       new: [],
     };
@@ -100,7 +102,7 @@ export class FornecedorComponent extends BaseComponent {
           .catch((e) => {
             this.originalDataSource.forEach((x: Fornecedor) => {
               if (x.id === id) {
-                errosDeletar.push(x.nome);
+                errosDeletar.push({ nome: x.nome, erro: e.error.errors.Id[0] });
               }
             });
           });
@@ -114,6 +116,7 @@ export class FornecedorComponent extends BaseComponent {
         (x) => ` ${++x}`
       )}`;
       if (errosDeletar.length > 0) {
+        debugger;
         message += ` e ao deletar o(s) fornecedor(es): ${errosDeletar.map(
           (x) => ` ${x}`
         )}`;
@@ -122,7 +125,7 @@ export class FornecedorComponent extends BaseComponent {
     } else if (errosDeletar.length > 0) {
       this.toastr.error(
         `Ocorreram erros ao deletar o(s) fornecedor(es): ${errosDeletar.map(
-          (x) => x
+          (x) => ` ${x.nome} (${x.erro})`
         )}`
       );
     } else {

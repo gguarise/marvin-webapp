@@ -8,6 +8,7 @@ import { Produto } from 'src/app/models/produto';
 import { FornecedorService } from 'src/app/services/fornecedor.service';
 import { ProdutoService } from 'src/app/services/produto.service';
 import { BaseComponent } from '../base/base.component';
+import { FornecedorComponent } from '../fornecedor/fornecedor.component';
 
 @Component({
   selector: 'app-produto',
@@ -61,7 +62,7 @@ export class ProdutoComponent extends BaseComponent {
         null,
         Validators.compose([
           Validators.required,
-          Validators.min(0),
+          Validators.min(0.01),
           Validators.max(9999999999.99),
         ]),
       ],
@@ -69,7 +70,7 @@ export class ProdutoComponent extends BaseComponent {
         null,
         Validators.compose([
           Validators.required,
-          Validators.min(0),
+          Validators.min(0.01),
           Validators.max(9999999999.99),
         ]),
       ],
@@ -167,11 +168,22 @@ export class ProdutoComponent extends BaseComponent {
     return this.formArray.getRawValue();
   }
 
-  transformStringToDecimalNumber(value: string) {
-    if (value.length > 0) {
-      value = value.replace('.', '').replace(',', '.');
-      return Number(value);
-    }
-    return 0;
+  compareFornecedor(o1: any, o2: any): boolean {
+    return o1.name === o2.name && o1.id === o2.id;
+  }
+
+  async openFornecedorDialog() {
+    const screenSize = window.innerWidth;
+    const dialogRef = this.dialog.open(FornecedorComponent, {
+      width: screenSize > 599 ? '70%' : '90%',
+      height: 'auto',
+      disableClose: false,
+    });
+
+    dialogRef.afterClosed().subscribe(() => {
+      this.fornecedorService.getAll().subscribe((t) => {
+        this.fornecedores$ = of(t);
+      });
+    });
   }
 }

@@ -113,6 +113,7 @@ export class BaseComponent implements OnInit {
   onClear() {
     this.allComplete = false;
     this.formArray.disable();
+    this.deletedData = [];
   }
 
   // #region Auxiliares
@@ -186,27 +187,25 @@ export class BaseComponent implements OnInit {
       if (control.hasError('email')) {
         return 'Email inválido.';
       } else if (control.hasError('minlength')) {
-        return `O tamanho mínimo para o campo é ${
+        return `Tamanho mínimo de ${
           control.getError('minlength').requiredLength
         } caracter${
           control.getError('minlength').requiredLength > 1 ? 'es' : ''
         }.`;
       } else if (control.hasError('maxlength')) {
-        return `O tamanho máximo para o campo é ${
+        return `Tamanho máximo de ${
           control.getError('maxlength').requiredLength
         } caracter${
           control.getError('maxlength').requiredLength > 1 ? 'es' : ''
         }.`;
       } else if (control.hasError('min')) {
         if (control.getError('min').min === 0) {
-          return `O valor do campo não pode ser negativo.`;
+          return `Valor não pode ser negativo.`;
         } else {
-          return `O valor mínimo para o campo é ${
-            control.getError('min').min
-          }.`;
+          return `Valor mínimo de ${control.getError('min').min}.`;
         }
       } else if (control.hasError('max')) {
-        return `O valor máximo para o campo é ${control.getError('max').max}.`;
+        return `Valor máximo de ${control.getError('max').max}.`;
       } else if (control.hasError('custom')) {
         return control.getError('custom').message;
       } else if (control.hasError('required')) {

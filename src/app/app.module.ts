@@ -66,7 +66,8 @@ import { CurrencyMaskModule } from 'ng2-currency-mask';
     TextMaskModule,
     ToastrModule.forRoot({
       timeOut: 8000,
-      positionClass: 'toast-top-center',
+      positionClass: 'toast-top-full-width',
+      closeButton: true,
     }),
     MatPaginatorModule,
     MatSelectModule,
