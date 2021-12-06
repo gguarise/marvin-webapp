@@ -7,4 +7,5 @@ export class Fornecedor extends BaseModel {
   telefone: string;
   email: string;
   tipo: string;
+  endereco: string;
 }
