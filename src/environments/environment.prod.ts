@@ -1,3 +1,6 @@
 export const environment = {
-  production: true
+  production: true,
+  apiUrl: {
+    estoque: 'https://localhost:5675/',
+  },
 };
