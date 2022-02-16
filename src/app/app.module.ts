@@ -36,6 +36,8 @@ import { MatCardModule } from '@angular/material/card';
 import { ServicoComponent } from './pages/orcamento/servico/servico.component';
 import { ProdutoTableComponent } from './pages/orcamento/produto-table/produto-table.component';
 import { PecasTableComponent } from './pages/orcamento/pecas-table/pecas-table.component';
+import { ClienteComponent } from './pages/cliente/cliente.component';
+import { TextFieldModule } from '@angular/cdk/text-field';
 
 @NgModule({
   declarations: [
@@ -52,6 +54,7 @@ import { PecasTableComponent } from './pages/orcamento/pecas-table/pecas-table.c
     ServicoComponent,
     ProdutoTableComponent,
     PecasTableComponent,
+    ClienteComponent,
   ],
   imports: [
     BrowserModule,
@@ -84,6 +87,7 @@ import { PecasTableComponent } from './pages/orcamento/pecas-table/pecas-table.c
     CurrencyMaskModule,
     MatTabsModule,
     MatCardModule,
+    TextFieldModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

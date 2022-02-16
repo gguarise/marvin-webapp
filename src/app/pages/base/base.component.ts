@@ -175,6 +175,8 @@ export class BaseComponent implements OnInit {
   maskConfig = new MaskConfig();
   cnpjMaskConfig = this.maskConfig.cnpj;
   telefoneMaskConfig = this.maskConfig.telefone9;
+  cpfMaskConfig = this.maskConfig.cpf;
+  cepMaskConfig = this.maskConfig.cep;
 
   // getMask(type: string): any {
   //   let mask = '';
