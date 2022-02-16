@@ -1,3 +1,9 @@
+<app-page-header title="Cadastro de Cliente"
+                 [showSaveButton]="true"
+                 [showEditButton]="false"
+                 [showUndoButton]="true"
+                 (saveEvent)="salvar()"
+                 (undoEvent)="descartar()"></app-page-header>
 <form [formGroup]="mainForm">
     <mat-tab-group>
         <mat-tab label="Dados">

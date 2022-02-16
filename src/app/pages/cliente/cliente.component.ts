@@ -62,4 +62,12 @@ export class ClienteComponent extends BaseComponent {
       }
     }
   }
+
+  salvar() {
+    this.toastr.success('Salvo!');
+  }
+
+  descartar() {
+    this.toastr.success('Descartado!');
+  }
 }

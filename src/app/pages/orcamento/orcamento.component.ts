@@ -11,6 +11,7 @@ import { ToastrService } from 'ngx-toastr';
 import { of } from 'rxjs';
 import { Produto } from 'src/app/models/produto';
 import { BaseComponent } from '../base/base.component';
+import { ClienteComponent } from '../cliente/cliente.component';
 import { PecasTableComponent } from './pecas-table/pecas-table.component';
 import { ProdutoTableComponent } from './produto-table/produto-table.component';
 import { ServicoComponent } from './servico/servico.component';
@@ -72,7 +73,14 @@ export class OrcamentoComponent extends BaseComponent {
   }
 
   addClient() {
-    // open dialog com cadastro
+    const screenSize = window.innerWidth;
+    const dialogRef = this.dialog.open(ClienteComponent, {
+      width: screenSize > 599 ? '70%' : '90%',
+      height: 'auto',
+      disableClose: false,
+    });
+
+    dialogRef.afterClosed().subscribe(() => {});
   }
 
   calculateDesconto(isPercent = false) {
@@ -132,5 +140,13 @@ export class OrcamentoComponent extends BaseComponent {
     const subtotal = this.mainForm.get('subtotal')?.value;
     const desconto = this.mainForm.get('valorDesconto')?.value;
     this.mainForm.get('valorFinal')?.setValue(subtotal - desconto);
+  }
+
+  salvar() {
+    this.toastr.success('Salvo!');
+  }
+
+  descartar() {
+    this.toastr.success('Descartado!');
   }
 }
