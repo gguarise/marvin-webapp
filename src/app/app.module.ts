@@ -30,6 +30,9 @@ import { TextMaskModule } from 'angular2-text-mask';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSelectModule } from '@angular/material/select';
 import { CurrencyMaskModule } from 'ng2-currency-mask';
+import { ClienteComponent } from './pages/cliente/cliente.component';
+import { MatTabsModule } from '@angular/material/tabs';
+import { TextFieldModule } from '@angular/cdk/text-field';
 
 @NgModule({
   declarations: [
@@ -42,6 +45,7 @@ import { CurrencyMaskModule } from 'ng2-currency-mask';
     PageHeaderComponent,
     BaseComponent,
     ConfirmDialogComponent,
+    ClienteComponent,
   ],
   imports: [
     BrowserModule,
@@ -72,6 +76,8 @@ import { CurrencyMaskModule } from 'ng2-currency-mask';
     MatPaginatorModule,
     MatSelectModule,
     CurrencyMaskModule,
+    MatTabsModule,
+    TextFieldModule,
   ],
   providers: [],
   bootstrap: [AppComponent],
