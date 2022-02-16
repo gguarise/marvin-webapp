@@ -30,6 +30,12 @@ import { TextMaskModule } from 'angular2-text-mask';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSelectModule } from '@angular/material/select';
 import { CurrencyMaskModule } from 'ng2-currency-mask';
+import { OrcamentoComponent } from './pages/orcamento/orcamento.component';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatCardModule } from '@angular/material/card';
+import { ServicoComponent } from './pages/orcamento/servico/servico.component';
+import { ProdutoTableComponent } from './pages/orcamento/produto-table/produto-table.component';
+import { PecasTableComponent } from './pages/orcamento/pecas-table/pecas-table.component';
 
 @NgModule({
   declarations: [
@@ -42,6 +48,10 @@ import { CurrencyMaskModule } from 'ng2-currency-mask';
     PageHeaderComponent,
     BaseComponent,
     ConfirmDialogComponent,
+    OrcamentoComponent,
+    ServicoComponent,
+    ProdutoTableComponent,
+    PecasTableComponent,
   ],
   imports: [
     BrowserModule,
@@ -72,6 +82,8 @@ import { CurrencyMaskModule } from 'ng2-currency-mask';
     MatPaginatorModule,
     MatSelectModule,
     CurrencyMaskModule,
+    MatTabsModule,
+    MatCardModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

@@ -8,6 +8,14 @@
   --client-color-lightgrey: #949494;
 }
 
+.field-set {
+  border-color: var(--client-color-grey);
+}
+
+.field-set-legend {
+  color: var(--client-color-grey);
+}
+
 html,
 body {
   height: 100%;

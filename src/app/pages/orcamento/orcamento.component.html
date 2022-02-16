@@ -1,0 +1,170 @@
+<form [formGroup]="mainForm">
+    <mat-tab-group>
+        <mat-tab label="Dados">
+            <div fxFlex
+                 fxLayout="column">
+                <div fxFlex
+                     fxLayout="row"
+                     fxLayoutAlign="space-between center">
+
+                    <mat-form-field fxFlex="80"
+                                    appearance="fill">
+                        <mat-label>Cliente</mat-label>
+                        <mat-select formControlName="cliente"
+                                    [compareWith]="compareWith">
+                            <mat-option *ngFor="let cliente of clientes$ | async"
+                                        [value]="cliente.id">
+                                {{cliente?.nome}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+
+                    <button mat-raised-button
+                            class="new-button"
+                            color="primary"
+                            (click)="addClient()">Novo</button>
+                </div>
+
+                <mat-form-field appearance="fill">
+                    <mat-label>Carro</mat-label>
+                    <mat-select formControlName="cliente"
+                                [compareWith]="compareWith">
+                        <ng-container *ngFor="let carro of carros$ | async">
+                            <mat-option *ngIf="carro.idCliente == mainForm.get('cliente')?.value"
+                                        [value]="carro.id">
+                                {{carro?.nome}}
+                            </mat-option>
+                        </ng-container>
+                    </mat-select>
+                </mat-form-field>
+
+            </div>
+
+            <!-- Total Tabelas -->
+            <fieldset class="field-set"
+                      fxFlex>
+                <legend class="field-set-legend">Total das Tabelas</legend>
+                <div fxLayout="row"
+                     fxLayoutAlign="space-between">
+
+                    <mat-form-field fxFlex
+                                    appearance="fill">
+                        <mat-label>Serviços</mat-label>
+                        <input matInput
+                               formControlName="totalServicos"
+                               currencyMask
+                               [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', allowNegative: false, precision: 2 }" />
+                        <mat-error *ngIf="mainForm.get('dados.totalServicos')?.invalid">
+                            {{getErrorMessage(mainForm.get('dados.totalServicos'))}}
+                        </mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field fxFlex
+                                    appearance="fill">
+                        <mat-label>Produtos</mat-label>
+                        <input matInput
+                               formControlName="totalProdutos"
+                               currencyMask
+                               [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', allowNegative: false, precision: 2 }" />
+                        <mat-error *ngIf="mainForm.get('dados.totalProdutos')?.invalid">
+                            {{getErrorMessage(mainForm.get('dados.totalProdutos'))}}
+                        </mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field fxFlex
+                                    appearance="fill">
+                        <mat-label>Peças</mat-label>
+                        <input matInput
+                               formControlName="totalPecas"
+                               currencyMask
+                               [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', allowNegative: false, precision: 2 }" />
+                        <mat-error *ngIf="mainForm.get('dados.totalPecas')?.invalid">
+                            {{getErrorMessage(mainForm.get('dados.totalPecas'))}}
+                        </mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field fxFlex
+                                    appearance="fill">
+                        <mat-label>Subtotal</mat-label>
+                        <input matInput
+                               formControlName="subtotal"
+                               currencyMask
+                               [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', allowNegative: false, precision: 2 }" />
+                        <mat-error *ngIf="mainForm.get('dados.subtotal')?.invalid">
+                            {{getErrorMessage(mainForm.get('dados.subtotal'))}}
+                        </mat-error>
+                    </mat-form-field>
+
+                </div>
+            </fieldset>
+
+            <!-- Descontos -->
+            <fieldset class="field-set"
+                      fxFlex>
+                <legend class="field-set-legend">Descontos</legend>
+                <div fxLayout="row"
+                     fxLayoutAlign="space-between">
+
+                    <mat-form-field fxFlex="49"
+                                    appearance="fill">
+                        <mat-label>Porcentagem</mat-label>
+                        <input matInput
+                               formControlName="porcentagemDesconto"
+                               currencyMask
+                               (keyup)="calculateDesconto(true)"
+                               [options]="{ prefix: '', thousands: '.', decimal: ',', allowNegative: false, precision: 2, suffix: '%' }" />
+                        <mat-error *ngIf="mainForm.get('dados.porcentagemDesconto')?.invalid">
+                            {{getErrorMessage(mainForm.get('dados.porcentagemDesconto'))}}
+                        </mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field fxFlex="49"
+                                    appearance="fill">
+                        <mat-label>Valor</mat-label>
+                        <input matInput
+                               formControlName="valorDesconto"
+                               currencyMask
+                               (keyup)="calculateDesconto()"
+                               [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', allowNegative: false, precision: 2 }" />
+                        <mat-error *ngIf="mainForm.get('dados.valorDesconto')?.invalid">
+                            {{getErrorMessage(mainForm.get('dados.valorDesconto'))}}
+                        </mat-error>
+                    </mat-form-field>
+
+                </div>
+            </fieldset>
+
+            <fieldset class="field-set"
+                      fxFlex>
+                <legend>Resumo</legend>
+                <mat-form-field fxFlex
+                                appearance="fill">
+                    <mat-label>Valor</mat-label>
+                    <input matInput
+                           formControlName="valorFinal"
+                           currencyMask
+                           (keyup)="calculateDesconto()"
+                           [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', allowNegative: false, precision: 2 }" />
+                    <mat-error *ngIf="mainForm.get('dados.valorFinal')?.invalid">
+                        {{getErrorMessage(mainForm.get('dados.valorFinal'))}}
+                    </mat-error>
+                </mat-form-field>
+
+                <mat-checkbox fxFlex
+                              fxLayoutAlign="center center"
+                              formControlName="pagamentoEfetuado">
+                    Pagamento Efetuado
+                </mat-checkbox>
+            </fieldset>
+        </mat-tab>
+        <mat-tab label="Serviços">
+            <app-servico (calculateCustoServicos)="calculateCustoServicos()"></app-servico>
+        </mat-tab>
+        <mat-tab label="Produtos">
+            <app-produto-table (calculateCustoProdutos)="calculateCustoProdutos()"></app-produto-table>
+        </mat-tab>
+        <mat-tab label="Peças">
+            <app-pecas-table (calculateCustoPecas)="calculateCustoPecas()"></app-pecas-table>
+        </mat-tab>
+    </mat-tab-group>
+</form>

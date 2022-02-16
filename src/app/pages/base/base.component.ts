@@ -5,7 +5,13 @@ import {
   OnInit,
   ViewChild,
 } from '@angular/core';
-import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import {
+  AbstractControl,
+  FormArray,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+} from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
@@ -182,7 +188,7 @@ export class BaseComponent implements OnInit {
   //   return mask;
   // }
 
-  getErrorMessage(control: FormControl) {
+  getErrorMessage(control: FormControl | AbstractControl | null) {
     if (control) {
       if (control.hasError('email')) {
         return 'Email inválido.';
