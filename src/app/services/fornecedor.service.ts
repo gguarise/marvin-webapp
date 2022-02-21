@@ -15,7 +15,7 @@ export class FornecedorService extends BaseService {
     super();
   }
 
-  getAll(): Observable<Fornecedor[]> {
+  override getAll(): Observable<Fornecedor[]> {
     return this.http
       .get<Fornecedor[]>(`${this.fornecedorUrl}`)
       .pipe(catchError(this.handleServiceError<any>()));

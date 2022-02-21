@@ -5,6 +5,7 @@ import { ToastrService } from 'ngx-toastr';
 import { Fornecedor } from 'src/app/models/fornecedor';
 import { FornecedorService } from 'src/app/services/fornecedor.service';
 import { CNPJValidator } from 'src/core/validators/cnpj-validator';
+import { BaseTableComponent } from '../base/base-table/base-table.component';
 import { BaseComponent } from '../base/base.component';
 
 @Component({
@@ -12,26 +13,12 @@ import { BaseComponent } from '../base/base.component';
   templateUrl: './fornecedor.component.html',
   styleUrls: ['./fornecedor.component.scss'],
 })
-export class FornecedorComponent extends BaseComponent {
-  displayedColumns: string[] = [
-    'select',
-    'nome',
-    'telefone',
-    'email',
-    'cnpj',
-    'endereco',
-    'tipo',
-  ];
-
+export class FornecedorComponent extends BaseTableComponent {
   constructor(
-    dialog: MatDialog,
     elementRef: ElementRef,
-    fb: FormBuilder,
-    cdr: ChangeDetectorRef,
-    toastr: ToastrService,
     public fornecedorService: FornecedorService
   ) {
-    super(dialog, elementRef, fb, toastr, cdr);
+    super(fornecedorService, elementRef);
     this.formGroupConfig = {
       select: [false],
       id: [],
@@ -50,20 +37,21 @@ export class FornecedorComponent extends BaseComponent {
       modified: [],
       new: [],
     };
+    this.displayedColumns = [
+      'select',
+      'nome',
+      'telefone',
+      'email',
+      'cnpj',
+      'endereco',
+      'tipo',
+    ];
   }
 
   override select() {
-    this.fornecedorService.getAll().subscribe({
-      next: (x) => {
-        if (!!x) {
-          // Ordenar pelo nome do Fornecedor
-          x.sort((a, b) => (a.nome > b.nome ? 1 : b.nome > a.nome ? -1 : 0));
-          super.select(x);
-        }
-      },
-      error: (e) =>
-        this.toastr.error('Um erro ocorreu ao buscar os fornecedores'),
-    });
+    const sortItems = (a: Fornecedor, b: Fornecedor) =>
+      a.nome > b.nome ? 1 : b.nome > a.nome ? -1 : 0;
+    super.select(null, sortItems);
   }
 
   override async save() {

@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { Injector, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -30,6 +30,8 @@ import { TextMaskModule } from 'angular2-text-mask';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSelectModule } from '@angular/material/select';
 import { CurrencyMaskModule } from 'ng2-currency-mask';
+import { BaseTableComponent } from './pages/base/base-table/base-table.component';
+import { AppInjectorService } from './services/app-injector.service';
 
 @NgModule({
   declarations: [
@@ -42,6 +44,7 @@ import { CurrencyMaskModule } from 'ng2-currency-mask';
     PageHeaderComponent,
     BaseComponent,
     ConfirmDialogComponent,
+    // BaseTableComponent,
   ],
   imports: [
     BrowserModule,
@@ -76,4 +79,8 @@ import { CurrencyMaskModule } from 'ng2-currency-mask';
   providers: [],
   bootstrap: [AppComponent],
 })
-export class AppModule {}
+export class AppModule {
+  constructor(injector: Injector) {
+    AppInjectorService.injector = injector;
+  }
+}
