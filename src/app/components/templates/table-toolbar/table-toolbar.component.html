@@ -1,0 +1,14 @@
+<mat-toolbar *ngIf="isFormDisabled">
+    <mat-icon class="lightgrey-icon"
+              matTooltip="Adicionar Linha">add_circle</mat-icon>
+    <mat-icon class="lightgrey-icon"
+              matTooltip="Remover Linhas Selecionadas">delete</mat-icon>
+</mat-toolbar>
+<mat-toolbar *ngIf="!isFormDisabled">
+    <mat-icon class="orange-icon"
+              matTooltip="Adicionar Linha"
+              (click)="emitAddRowEvent()">add_circle</mat-icon>
+    <mat-icon class="orange-icon"
+              matTooltip="Remover Linhas Selecionadas"
+              (click)="emitDeleteSelectedRowsEvent()">delete</mat-icon>
+</mat-toolbar>

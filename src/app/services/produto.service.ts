@@ -15,7 +15,7 @@ export class ProdutoService extends BaseService {
     super();
   }
 
-  getAll(): Observable<Produto[]> {
+  override getAll(): Observable<Produto[]> {
     return this.http
       .get<Produto[]>(`${this.produtoUrl}`)
       .pipe(catchError(this.handleServiceError<any>()));
