@@ -1,12 +1,9 @@
-import { ChangeDetectorRef, Component, ElementRef } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
-import { ToastrService } from 'ngx-toastr';
+import { Component, ElementRef } from '@angular/core';
+import { Validators } from '@angular/forms';
 import { Fornecedor } from 'src/app/models/fornecedor';
 import { FornecedorService } from 'src/app/services/fornecedor.service';
 import { CNPJValidator } from 'src/core/validators/cnpj-validator';
-import { BaseTableComponent } from '../base/base-table/base-table.component';
-import { BaseComponent } from '../base/base.component';
+import { BaseTableComponent } from '../../components/base/base-table/base-table.component';
 
 @Component({
   selector: 'app-fornecedor',
@@ -15,8 +12,8 @@ import { BaseComponent } from '../base/base.component';
 })
 export class FornecedorComponent extends BaseTableComponent {
   constructor(
-    elementRef: ElementRef,
-    public fornecedorService: FornecedorService
+    public fornecedorService: FornecedorService,
+    elementRef: ElementRef
   ) {
     super(fornecedorService, elementRef);
     this.formGroupConfig = {
@@ -54,75 +51,7 @@ export class FornecedorComponent extends BaseTableComponent {
     super.select(null, sortItems);
   }
 
-  override async save() {
-    const data = this.getRawData();
-    const errosSalvar = new Array();
-    const errosDeletar = new Array();
-
-    const promises = data.map(async (item) => {
-      if (item.new) {
-        await this.fornecedorService
-          .postFornecedor(item)
-          .toPromise()
-          .then()
-          .catch((e) => {
-            const index = data.findIndex((x) => x === item);
-            errosSalvar.push(index);
-          });
-      } else if (item.modified) {
-        await this.fornecedorService
-          .putFornecedor(item)
-          .toPromise()
-          .then()
-          .catch((e) => {
-            const index = data.findIndex((x) => x === item);
-            errosSalvar.push(index);
-          });
-      }
-    });
-
-    if (this.deletedData.length > 0) {
-      for (const id of this.deletedData) {
-        await this.fornecedorService
-          .deleteFornecedor(id)
-          .toPromise()
-          .then()
-          .catch((e) => {
-            this.originalDataSource.forEach((x: Fornecedor) => {
-              if (x.id === id) {
-                errosDeletar.push({ nome: x.nome, erro: e.error.errors.Id[0] });
-              }
-            });
-          });
-      }
-    }
-
-    await Promise.all(promises);
-
-    if (errosSalvar.length > 0) {
-      let message = `Ocorreram erros ao salvar a(s) linha(s): ${errosSalvar.map(
-        (x) => ` ${++x}`
-      )}`;
-      if (errosDeletar.length > 0) {
-        debugger;
-        message += ` e ao deletar o(s) fornecedor(es): ${errosDeletar.map(
-          (x) => ` ${x}`
-        )}`;
-      }
-      this.toastr.error(message);
-    } else if (errosDeletar.length > 0) {
-      this.toastr.error(
-        `Ocorreram erros ao deletar o(s) fornecedor(es): ${errosDeletar.map(
-          (x) => ` ${x.nome} (${x.erro})`
-        )}`
-      );
-    } else {
-      this.toastr.success('Lista de Fornecedores atualizada com sucesso.');
-      super.save();
-    }
-  }
-
-  getRawData() {
+  override getRawData() {
     const payload = this.formArray.getRawValue();
     payload.map((fornecedor: Fornecedor) => {
       fornecedor.cnpj = fornecedor.cnpj?.replace(/\D/g, '');

@@ -36,4 +36,96 @@ export class FormHelper {
       return '';
     }
   }
+
+  public static getTextMask(mask: string) {
+    switch (mask) {
+      case 'cnpj':
+        return {
+          mask: [
+            /[0-9]/,
+            /\d/,
+            '.',
+            /\d/,
+            /\d/,
+            /\d/,
+            '.',
+            /\d/,
+            /\d/,
+            /\d/,
+            '/',
+            /\d/,
+            /\d/,
+            /\d/,
+            /\d/,
+            '-',
+            /\d/,
+            /\d/,
+          ],
+        };
+      case 'telefone8':
+        return {
+          mask: [
+            '(',
+            /[1-9]/,
+            /[1-9]/,
+            ')',
+            ' ',
+            /\d/,
+            /\d/,
+            /\d/,
+            /\d/,
+            '-',
+            /\d/,
+            /\d/,
+            /\d/,
+            /\d/,
+          ],
+        };
+      case 'telefone9':
+        return {
+          mask: [
+            '(',
+            /[1-9]/,
+            /[1-9]/,
+            ')',
+            ' ',
+            /\d/,
+            /\d/,
+            /\d/,
+            /\d/,
+            /\d/,
+            '-',
+            /\d/,
+            /\d/,
+            /\d/,
+            /\d/,
+          ],
+        };
+      default:
+        return { mask: [] };
+    }
+  }
+
+  public static getNumericMask(type: string) {
+    switch (type) {
+      case 'integer':
+        return {
+          prefix: '',
+          thousands: '',
+          decimal: '',
+          allowNegative: false,
+          precision: 0,
+        };
+      case 'currency':
+        return {
+          prefix: 'R$ ',
+          thousands: '.',
+          decimal: ',',
+          allowNegative: false,
+          precision: 2,
+        };
+      default:
+        return {};
+    }
+  }
 }

@@ -1,4 +1,10 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
@@ -8,8 +14,7 @@ import { ToastrService } from 'ngx-toastr';
 import { firstValueFrom, Subject } from 'rxjs';
 import { AppInjectorService } from 'src/app/services/app-injector.service';
 import { BaseService } from 'src/app/services/base.service';
-import { ConfirmDialogComponent } from 'src/app/shared/dialogs/confirm-dialog/confirm-dialog.component';
-import { MaskConfig } from 'src/app/shared/fields/mask-configs';
+import { ConfirmDialogComponent } from 'src/app/components/shared/dialogs/confirm-dialog/confirm-dialog.component';
 import { FormHelper } from 'src/core/helpers/form-helper.model';
 
 @Component({
@@ -17,19 +22,16 @@ import { FormHelper } from 'src/core/helpers/form-helper.model';
   templateUrl: './base-table.component.html',
   styleUrls: ['./base-table.component.scss'],
 })
-export abstract class BaseTableComponent implements OnInit {
-  disabledState$: Subject<boolean>;
-  dataSource: MatTableDataSource<any>;
-  formArray = new FormArray([]);
-  deletedData = new Array();
-  originalDataSource: any;
-  formGroupConfig: any;
-  lastAddedItem: FormGroup;
-  displayedColumns: string[];
-
-  maskConfig = new MaskConfig();
-  cnpjMaskConfig = this.maskConfig.cnpj;
-  telefoneMaskConfig = this.maskConfig.telefone9;
+export abstract class BaseTableComponent implements OnInit, OnDestroy {
+  formEditing$ = new Subject<boolean>(); // Controla des/habilitação da tabela
+  dataSource: MatTableDataSource<any>; // DataSource para o mat-table
+  formArray = new FormArray([]); // FormArray do Angular Forms
+  deletedData = new Array(); // Linhas deletadas da tabela
+  originalDataSource: any; // Dados originais (salvos no banco)
+  formGroupConfig: any; // O que define os campos e validações em cada tela
+  lastAddedItem: FormGroup; // Última linha adicionada na tabela
+  displayedColumns: string[]; // Colunas a serem mostradas na tabela
+  formHelper = FormHelper; // Funções auxiliares
 
   // Services
   toastr: ToastrService;
@@ -42,11 +44,15 @@ export abstract class BaseTableComponent implements OnInit {
     this.toastr = AppInjectorService.injector.get(ToastrService);
     this.dialog = AppInjectorService.injector.get(MatDialog);
     this.fb = AppInjectorService.injector.get(FormBuilder);
+
+    this.formEditing$.subscribe((isEditing) => {
+      isEditing ? this.formArray.enable() : this.formArray.disable();
+    });
   }
 
   ngOnInit() {
     this.select();
-    this.formArray.disable();
+    this.formEditing$.next(false);
   }
 
   ngOnDestroy() {
@@ -81,7 +87,7 @@ export abstract class BaseTableComponent implements OnInit {
     }
   }
 
-  setItems(items: any[] = this.formArray.getRawValue()) {
+  setItems(items: any[]) {
     this.formArray.clear();
     if (!!items) {
       this.originalDataSource = items;
@@ -95,31 +101,25 @@ export abstract class BaseTableComponent implements OnInit {
         this.paginator.firstPage();
       }
     }
-    // this.onClear();
+    this.setInitialData();
   }
 
-  async beforeSave(
-    customTableData: any[] = [],
-    deletePropertyName: string = 'nome'
-  ) {
+  async beforeSave(deletePropertyName: string = 'nome') {
     if (this.formArray.dirty) {
       if (this.formArray.invalid) {
         this.toastr.error('Existem campos inválidos na tabela.');
-        this.formArray.markAllAsTouched(); // para mostrar erros nas linhas
+        this.formArray.markAllAsTouched(); // Para mostrar erros nas linhas
       } else {
         this.setRowsAsModified();
-        await this.save(customTableData, deletePropertyName);
+        await this.save(deletePropertyName);
       }
     } else {
       this.toastr.error('Nenhum campo foi modificado.');
     }
   }
 
-  async save(customTableData: any[] = [], propertyName: string = 'nome') {
-    const data =
-      customTableData.length === 0
-        ? customTableData
-        : this.formArray.getRawValue();
+  async save(propertyNameErrorMessage: string = 'nome') {
+    const data = this.getRawData();
     const errosSalvar = new Array();
     const errosDeletar = new Array();
 
@@ -149,7 +149,7 @@ export abstract class BaseTableComponent implements OnInit {
               // TODO ver caso não tenha ID
               if (x.id === id) {
                 errosDeletar.push({
-                  nome: x[propertyName],
+                  nome: x[propertyNameErrorMessage],
                   erro: e.error.errors.Id[0],
                 });
               }
@@ -171,17 +171,17 @@ export abstract class BaseTableComponent implements OnInit {
     } else if (errosDeletar.length > 0) {
       this.toastr.error(
         `Ocorreram erros ao deletar: ${errosDeletar.map(
-          (x) => ` ${x[propertyName]} (${x.erro})`
+          (x) => ` ${x.nome} (${x.erro})`
         )}`
       );
     } else {
       this.toastr.success('Salvo com sucesso.');
-      this.disabledState$.next(true);
+      this.setInitialData();
     }
   }
 
   async beforeUndo() {
-    this.disabledState$.next(true);
+    this.formEditing$.next(false);
     if (this.formArray.dirty) {
       const confirma = await this.openDialog(
         'Confirmar',
@@ -190,7 +190,7 @@ export abstract class BaseTableComponent implements OnInit {
       if (confirma) {
         this.undo();
       } else {
-        this.disabledState$.next(false);
+        this.formEditing$.next(true);
       }
     } else {
       this.undo();
@@ -198,21 +198,29 @@ export abstract class BaseTableComponent implements OnInit {
   }
 
   edit() {
-    this.formArray.enable();
+    this.formEditing$.next(true);
   }
 
   async undo() {
-    this.setItems();
+    this.select();
     this.onClear();
   }
 
   onClear() {
-    this.allComplete = false;
-    this.deletedData = [];
-    this.disabledState$.next(true);
+    this.setInitialData();
   }
 
-  // #region Auxiliares
+  setInitialData() {
+    this.deletedData = [];
+    this.formEditing$.next(false);
+    this.clearSelections();
+  }
+
+  getRawData() {
+    return this.formArray.getRawValue();
+  }
+
+  // #region Comportamento da Tabela
   addRow(newItem: boolean = true) {
     this.lastAddedItem = this.fb.group(
       Object.assign({}, cloneDeep(this.formGroupConfig))
@@ -244,7 +252,7 @@ export abstract class BaseTableComponent implements OnInit {
   }
   // #endregion
 
-  // #region Dialog confirmação
+  // #region Dialog de Confirmação
   async openDialog(title: string, content: string) {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
       width: '250px',
@@ -263,30 +271,15 @@ export abstract class BaseTableComponent implements OnInit {
     return FormHelper.getErrorMessage(control);
   }
 
+  // TODO ver como funciona
   compareForSelectField(o1: any, o2: any): boolean {
     return o1.id === o2.id;
   }
   // #endregion
 
   // #region Checkbox - Seleção
-  allComplete: boolean = false;
-
-  updateAllComplete() {
-    this.allComplete = this.dataSource?.data.every(
-      (t) => t.get('select').value
-    );
-  }
-
-  someComplete(): boolean {
-    return (
-      this.dataSource?.data.filter((t) => t.get('select').value).length > 0 &&
-      !this.allComplete
-    );
-  }
-
-  setAll(completed: boolean) {
-    this.allComplete = completed;
-    this.dataSource?.data.forEach((t) => t.get('select').setValue(completed));
+  clearSelections() {
+    this.dataSource?.data.forEach((t) => t.get('select').setValue(false));
   }
 
   deleteSelectedRows() {

@@ -21,7 +21,7 @@ export class FornecedorService extends BaseService {
       .pipe(catchError(this.handleServiceError<any>()));
   }
 
-  postFornecedor(payload: any): Observable<any> {
+  override post(payload: any): Observable<any> {
     return this.http.post(`${this.fornecedorUrl}`, payload).pipe(
       map((ent) => {
         if (ent) {
@@ -33,7 +33,7 @@ export class FornecedorService extends BaseService {
     );
   }
 
-  putFornecedor(payload: any): Observable<any> {
+  override put(payload: any): Observable<any> {
     return this.http.put(`${this.fornecedorUrl}`, payload).pipe(
       map((ent) => {
         if (ent) {
@@ -45,7 +45,7 @@ export class FornecedorService extends BaseService {
     );
   }
 
-  deleteFornecedor(id: string): Observable<any> {
+  override delete(id: string): Observable<any> {
     return this.http.delete(`${this.fornecedorUrl}/${id}`).pipe(
       map((ent) => {
         if (ent) {
