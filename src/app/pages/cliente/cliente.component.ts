@@ -1,17 +1,10 @@
-import {
-  ChangeDetectorRef,
-  Component,
-  ElementRef,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { ToastrService } from 'ngx-toastr';
 import { firstValueFrom } from 'rxjs';
-import { ViaCEP } from 'src/app/models/via-cep';
 import { ClienteService } from 'src/app/services/cliente.service';
-import { BaseComponent } from '../base/base.component';
+import { BaseComponent } from '../../components/base/base.component';
 
 @Component({
   selector: 'app-cliente',
@@ -59,6 +52,8 @@ export class ClienteComponent extends BaseComponent {
           ?.setValue(
             `${endereco.logradouro}, ${endereco.complemento} - ${endereco.bairro} - ${endereco.localidade}/${endereco.uf}`
           );
+      } else {
+        this.mainForm.get('endereco')?.setValue(null);
       }
     }
   }

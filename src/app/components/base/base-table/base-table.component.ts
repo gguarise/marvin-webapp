@@ -15,7 +15,8 @@ import { firstValueFrom, Subject } from 'rxjs';
 import { AppInjectorService } from 'src/app/services/app-injector.service';
 import { BaseService } from 'src/app/services/base.service';
 import { ConfirmDialogComponent } from 'src/app/components/shared/dialogs/confirm-dialog/confirm-dialog.component';
-import { FormHelper } from 'src/core/helpers/form-helper.model';
+import { FormHelper } from 'src/core/helpers/form-helper';
+import { DialogHelper } from 'src/core/helpers/dialog-helper';
 
 @Component({
   selector: 'app-base-table',
@@ -183,7 +184,7 @@ export abstract class BaseTableComponent implements OnInit, OnDestroy {
   async beforeUndo() {
     this.formEditing$.next(false);
     if (this.formArray.dirty) {
-      const confirma = await this.openDialog(
+      const confirma = await DialogHelper.openDialog(
         'Confirmar',
         'Deseja descartar alterações?'
       );

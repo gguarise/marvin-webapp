@@ -12,6 +12,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { cloneDeep } from 'lodash';
 import { ToastrService } from 'ngx-toastr';
 import { ConfirmDialogComponent } from 'src/app/components/shared/dialogs/confirm-dialog/confirm-dialog.component';
+import { FormHelper } from 'src/core/helpers/form-helper';
 
 @Component({
   selector: 'app-base',
@@ -110,4 +111,8 @@ export class BaseComponent implements OnInit {
       .then((e) => e);
   }
   // #endregion
+
+  getErrorMessage(control: FormControl) {
+    return FormHelper.getErrorMessage(control);
+  }
 }
