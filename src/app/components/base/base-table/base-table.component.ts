@@ -212,7 +212,7 @@ export abstract class BaseTableComponent implements OnInit, OnDestroy {
         )}`
       );
     } else {
-      this.toastr.success('Salvo com sucesso.');
+      this.toastr.success('Registros da tabela salvos com sucesso.');
       this.setInitialData();
     }
   }

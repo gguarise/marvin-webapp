@@ -66,14 +66,12 @@ export class CarrosTableComponent extends ChildBaseTableComponent {
   override setNewItem() {
     super.setNewItem();
     this.lastAddedItem.get('clienteId')?.setValue(this.parentId);
-    this.lastAddedItem.get('ativo')?.setValue(true); // TODO retirar depois
   }
 
   override getRawData() {
     const payload = this.formArray.getRawValue();
-    payload.map((fornecedor: Fornecedor) => {
-      fornecedor.cnpj = fornecedor.cnpj?.replace(/\D/g, '');
-      fornecedor.telefone = fornecedor.telefone?.replace(/\D/g, '');
+    payload.map((carro: Carro) => {
+      carro.placa = carro.placa?.replace('-', '');
     });
     return payload;
   }
@@ -95,7 +93,7 @@ export class CarrosTableComponent extends ChildBaseTableComponent {
   async getModelos(element: any) {
     const marca = element.get('marca')?.value?.toLowerCase();
 
-    if (!!marca) {
+    if (!!marca && element.get('marca').dirty) {
       if (!this.modelosPorMarca[marca]) {
         const marcaObject = this.marcas.filter(option => option.name.toLowerCase() === marca);
 

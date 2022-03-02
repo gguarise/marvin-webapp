@@ -47,9 +47,10 @@ export class CadastroClienteComponent extends BaseComponent implements AfterView
   }
 
   override setMainFormData(item?: any) {
-    if (!!item) {
-      item.carros = item.carros?.filter((carro: Carro) => carro.ativo)
-    }
+    // TODO descomentar depois de arrumar
+    // if (!!item) {
+    //   item.carros = item.carros?.filter((carro: Carro) => carro.ativo)
+    // }
     super.setMainFormData(item);
   }
 
@@ -71,6 +72,16 @@ export class CadastroClienteComponent extends BaseComponent implements AfterView
       } else {
         this.mainForm.get('endereco')?.setValue(null);
       }
+    }
+  }
+
+  override async beforeSave() {
+    const carros = this.carrosTable.formArray.getRawValue();
+    if (!carros || carros?.length <= 0) {
+      this.toastr.error('O cliente deve ter ao menos um carro cadastrado');
+    }
+    else {
+      super.beforeSave();
     }
   }
 

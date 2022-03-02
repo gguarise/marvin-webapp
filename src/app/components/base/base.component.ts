@@ -130,8 +130,8 @@ export class BaseComponent implements OnInit {
   }
 
   async saveComponentTables() {
-    await this.componentTables.forEach(table => {
-      table.beforeSave();
+    await this.componentTables.forEach(async table => {
+      await table.beforeSave();
     });
     this.toastr.success('Registro alterado com sucesso.');
     this.onClear();
