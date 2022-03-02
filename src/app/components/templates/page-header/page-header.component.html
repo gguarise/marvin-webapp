@@ -1,6 +1,13 @@
 <mat-toolbar fxLayout="row">
     <mat-toolbar-row fxLayoutAlign="start center">
         <div>
+            <button *ngIf="showReturnButton"
+                    mat-icon-button
+                    matTooltip="Voltar"
+                    matTooltipPosition="left"
+                    (click)="emitReturnEvent()">
+                <mat-icon class="icons">reply</mat-icon>
+            </button>
             <button *ngIf="showEditButton"
                     mat-icon-button
                     matTooltip="Editar"
@@ -22,6 +29,13 @@
                     (click)="emitUndoEvent()">
                 <mat-icon class="icons">cancel</mat-icon>
             </button>
+            <button *ngIf="showDeleteButton"
+                    mat-icon-button
+                    matTooltip="Excluir"
+                    matTooltipPosition="left"
+                    (click)="emitDeleteEvent()">
+                <mat-icon class="icons">delete</mat-icon>
+            </button>
         </div>
     </mat-toolbar-row>
     <mat-toolbar-row fxLayoutAlign="center center">
@@ -35,5 +49,13 @@
                 (click)="emitOpenDialogEvent()">
             {{dialogComponentButton}}
         </button>
+        <a [routerLink]="['/cadastro-cliente']">
+        <button *ngIf="showNewButton"
+                    mat-raised-button
+                    color="primary"
+                    matTooltipPosition="left"
+                    (click)="emitNewEvent()">
+                Novo
+        </button></a>
     </mat-toolbar-row>
 </mat-toolbar>

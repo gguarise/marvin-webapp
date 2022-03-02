@@ -1,6 +1,6 @@
 <div class="container text-center">
 
-    <app-page-header title="Produtos"
+    <app-page-header title="Estoque"
                      [showSaveButton]="this.formArray.enabled"
                      [showEditButton]="this.formArray.disabled"
                      [showUndoButton]="this.formArray.enabled"
@@ -69,10 +69,10 @@
             </ng-container>
 
             <ng-container matColumnDef="descricao">
-                <mat-header-cell fxFlex="15"
+                <mat-header-cell fxFlex
                                  fxLayoutAlign="center center"
                                  *matHeaderCellDef> Descrição </mat-header-cell>
-                <mat-cell fxFlex="15"
+                <mat-cell fxFlex
                           *matCellDef="let element"
                           [formGroup]="element">
                     <mat-form-field fxLayout="column">
@@ -113,23 +113,6 @@
                                currencyMask
                                [options]="formHelper.getNumericMask('currency')" />
                         <mat-error>{{getErrorMessage(element.get('valorUnitario'))}}</mat-error>
-                    </mat-form-field>
-                </mat-cell>
-            </ng-container>
-
-            <ng-container matColumnDef="valorCobrado">
-                <mat-header-cell fxFlex="10"
-                                 fxLayoutAlign="center center"
-                                 *matHeaderCellDef> Valor Cobrado </mat-header-cell>
-                <mat-cell fxFlex="10"
-                          *matCellDef="let element"
-                          [formGroup]="element">
-                    <mat-form-field fxLayout="column">
-                        <input matInput
-                               formControlName="valorCobrado"
-                               currencyMask
-                               [options]="formHelper.getNumericMask('currency')" />
-                        <mat-error>{{getErrorMessage(element.get('valorCobrado'))}}</mat-error>
                     </mat-form-field>
                 </mat-cell>
             </ng-container>

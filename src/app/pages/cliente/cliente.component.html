@@ -1,97 +1,75 @@
-<app-page-header title="Cadastro de Cliente"
-                 [showSaveButton]="true"
-                 [showEditButton]="false"
-                 [showUndoButton]="true"
-                 (saveEvent)="salvar()"
-                 (undoEvent)="descartar()"></app-page-header>
-<form [formGroup]="mainForm">
-    <mat-tab-group>
-        <mat-tab label="Dados">
-            <div fxFlex>
-                <mat-form-field fxFlex
-                                appearance="fill">
-                    <mat-label>Nome</mat-label>
-                    <input matInput
-                           formControlName="nome"
-                           type="text" />
-                    <mat-error *ngIf="mainForm.get('nome')?.invalid">
-                        {{getErrorMessage(mainForm.get('nome'))}}
-                    </mat-error>
-                </mat-form-field>
-            </div>
+<div class="container text-center">
+  <app-page-header
+    title="Clientes"
+    [showSaveButton]="false"
+    [showEditButton]="false"
+    [showUndoButton]="false"
+    [showNewButton]="true"
+  >
+  </app-page-header>
 
-            <div fxFlex
-                 fxLayout="row"
-                 fxLayoutAlign="space-between center">
-                <mat-form-field fxFlex="18"
-                                appearance="fill">
-                    <mat-label>Contato Principal</mat-label>
-                    <input matInput
-                           formControlName="contatoPrincipal"
-                           [textMask]="{mask: telefoneMaskConfig}" />
-                    <mat-error *ngIf="mainForm.get('contatoPrincipal')?.invalid">
-                        {{getErrorMessage(mainForm.get('contatoPrincipal'))}}
-                    </mat-error>
-                </mat-form-field>
+  <div class="table-container" [class.mat-elevation-z4]="true">
+    <mat-table [dataSource]="dataSource">
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row
+        *matRowDef="let row; columns: displayedColumns; let i = index"
+        [class.invalid-table-row]="row.invalid"
+        (click)="click$.next({event: $event, element: row.controls})">
+      >
+      </mat-row>
 
-                <mat-form-field fxFlex="80"
-                                appearance="fill">
-                    <mat-label>E-mail</mat-label>
-                    <input matInput
-                           formControlName="email" />
-                    <mat-error *ngIf="mainForm.get('email')?.invalid">{{getErrorMessage(mainForm.get('email'))}}
-                    </mat-error>
-                </mat-form-field>
-            </div>
+      <ng-container matColumnDef="nome">
+        <mat-header-cell fxFlex="50" fxLayoutAlign="center center" *matHeaderCellDef>
+          Nome
+        </mat-header-cell>
+        <mat-cell fxFlex="50" *matCellDef="let element" [formGroup]="element">
+          <mat-form-field fxLayout="column">
+            <input matInput formControlName="nome" />
+            <mat-error>
+              {{ getErrorMessage(element.get("nome")) }}
+            </mat-error>
+          </mat-form-field>
+        </mat-cell>
+      </ng-container>
 
-            <div fxFlex
-                 fxLayout="row"
-                 fxLayoutAlign="space-between center">
-                <mat-form-field fxFlex="49"
-                                appearance="fill">
-                    <mat-label>CPF</mat-label>
-                    <input matInput
-                           formControlName="cpf"
-                           [textMask]="{mask: cpfMaskConfig}" />
-                    <mat-error *ngIf="mainForm.get('cpf')?.invalid">
-                        {{getErrorMessage(mainForm.get('cpf'))}}
-                    </mat-error>
-                </mat-form-field>
+      <ng-container matColumnDef="cpf">
+        <mat-header-cell fxFlex fxLayoutAlign="center center" *matHeaderCellDef>
+          CPF
+        </mat-header-cell>
+        <mat-cell fxFlex *matCellDef="let element" [formGroup]="element">
+          <mat-form-field fxLayout="column">
+            <input
+              matInput
+              formControlName="cpf"
+              [textMask]="formHelper.getTextMask('cpf')"
+            />
+            <mat-error>
+              {{ getErrorMessage(element.get("cpf")) }}
+            </mat-error>
+          </mat-form-field>
+        </mat-cell>
+      </ng-container>
 
-                <mat-form-field fxFlex="49"
-                                appearance="fill">
-                    <mat-label>CEP</mat-label>
-                    <input matInput
-                           formControlName="cep"
-                           [textMask]="{mask: cepMaskConfig}"
-                           (blur)="searchEndereco()" />
-                    <mat-error *ngIf="mainForm.get('cep')?.invalid">{{getErrorMessage(mainForm.get('cep'))}}
-                    </mat-error>
-                </mat-form-field>
-            </div>
-
-            <div fxFlex>
-                <mat-form-field fxFlex
-                                appearance="fill">
-                    <mat-label>Endereço</mat-label>
-                    <textarea matInput
-                              formControlName="endereco"
-                              cdkTextareaAutosize
-                              #autosize="cdkTextareaAutosize"
-                              cdkAutosizeMinRows="1"
-                              cdkAutosizeMaxRows="5"></textarea>
-                    <mat-error *ngIf="mainForm.get('endereco')?.invalid">
-                        {{getErrorMessage(mainForm.get('endereco'))}}
-                    </mat-error>
-                </mat-form-field>
-            </div>
-
-        </mat-tab>
-        <!-- <mat-tab label="Carros">
-        </mat-tab>
-        <mat-tab label="Orçamentos">
-        </mat-tab>
-        <mat-tab label="Atendimentos">
-        </mat-tab> -->
-    </mat-tab-group>
-</form>
+      <ng-container matColumnDef="telefone">
+        <mat-header-cell fxFlex fxLayoutAlign="center center" *matHeaderCellDef>
+          Telefone
+        </mat-header-cell>
+        <mat-cell fxFlex *matCellDef="let element" [formGroup]="element">
+          <mat-form-field fxLayout="column">
+            <input
+              matInput
+              formControlName="telefone"
+              [textMask]="formHelper.getTextMask('telefone9')"
+            />
+            <mat-error>
+              {{ getErrorMessage(element.get("telefone")) }}
+            </mat-error>
+          </mat-form-field>
+        </mat-cell>
+      </ng-container>
+    </mat-table>
+  </div>
+  <div [class.mat-elevation-z2]="true">
+    <mat-paginator [pageSize]="10" [pageSizeOptions]="[5, 10]"></mat-paginator>
+  </div>
+</div>

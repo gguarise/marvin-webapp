@@ -1,6 +1,7 @@
 export const environment = {
   production: false,
   apiUrl: {
-    estoque: 'https://localhost:5675/',
+    fornecedor: 'https://localhost:5675/',
+    cliente: 'https://localhost:5677/'
   },
 };

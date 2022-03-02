@@ -1,8 +1,12 @@
 import {
+  AfterViewInit,
   Component,
   ElementRef,
+  EventEmitter,
+  Input,
   OnDestroy,
   OnInit,
+  Output,
   ViewChild,
 } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
@@ -11,11 +15,20 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { cloneDeep } from 'lodash';
 import { ToastrService } from 'ngx-toastr';
-import { firstValueFrom, Subject } from 'rxjs';
+import {
+  buffer,
+  debounceTime,
+  filter,
+  firstValueFrom,
+  map,
+  Subject,
+  Subscription,
+} from 'rxjs';
 import { AppInjectorService } from 'src/app/services/app-injector.service';
 import { BaseService } from 'src/app/services/base.service';
 import { ConfirmDialogComponent } from 'src/app/components/shared/dialogs/confirm-dialog/confirm-dialog.component';
-import { FormHelper } from 'src/core/helpers/form-helper.model';
+import { FormHelper } from 'src/core/helpers/form-helper';
+import { DialogHelper } from 'src/core/helpers/dialog-helper';
 
 @Component({
   selector: 'app-base-table',
@@ -33,6 +46,16 @@ export abstract class BaseTableComponent implements OnInit, OnDestroy {
   displayedColumns: string[]; // Colunas a serem mostradas na tabela
   formHelper = FormHelper; // Funções auxiliares
 
+  // Para tratar do double click no mobile
+  eventSubscription: Subscription;
+  click$ = new Subject<any>();
+  doubleClick$ = this.click$.pipe(
+    buffer(this.click$.pipe(debounceTime(250))),
+    map((list) => list),
+    filter((item) => item.length === 2 && item[0].element === item[1].element),
+    map((item) => item[0])
+  );
+
   // Services
   toastr: ToastrService;
   dialog: MatDialog;
@@ -42,11 +65,13 @@ export abstract class BaseTableComponent implements OnInit, OnDestroy {
 
   constructor(public tableService: BaseService, public elementRef: ElementRef) {
     this.toastr = AppInjectorService.injector.get(ToastrService);
-    this.dialog = AppInjectorService.injector.get(MatDialog);
     this.fb = AppInjectorService.injector.get(FormBuilder);
 
     this.formEditing$.subscribe((isEditing) => {
       isEditing ? this.formArray.enable() : this.formArray.disable();
+    });
+    this.eventSubscription = this.doubleClick$.subscribe((data) => {
+      this.handleDoubleClickEvent(data);
     });
   }
 
@@ -59,13 +84,16 @@ export abstract class BaseTableComponent implements OnInit, OnDestroy {
     this.elementRef.nativeElement.remove();
   }
 
-  select(parent: any = null, sortItems: any = null) {
+  select(parent: any = null, sortItems: any = null, filterItems: any = null) {
     if (!!parent) {
       this.tableService.getByParent(parent).subscribe({
         next: (items) => {
           if (!!items) {
             if (!!sortItems) {
               items.sort((a, b) => sortItems(a, b));
+            }
+            if (!!filterItems) {
+              items = items.filter((a) => filterItems(a));
             }
             this.setItems(items);
           }
@@ -79,6 +107,9 @@ export abstract class BaseTableComponent implements OnInit, OnDestroy {
             if (!!sortItems) {
               items.sort((a, b) => sortItems(a, b));
             }
+            if (!!filterItems) {
+              items = items.filter((a) => filterItems(a));
+            }
             this.setItems(items);
           }
         },
@@ -89,6 +120,10 @@ export abstract class BaseTableComponent implements OnInit, OnDestroy {
 
   setItems(items: any[]) {
     this.formArray.clear();
+
+    // Para caso esteja desabilitado ele mantenha seu status depois de inserir items
+    const statusFormArray = this.formArray.status === 'DISABLED';
+
     if (!!items) {
       this.originalDataSource = items;
       items.forEach(() => {
@@ -101,7 +136,9 @@ export abstract class BaseTableComponent implements OnInit, OnDestroy {
         this.paginator.firstPage();
       }
     }
+
     this.setInitialData();
+    statusFormArray ? this.formArray.disable() : null;
   }
 
   async beforeSave(deletePropertyName: string = 'nome') {
@@ -175,7 +212,7 @@ export abstract class BaseTableComponent implements OnInit, OnDestroy {
         )}`
       );
     } else {
-      this.toastr.success('Salvo com sucesso.');
+      this.toastr.success('Registros da tabela salvos com sucesso.');
       this.setInitialData();
     }
   }
@@ -183,7 +220,7 @@ export abstract class BaseTableComponent implements OnInit, OnDestroy {
   async beforeUndo() {
     this.formEditing$.next(false);
     if (this.formArray.dirty) {
-      const confirma = await this.openDialog(
+      const confirma = await DialogHelper.openDialog(
         'Confirmar',
         'Deseja descartar alterações?'
       );
@@ -220,6 +257,12 @@ export abstract class BaseTableComponent implements OnInit, OnDestroy {
     return this.formArray.getRawValue();
   }
 
+  handleDoubleClickEvent(data: any) {
+    throw new Error(
+      'Método de evento dois cliques em tabela não implementado.'
+    );
+  }
+
   // #region Comportamento da Tabela
   addRow(newItem: boolean = true) {
     this.lastAddedItem = this.fb.group(
@@ -230,10 +273,14 @@ export abstract class BaseTableComponent implements OnInit, OnDestroy {
         this.paginator.length = this.paginator.length + 1;
         this.paginator.lastPage();
       }
-      this.lastAddedItem.get('new')?.setValue(true);
+      this.setNewItem();
     }
     this.formArray.push(this.lastAddedItem);
     this.updateDataSource();
+  }
+
+  setNewItem() {
+    this.lastAddedItem.get('new')?.setValue(true);
   }
 
   setRowsAsModified() {
@@ -252,27 +299,12 @@ export abstract class BaseTableComponent implements OnInit, OnDestroy {
   }
   // #endregion
 
-  // #region Dialog de Confirmação
-  async openDialog(title: string, content: string) {
-    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-      width: '250px',
-      data: {
-        title,
-        content,
-      },
-    });
-
-    return await firstValueFrom(dialogRef.beforeClosed()).then((e) => e);
-  }
-  // #endregion
-
   // #region Configuração dos Campos
   getErrorMessage(control: FormControl) {
     return FormHelper.getErrorMessage(control);
   }
 
-  // TODO ver como funciona
-  compareForSelectField(o1: any, o2: any): boolean {
+  compare(o1: any, o2: any): boolean {
     return o1.id === o2.id;
   }
   // #endregion
