@@ -1,45 +1,30 @@
 import {
-  ChangeDetectorRef,
   Component,
   ElementRef,
   EventEmitter,
-  Input,
   Output,
 } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
-import { ToastrService } from 'ngx-toastr';
+import { Validators } from '@angular/forms';
 import { Observable, of } from 'rxjs';
+import { ChildBaseTableComponent } from 'src/app/components/base/child-base-table/child-base-table.component';
 import { Produto } from 'src/app/models/produto';
 import { ProdutoService } from 'src/app/services/produto.service';
-import { BaseComponent } from '../../base/base.component';
 
 @Component({
   selector: 'app-produto-table',
   templateUrl: './produto-table.component.html',
   styleUrls: ['./produto-table.component.scss'],
 })
-export class ProdutoTableComponent extends BaseComponent {
-  displayedColumns: string[] = [
-    'select',
-    'produto',
-    'quantidade',
-    'valorCobrado',
-    'total',
-  ];
+export class ProdutoTableComponent extends ChildBaseTableComponent {
   produtos$: Observable<Produto[]>;
 
   @Output() calculateCustoProdutos = new EventEmitter();
 
   constructor(
-    dialog: MatDialog,
     elementRef: ElementRef,
-    fb: FormBuilder,
-    cdr: ChangeDetectorRef,
-    toastr: ToastrService,
     produtoService: ProdutoService
   ) {
-    super(dialog, elementRef, fb, toastr, cdr);
+    super(produtoService, elementRef);
     this.formGroupConfig = {
       select: [false],
       id: [],
@@ -71,12 +56,19 @@ export class ProdutoTableComponent extends BaseComponent {
       modified: [],
       new: [],
     };
+    this.displayedColumns = [
+      'select',
+      'produto',
+      'quantidade',
+      'valorCobrado',
+      'total',
+    ];
     produtoService.getAll().subscribe((t) => {
       this.produtos$ = of(t);
     });
   }
 
-  compare(o1: any, o2: any): boolean {
+  override compare(o1: any, o2: any): boolean {
     return o1.produto.nome === o2.produto.nome;
   }
 

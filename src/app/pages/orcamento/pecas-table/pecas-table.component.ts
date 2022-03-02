@@ -1,39 +1,29 @@
 import {
-  ChangeDetectorRef,
   Component,
   ElementRef,
   EventEmitter,
   Output,
 } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
-import { ToastrService } from 'ngx-toastr';
-import { BaseComponent } from '../../base/base.component';
+import { Validators } from '@angular/forms';
+import { ChildBaseTableComponent } from 'src/app/components/base/child-base-table/child-base-table.component';
+import { BaseService } from 'src/app/services/base.service';
+import { ClienteService } from 'src/app/services/cliente.service';
+import { OrcamentoService } from 'src/app/services/orcamento.service';
 
 @Component({
   selector: 'app-pecas-table',
   templateUrl: './pecas-table.component.html',
   styleUrls: ['./pecas-table.component.scss'],
 })
-export class PecasTableComponent extends BaseComponent {
-  displayedColumns: string[] = [
-    'select',
-    'nome',
-    'descricao',
-    'valorUnitario',
-    'valorCobrado',
-  ];
+export class PecasTableComponent extends ChildBaseTableComponent {
 
   @Output() calculateCustoPecas = new EventEmitter();
 
   constructor(
-    dialog: MatDialog,
     elementRef: ElementRef,
-    fb: FormBuilder,
-    cdr: ChangeDetectorRef,
-    toastr: ToastrService
+    baseService: OrcamentoService // TODO MUDAR
   ) {
-    super(dialog, elementRef, fb, toastr, cdr);
+    super(baseService, elementRef);
     this.formGroupConfig = {
       select: [false],
       id: [],
@@ -61,6 +51,13 @@ export class PecasTableComponent extends BaseComponent {
       modified: [],
       new: [],
     };
+    this.displayedColumns = [
+      'select',
+      'nome',
+      'descricao',
+      'valorUnitario',
+      'valorCobrado',
+    ];
   }
 
   emitCalculateCustoTotalEvent() {

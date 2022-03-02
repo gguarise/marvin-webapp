@@ -1,23 +1,22 @@
 import {
-  ChangeDetectorRef,
   Component,
   ElementRef,
   EventEmitter,
   Output,
 } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
-import { ToastrService } from 'ngx-toastr';
+import { Validators } from '@angular/forms';
 import { of } from 'rxjs';
-import { BaseComponent } from '../../base/base.component';
+import { ChildBaseTableComponent } from 'src/app/components/base/child-base-table/child-base-table.component';
+import { BaseService } from 'src/app/services/base.service';
+import { ClienteService } from 'src/app/services/cliente.service';
+import { ServicoService } from 'src/app/services/servico.service';
 
 @Component({
   selector: 'app-servico',
   templateUrl: './servico.component.html',
   styleUrls: ['./servico.component.scss'],
 })
-export class ServicoComponent extends BaseComponent {
-  displayedColumns: string[] = ['select', 'nome', 'descricao', 'honorario'];
+export class ServicoComponent extends ChildBaseTableComponent {
   servicos$ = of([
     { id: 1, nome: 'Serviço 1' },
     { id: 2, nome: 'Serviço 2' },
@@ -27,13 +26,10 @@ export class ServicoComponent extends BaseComponent {
   @Output() calculateCustoServicos = new EventEmitter();
 
   constructor(
-    dialog: MatDialog,
     elementRef: ElementRef,
-    fb: FormBuilder,
-    cdr: ChangeDetectorRef,
-    toastr: ToastrService
+    servicoService: ServicoService
   ) {
-    super(dialog, elementRef, fb, toastr, cdr);
+    super(servicoService, elementRef);
     this.formGroupConfig = {
       select: [false],
       id: [],
@@ -46,10 +42,7 @@ export class ServicoComponent extends BaseComponent {
       modified: [],
       new: [],
     };
-  }
-
-  compare(o1: any, o2: any): boolean {
-    return o1.nome === o2.nome && o1.id === o2.id;
+    this.displayedColumns = ['select', 'nome', 'descricao', 'honorario'];
   }
 
   emitCalculateCustoTotalEvent() {

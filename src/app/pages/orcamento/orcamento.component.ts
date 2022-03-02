@@ -1,4 +1,6 @@
 import {
+  AfterViewChecked,
+  AfterViewInit,
   ChangeDetectorRef,
   Component,
   ElementRef,
@@ -7,10 +9,14 @@ import {
 } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
+import { ActivatedRoute } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { of } from 'rxjs';
+import { BaseComponent } from 'src/app/components/base/base.component';
 import { Produto } from 'src/app/models/produto';
-import { BaseComponent } from '../base/base.component';
+import { BaseService } from 'src/app/services/base.service';
+import { ClienteService } from 'src/app/services/cliente.service';
+import { OrcamentoService } from 'src/app/services/orcamento.service';
 import { ClienteComponent } from '../cliente/cliente.component';
 import { PecasTableComponent } from './pecas-table/pecas-table.component';
 import { ProdutoTableComponent } from './produto-table/produto-table.component';
@@ -21,8 +27,7 @@ import { ServicoComponent } from './servico/servico.component';
   templateUrl: './orcamento.component.html',
   styleUrls: ['./orcamento.component.scss'],
 })
-export class OrcamentoComponent extends BaseComponent {
-  mainForm: FormGroup;
+export class OrcamentoComponent extends BaseComponent implements AfterViewInit {
   clientes$ = of([
     { id: 1, nome: 'Cliente 1' },
     { id: 2, nome: 'Cliente 2' },
@@ -44,13 +49,12 @@ export class OrcamentoComponent extends BaseComponent {
   pecasTable: PecasTableComponent;
 
   constructor(
-    dialog: MatDialog,
     elementRef: ElementRef,
-    fb: FormBuilder,
     cdr: ChangeDetectorRef,
-    toastr: ToastrService
+    orcamentoService: OrcamentoService,
+    route: ActivatedRoute
   ) {
-    super(dialog, elementRef, fb, toastr, cdr);
+    super(orcamentoService, elementRef, cdr, route);
     this.mainForm = this.fb.group({
       cliente: [],
       carro: [],
@@ -66,6 +70,18 @@ export class OrcamentoComponent extends BaseComponent {
       produtos: [],
       pecas: [],
     });
+  }
+
+  override async ngOnInit() {
+    this.componentTables = [
+      this.produtosTable
+    ];
+    super.ngOnInit();
+    this.formEditing$.next(true);
+  }
+
+  ngAfterViewInit() {
+    
   }
 
   compareWith(o1: any, o2: any): boolean {
