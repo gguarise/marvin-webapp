@@ -8,7 +8,7 @@ import { ProdutoComponent } from './pages/produto/produto.component';
 const routes: Routes = [
   // { path: '**', component:  }, // TODO PageNotFoundComponent
   { path: 'fornecedor', component: FornecedorComponent },
-  { path: 'produto', component: ProdutoComponent },
+  { path: 'estoque', component: ProdutoComponent },
   { path: 'cliente', component: ClienteComponent },
   { path: 'cadastro-cliente/:id', component: CadastroClienteComponent },
   { path: 'cadastro-cliente', component: CadastroClienteComponent },

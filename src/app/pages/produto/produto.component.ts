@@ -49,14 +49,6 @@ export class ProdutoComponent extends BaseTableComponent {
           Validators.max(9999999999.99),
         ]),
       ],
-      valorCobrado: [
-        null,
-        Validators.compose([
-          Validators.required,
-          Validators.min(0.01),
-          Validators.max(9999999999.99),
-        ]),
-      ],
       fornecedor: [null, Validators.required],
       modified: [],
       new: [],
@@ -68,7 +60,6 @@ export class ProdutoComponent extends BaseTableComponent {
       'descricao',
       'quantidadeEstoque',
       'valorUnitario',
-      'valorCobrado',
       'fornecedor',
     ];
 
