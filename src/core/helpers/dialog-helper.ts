@@ -4,12 +4,6 @@ import { ConfirmDialogComponent } from 'src/app/components/shared/dialogs/confir
 import { AppInjectorService } from 'src/app/services/app-injector.service';
 
 export class DialogHelper {
-  //   dialog: MatDialog;
-
-  //   constructor() {
-  //     this.dialog = AppInjectorService.injector.get(MatDialog);
-  //   }
-
   public static async openDialog(title: string, content: string) {
     const dialog = AppInjectorService.injector.get(MatDialog);
 

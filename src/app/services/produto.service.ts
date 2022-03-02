@@ -9,19 +9,19 @@ import { BaseService } from './base.service';
   providedIn: 'root',
 })
 export class ProdutoService extends BaseService {
-  private produtoUrl = `${environment.apiUrl.estoque}Produto`;
+  private produtoUrl = `${environment.apiUrl.fornecedor}Produto`;
 
   constructor(private http: HttpClient) {
     super();
   }
 
-  override getAll(): Observable<Produto[]> {
+  override getAll(search: any = null): Observable<Produto[]> {
     return this.http
-      .get<Produto[]>(`${this.produtoUrl}`)
+      .get<Produto[]>(`${this.produtoUrl}${this.getSearchString(search)}`)
       .pipe(catchError(this.handleServiceError<any>()));
   }
 
-  postProduto(payload: any): Observable<any> {
+  override post(payload: any): Observable<any> {
     return this.http.post(`${this.produtoUrl}`, payload).pipe(
       map((ent) => {
         if (ent) {
@@ -33,7 +33,7 @@ export class ProdutoService extends BaseService {
     );
   }
 
-  putProduto(payload: any): Observable<any> {
+  override put(payload: any): Observable<any> {
     return this.http.put(`${this.produtoUrl}`, payload).pipe(
       map((ent) => {
         if (ent) {
@@ -45,7 +45,7 @@ export class ProdutoService extends BaseService {
     );
   }
 
-  deleteProduto(id: string): Observable<any> {
+  override delete(id: string): Observable<any> {
     return this.http.delete(`${this.produtoUrl}/${id}`).pipe(
       map((ent) => {
         if (ent) {

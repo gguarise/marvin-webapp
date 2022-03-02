@@ -1,0 +1,117 @@
+<app-page-header
+  title="Cliente"
+  [showReturnButton]="this.mainForm.disabled"
+  [showSaveButton]="this.mainForm.enabled"
+  [showEditButton]="this.mainForm.disabled"
+  [showUndoButton]="this.mainForm.enabled"
+  [showDeleteButton]="this.mainForm.disabled"
+  (returnEvent)="redirectPreviousRoute()"
+  (saveEvent)="beforeSave()"
+  (editEvent)="edit()"
+  (undoEvent)="beforeUndo()"
+  (deleteEvent)="beforeDelete()"
+></app-page-header>
+
+<form [formGroup]="mainForm">
+  <mat-tab-group>
+    <mat-tab label="Dados">
+      <div fxFlex>
+        <mat-form-field fxFlex appearance="fill">
+          <mat-label>Nome</mat-label>
+          <input matInput formControlName="nome" type="text" />
+          <mat-error *ngIf="mainForm.get('nome')?.invalid">
+            {{ getErrorMessage(mainForm.get("nome")) }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div
+        fxFlex
+        fxLayout="row"
+        fxLayout.xs="column"
+        fxLayoutAlign="space-between"
+      >
+        <mat-form-field fxFlex="30" appearance="fill">
+          <mat-label>CPF</mat-label>
+          <input
+            matInput
+            formControlName="cpf"
+            [textMask]="formHelper.getTextMask('cpf')"
+          />
+          <mat-error *ngIf="mainForm.get('cpf')?.invalid">
+            {{ getErrorMessage(mainForm.get("cpf")) }}
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field fxFlex="68" appearance="fill">
+          <mat-label>E-mail</mat-label>
+          <input matInput formControlName="email" />
+          <mat-error *ngIf="mainForm.get('email')?.invalid"
+            >{{ getErrorMessage(mainForm.get("email")) }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div
+        fxFlex
+        fxLayout="row"
+        fxLayout.xs="column"
+        fxLayoutAlign="space-between"
+      >
+        <mat-form-field fxFlex="49" appearance="fill">
+          <mat-label>Contato Principal</mat-label>
+          <input
+            matInput
+            formControlName="telefone"
+            [textMask]="formHelper.getTextMask('telefone9')"
+          />
+          <mat-error *ngIf="mainForm.get('telefone')?.invalid">
+            {{ getErrorMessage(mainForm.get("telefone")) }}
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field fxFlex="49" appearance="fill">
+          <mat-label>CEP</mat-label>
+          <input
+            matInput
+            formControlName="cep"
+            placeholder="Digite para preencher o endereço"
+            [textMask]="formHelper.getTextMask('cep')"
+            (blur)="searchEndereco()"
+          />
+          <mat-error *ngIf="mainForm.get('cep')?.invalid"
+            >{{ getErrorMessage(mainForm.get("cep")) }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+
+      <div fxFlex>
+        <mat-form-field fxFlex appearance="fill">
+          <mat-label>Endereço</mat-label>
+          <textarea
+            matInput
+            formControlName="endereco"
+            cdkTextareaAutosize
+            #autosize="cdkTextareaAutosize"
+            cdkAutosizeMinRows="1"
+            cdkAutosizeMaxRows="5"
+          ></textarea>
+          <mat-error *ngIf="mainForm.get('endereco')?.invalid">
+            {{ getErrorMessage(mainForm.get("endereco")) }}
+          </mat-error>
+        </mat-form-field>
+      </div>
+    </mat-tab>
+    <mat-tab label="Carros">
+      <app-carros-table
+        formControlName="carros"
+        [originalDataSource]="mainForm.get('carros')?.value"
+        [parentId]="routeId"
+      ></app-carros-table>
+    </mat-tab>
+    <!--  <mat-tab label="Orçamentos">
+        </mat-tab>
+        <mat-tab label="Atendimentos">
+        </mat-tab> -->
+  </mat-tab-group>
+</form>

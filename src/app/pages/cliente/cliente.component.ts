@@ -1,60 +1,56 @@
-import { ChangeDetectorRef, Component, ElementRef } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
-import { ToastrService } from 'ngx-toastr';
-import { firstValueFrom } from 'rxjs';
+import { Component, ElementRef } from '@angular/core';
+import { Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+import { BaseTableComponent } from 'src/app/components/base/base-table/base-table.component';
+import { Cliente } from 'src/app/models/cliente';
 import { ClienteService } from 'src/app/services/cliente.service';
-import { BaseComponent } from '../../components/base/base.component';
 
 @Component({
   selector: 'app-cliente',
   templateUrl: './cliente.component.html',
   styleUrls: ['./cliente.component.scss'],
 })
-export class ClienteComponent extends BaseComponent {
-  mainForm: FormGroup;
-
+export class ClienteComponent extends BaseTableComponent {
   constructor(
-    dialog: MatDialog,
-    elementRef: ElementRef,
-    fb: FormBuilder,
-    cdr: ChangeDetectorRef,
-    toastr: ToastrService,
-    public clienteService: ClienteService
+    public router: Router,
+    public clienteService: ClienteService,
+    elementRef: ElementRef
   ) {
-    super(dialog, elementRef, fb, toastr, cdr);
-    this.mainForm = this.fb.group({
+    super(clienteService, elementRef);
+    this.formGroupConfig = {
+      select: [false],
       id: [],
-      nome: [],
-      contatoPrincipal: [],
-      email: [],
+      nome: [
+        null,
+        Validators.compose([Validators.required, Validators.maxLength(50)]),
+      ],
       cpf: [],
-      cep: [],
-      endereco: [null, Validators.compose([Validators.max(400)])],
-      carros: [],
-      orcamentos: [],
-      atendimentos: [],
-    });
+      telefone: [],
+      modified: [],
+      new: [],
+    };
+    this.displayedColumns = [
+      'nome',
+      'cpf',
+      'telefone',
+    ];
   }
 
-  async searchEndereco() {
-    const cep = this.mainForm.get('cep')?.value?.replace(/\D/g, '');
-    if (cep.length === 8) {
-      const endereco = await firstValueFrom(
-        this.clienteService.getEnderecoPorCEP(cep)
-      )
-        .then((x) => x)
-        .catch((e) => e);
+  override select() {
+    const sortItems = (a: Cliente, b: Cliente) =>
+      a.nome > b.nome ? 1 : b.nome > a.nome ? -1 : 0;
+    const filterItems = (a: Cliente) =>
+      a.ativo;
+    super.select(null, sortItems, filterItems);
+  }
 
-      if (!endereco.erro) {
-        this.mainForm
-          .get('endereco')
-          ?.setValue(
-            `${endereco.logradouro}, ${endereco.complemento} - ${endereco.bairro} - ${endereco.localidade}/${endereco.uf}`
-          );
-      } else {
-        this.mainForm.get('endereco')?.setValue(null);
-      }
+  override handleDoubleClickEvent(data: any) {
+    // Ao clicar duas vezes na linha
+    const id = data.element?.id?.value;
+
+    if (!!id) {
+      this.router.navigate(['/cadastro-cliente', id]);
     }
   }
+
 }

@@ -6,25 +6,25 @@ export class FormHelper {
       if (control.hasError('email')) {
         return 'Email inválido.';
       } else if (control.hasError('minlength')) {
-        return `Tamanho mínimo de ${
+        return `Mínimo: ${
           control.getError('minlength').requiredLength
         } caracter${
           control.getError('minlength').requiredLength > 1 ? 'es' : ''
         }.`;
       } else if (control.hasError('maxlength')) {
-        return `Tamanho máximo de ${
+        return `Máximo: ${
           control.getError('maxlength').requiredLength
         } caracter${
           control.getError('maxlength').requiredLength > 1 ? 'es' : ''
         }.`;
       } else if (control.hasError('min')) {
         if (control.getError('min').min === 0) {
-          return `Valor não pode ser negativo.`;
+          return `Não pode ser negativo.`;
         } else {
-          return `Valor mínimo de ${control.getError('min').min}.`;
+          return `Mínimo: ${control.getError('min').min}.`;
         }
       } else if (control.hasError('max')) {
-        return `Valor máximo de ${control.getError('max').max}.`;
+        return `Máximo: ${control.getError('max').max}.`;
       } else if (control.hasError('custom')) {
         return control.getError('custom').message;
       } else if (control.hasError('required')) {
@@ -124,6 +124,19 @@ export class FormHelper {
             /\d/,
           ],
         };
+        case 'placa':
+          return {
+            mask: [
+              /[a-zA-Z]/,
+              /[a-zA-Z]/,
+              /[a-zA-Z]/,
+              '-',
+              /\d/,
+              /\w/,
+              /\d/,
+              /\d/,
+            ],
+          };
       default:
         return { mask: [] };
     }
@@ -146,6 +159,22 @@ export class FormHelper {
           decimal: ',',
           allowNegative: false,
           precision: 2,
+        };
+      case 'numeric':
+        return {
+          prefix: '',
+          thousands: '.',
+          decimal: ',',
+          allowNegative: false,
+          precision: 2,
+        };
+      case 'integer-thousands':
+        return {
+          prefix: '',
+          thousands: '.',
+          decimal: '',
+          allowNegative: false,
+          precision: 0,
         };
       default:
         return {};

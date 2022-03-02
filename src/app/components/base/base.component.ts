@@ -5,14 +5,20 @@ import {
   OnInit,
   ViewChild,
 } from '@angular/core';
-import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormControl, FormGroup } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
+import { ActivatedRoute } from '@angular/router';
 import { cloneDeep } from 'lodash';
 import { ToastrService } from 'ngx-toastr';
+import { firstValueFrom, Subject } from 'rxjs';
 import { ConfirmDialogComponent } from 'src/app/components/shared/dialogs/confirm-dialog/confirm-dialog.component';
+import { AppInjectorService } from 'src/app/services/app-injector.service';
+import { BaseService } from 'src/app/services/base.service';
+import { DialogHelper } from 'src/core/helpers/dialog-helper';
 import { FormHelper } from 'src/core/helpers/form-helper';
+import { ChildBaseTableComponent } from './child-base-table/child-base-table.component';
 
 @Component({
   selector: 'app-base',
@@ -20,45 +26,75 @@ import { FormHelper } from 'src/core/helpers/form-helper';
   styleUrls: ['./base.component.scss'],
 })
 export class BaseComponent implements OnInit {
-  dataSource: MatTableDataSource<any>;
-  formArray = new FormArray([]);
-  deletedData = new Array();
-  originalDataSource: any;
-  formGroupConfig: any;
-  lastAddedItem: FormGroup;
+  formEditing$ = new Subject<boolean>(); // Controla des/habilitação da tela
+  originalData: any;
+  routeId: any;
+  formHelper = FormHelper;
+  mainForm: FormGroup;
+  isNewRecord: boolean = false;
+  componentTables: ChildBaseTableComponent[];
 
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
 
-  constructor(
-    public dialog: MatDialog,
-    public elementRef: ElementRef,
-    public fb: FormBuilder,
-    public toastr: ToastrService,
-    protected cdr: ChangeDetectorRef
-  ) {}
+  // Services
+  dialog: MatDialog;
+  fb: FormBuilder;
+  toastr: ToastrService;
 
-  ngOnInit() {
-    this.select();
+  constructor(
+    public baseService: BaseService,
+    public elementRef: ElementRef,
+    protected cdr: ChangeDetectorRef,
+    public route: ActivatedRoute
+  ) {
+    this.toastr = AppInjectorService.injector.get(ToastrService);
+    this.fb = AppInjectorService.injector.get(FormBuilder);
+
+    this.formEditing$.subscribe((isEditing) => {
+      isEditing ? this.mainForm.enable() : this.mainForm.disable();
+      this.componentTables?.forEach(table => {
+        isEditing ? table.formArray.enable() : table.formArray.disable();
+      });
+    });
+  }
+
+  async ngOnInit() {
+    this.routeId = this.route.snapshot.paramMap.get('id');
+
+    if (!this.routeId) {
+      this.isNewRecord = true;
+    }
+    else {
+      await this.select();
+      this.formEditing$.next(false);
+    }
   }
 
   ngOnDestroy() {
     this.elementRef.nativeElement.remove();
   }
 
-  select(data: any = null) {
-    if (!!data) {
-    }
+  select() {
+    this.baseService.getById(this.routeId).subscribe({
+      next: (item) => {
+        if (!!item) {
+          this.setMainFormData(item);
+        }
+      },
+      error: () => this.toastr.error('Um erro ocorreu ao buscar itens.'),
+    });
   }
 
   edit() {
-    this.formArray.enable();
+    this.formEditing$.next(true);
   }
 
   async beforeSave() {
-    if (this.formArray.dirty) {
-      if (this.formArray.invalid) {
-        this.toastr.error('Existem campos inválidos na tabela.');
-        this.formArray.markAllAsTouched(); // para mostrar erros nas linhas
+    if (this.mainForm.dirty || this.isTable('dirty')) {
+      if (this.mainForm.invalid || this.isTable('invalid')) {
+        this.toastr.error('Existem campos inválidos.');
+        this.mainForm.markAllAsTouched(); // Para mostrar erros nas linhas
+        this.componentTables?.forEach(table => table.formArray.markAllAsTouched()); // Para mostrar erros nas tabelas
       } else {
         await this.save();
       }
@@ -68,51 +104,123 @@ export class BaseComponent implements OnInit {
   }
 
   async save() {
-    await this.select();
+    const data = this.getRawData();
+
+    if (this.isNewRecord) {
+      await firstValueFrom(this.baseService.post(data))
+        .then((response) => {
+          this.afterInsert(response);
+          this.toastr.success('Novo registro inserido com sucesso.');
+        })
+        .catch(() => this.toastr.error('Não foi possível criar novo registro.'));
+    } else {
+      await firstValueFrom(this.baseService.put(data))
+        .then(() => {
+          if (this.componentTables?.length > 0) {
+            this.saveComponentTables();
+          }
+          else {
+            this.toastr.success('Registro alterado com sucesso.');
+            this.onClear();
+            this.select();
+          }
+        })
+        .catch(() => this.toastr.error('Não foi possível salvar as alterações.'));
+    }
+  }
+
+  async saveComponentTables() {
+    await this.componentTables.forEach(table => {
+      table.beforeSave();
+    });
+    this.toastr.success('Registro alterado com sucesso.');
     this.onClear();
+    this.select();
+  }
+
+  afterInsert(response: any) {
+    throw new Error('Método de redirecionamento após inserção não implementado.');
+  }
+
+  isTable(option: string) {
+    if (this.componentTables?.length > 0) {
+      switch (option) {
+        case 'dirty':
+          return this.componentTables.some(table => table.formArray.dirty);
+        case 'invalid':
+          return this.componentTables.some(table => table.formArray.invalid);
+        default:
+          return null;
+      }
+    }
+    return false;
+  }
+
+  async beforeDelete() {
+    const confirma = await DialogHelper.openDialog(
+      'Deletar',
+      'Deseja excluir esse item?'
+    );
+    if (confirma) {
+      this.delete();
+    }
+  }
+
+  async delete() {
+    await firstValueFrom(this.baseService.delete(this.routeId))
+      .then(() => {
+        this.afterDelete();
+        this.toastr.success('Registro excluído com sucesso.');
+      })
+      .catch(() => this.toastr.error('Não foi possível excluir registro.'));
+  }
+
+  afterDelete() {
+    this.redirectPreviousRoute();
   }
 
   async beforeUndo() {
-    if (this.formArray.dirty) {
-      const confirma = await this.openDialog(
+    if (this.mainForm.dirty || this.isTable('dirty')) {
+      const confirma = await DialogHelper.openDialog(
         'Confirmar',
         'Deseja descartar alterações?'
       );
       if (confirma) {
-        this.undo();
+        this.isNewRecord ? this.redirectPreviousRoute() : this.undo();
       }
     } else {
-      this.undo();
+      this.isNewRecord ? this.redirectPreviousRoute() : this.undo();
     }
+  }
+
+  redirectPreviousRoute() {
+    throw new Error('Método de redirecionamento anterior não implementado.');
   }
 
   async undo() {
     this.onClear();
+    this.setMainFormData();
   }
 
   onClear() {
-    this.formArray.disable();
-    this.deletedData = [];
+    this.formEditing$.next(false);
+    this.mainForm.reset();
   }
 
-  // #region Dialog confirmação
-  async openDialog(title: string, content: string) {
-    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-      width: '250px',
-      data: {
-        title,
-        content,
-      },
-    });
+  setMainFormData(item: any = this.originalData) {
+    this.originalData = item;
 
-    return await dialogRef
-      .afterClosed()
-      .toPromise()
-      .then((e) => e);
+    const keys = Object.keys(item);
+    for (let key of keys) {
+      this.mainForm.get(key)?.setValue(item[key]);
+    }
   }
-  // #endregion
 
-  getErrorMessage(control: FormControl) {
-    return FormHelper.getErrorMessage(control);
+  getErrorMessage(control: FormControl | AbstractControl | null) {
+    return FormHelper.getErrorMessage(control as FormControl);
+  }
+  
+  getRawData() {
+    return this.mainForm.getRawValue();
   }
 }

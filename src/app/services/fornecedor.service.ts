@@ -9,15 +9,15 @@ import { BaseService } from './base.service';
   providedIn: 'root',
 })
 export class FornecedorService extends BaseService {
-  private fornecedorUrl = `${environment.apiUrl.estoque}fornecedor`;
+  private fornecedorUrl = `${environment.apiUrl.fornecedor}fornecedor`;
 
   constructor(private http: HttpClient) {
     super();
   }
 
-  override getAll(): Observable<Fornecedor[]> {
+  override getAll(search: any = null): Observable<Fornecedor[]> {
     return this.http
-      .get<Fornecedor[]>(`${this.fornecedorUrl}`)
+      .get<Fornecedor[]>(`${this.fornecedorUrl}${this.getSearchString(search)}`)
       .pipe(catchError(this.handleServiceError<any>()));
   }
 

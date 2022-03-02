@@ -35,6 +35,10 @@ import { MatTabsModule } from '@angular/material/tabs';
 import { TextFieldModule } from '@angular/cdk/text-field';
 import { AppInjectorService } from './services/app-injector.service';
 import { TableToolbarComponent } from './components/templates/table-toolbar/table-toolbar.component';
+import { CadastroClienteComponent } from './pages/cliente/cadastro-cliente/cadastro-cliente.component';
+import { CarrosTableComponent } from './pages/cliente/cadastro-cliente/carros-table/carros-table.component';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+// import { ChildBaseTableComponent } from './components/base/child-base-table/child-base-table.component';
 
 @NgModule({
   declarations: [
@@ -49,6 +53,8 @@ import { TableToolbarComponent } from './components/templates/table-toolbar/tabl
     ConfirmDialogComponent,
     ClienteComponent,
     TableToolbarComponent,
+    CadastroClienteComponent,
+    CarrosTableComponent,
   ],
   imports: [
     BrowserModule,
@@ -66,7 +72,6 @@ import { TableToolbarComponent } from './components/templates/table-toolbar/tabl
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
-    MatInputModule,
     MatCheckboxModule,
     MatIconModule,
     MatTooltipModule,
@@ -81,6 +86,7 @@ import { TableToolbarComponent } from './components/templates/table-toolbar/tabl
     CurrencyMaskModule,
     MatTabsModule,
     TextFieldModule,
+    MatAutocompleteModule
   ],
   providers: [],
   bootstrap: [AppComponent],
