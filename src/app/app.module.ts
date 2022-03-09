@@ -38,6 +38,7 @@ import { TableToolbarComponent } from './components/templates/table-toolbar/tabl
 import { CadastroClienteComponent } from './pages/cliente/cadastro-cliente/cadastro-cliente.component';
 import { CarrosTableComponent } from './pages/cliente/cadastro-cliente/carros-table/carros-table.component';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { ServicoComponent } from './pages/servico/servico.component';
 // import { ChildBaseTableComponent } from './components/base/child-base-table/child-base-table.component';
 
 @NgModule({
@@ -55,6 +56,7 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
     TableToolbarComponent,
     CadastroClienteComponent,
     CarrosTableComponent,
+    ServicoComponent,
   ],
   imports: [
     BrowserModule,
