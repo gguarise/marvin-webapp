@@ -163,8 +163,9 @@
                 </mat-checkbox>
             </fieldset>
         </mat-tab>
+        <!-- Passar parentId -->
         <mat-tab label="Serviços">
-            <app-servico (calculateCustoServicos)="calculateCustoServicos()"></app-servico>
+            <app-servico-table (calculateCustoServicos)="calculateCustoServicos()"></app-servico-table>
         </mat-tab>
         <mat-tab label="Produtos">
             <app-produto-table (calculateCustoProdutos)="calculateCustoProdutos()"></app-produto-table>

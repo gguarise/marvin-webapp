@@ -33,7 +33,6 @@ import { CurrencyMaskModule } from 'ng2-currency-mask';
 import { OrcamentoComponent } from './pages/orcamento/orcamento.component';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatCardModule } from '@angular/material/card';
-import { ServicoComponent } from './pages/orcamento/servico/servico.component';
 import { ProdutoTableComponent } from './pages/orcamento/produto-table/produto-table.component';
 import { PecasTableComponent } from './pages/orcamento/pecas-table/pecas-table.component';
 import { ClienteComponent } from './pages/cliente/cliente.component';
@@ -43,6 +42,7 @@ import { TableToolbarComponent } from './components/templates/table-toolbar/tabl
 import { CadastroClienteComponent } from './pages/cliente/cadastro-cliente/cadastro-cliente.component';
 import { CarrosTableComponent } from './pages/cliente/cadastro-cliente/carros-table/carros-table.component';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { ServicoTableComponent } from './pages/orcamento/servico-table/servico-table.component';
 // import { ChildBaseTableComponent } from './components/base/child-base-table/child-base-table.component';
 
 @NgModule({
@@ -57,13 +57,13 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
     BaseComponent,
     ConfirmDialogComponent,
     OrcamentoComponent,
-    ServicoComponent,
     ProdutoTableComponent,
     PecasTableComponent,
     ClienteComponent,
     TableToolbarComponent,
     CadastroClienteComponent,
     CarrosTableComponent,
+    ServicoTableComponent,
   ],
   imports: [
     BrowserModule,

@@ -37,7 +37,7 @@ export class ProdutoTableComponent extends ChildBaseTableComponent {
           Validators.max(2147483647),
         ]),
       ],
-      valorCobrado: [
+      valorUnitario: [
         { value: null, disabled: true },
         Validators.compose([
           Validators.required,
@@ -60,7 +60,8 @@ export class ProdutoTableComponent extends ChildBaseTableComponent {
       'select',
       'produto',
       'quantidade',
-      'valorCobrado',
+      'valorUnitario',
+      'porcentagemLucro',
       'total',
     ];
     produtoService.getAll().subscribe((t) => {
@@ -68,20 +69,33 @@ export class ProdutoTableComponent extends ChildBaseTableComponent {
     });
   }
 
+  override ngOnInit() {}
+
+  override select() {
+    // super.select(this.parentId);
+  }
+
   override compare(o1: any, o2: any): boolean {
     return o1.produto.nome === o2.produto.nome;
   }
 
+  override setNewItem() {
+    super.setNewItem();
+    this.lastAddedItem.get('orcamentoId')?.setValue(this.parentId);
+  }
+
   fillProductPrice(element: any) {
     const produto = element.get('produto').value;
-    element.get('valorCobrado').setValue(produto.valorCobrado);
+    element.get('valorUnitario').setValue(produto.valorUnitario);
     this.calculateTotalPrice(element);
   }
 
   calculateTotalPrice(element: any) {
     const quantidade = element.get('quantidade').value;
-    const valorCobrado = element.get('valorCobrado').value;
-    element.get('total').setValue(valorCobrado * quantidade);
+    const valorUnitario = element.get('valorUnitario').value;
+    const porcentagemLucro = element.get('porcentagemLucro').value;
+
+    element.get('total').setValue((valorUnitario * quantidade) * (porcentagemLucro/100));
     this.emitCalculateCustoTotalEvent();
   }
 

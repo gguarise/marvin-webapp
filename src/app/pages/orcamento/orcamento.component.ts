@@ -20,7 +20,7 @@ import { OrcamentoService } from 'src/app/services/orcamento.service';
 import { ClienteComponent } from '../cliente/cliente.component';
 import { PecasTableComponent } from './pecas-table/pecas-table.component';
 import { ProdutoTableComponent } from './produto-table/produto-table.component';
-import { ServicoComponent } from './servico/servico.component';
+import { ServicoTableComponent } from './servico-table/servico-table.component';
 
 @Component({
   selector: 'app-orcamento',
@@ -43,8 +43,8 @@ export class OrcamentoComponent extends BaseComponent implements AfterViewInit {
 
   @ViewChild(ProdutoTableComponent, { static: false })
   produtosTable: ProdutoTableComponent;
-  @ViewChild(ServicoComponent, { static: false })
-  servicosTable: ServicoComponent;
+  @ViewChild(ServicoTableComponent, { static: false })
+  servicosTable: ServicoTableComponent;
   @ViewChild(PecasTableComponent, { static: false })
   pecasTable: PecasTableComponent;
 
@@ -73,15 +73,15 @@ export class OrcamentoComponent extends BaseComponent implements AfterViewInit {
   }
 
   override async ngOnInit() {
-    this.componentTables = [
-      this.produtosTable
-    ];
+    // this.componentTables = [
+    //   this.produtosTable
+    // ];
     super.ngOnInit();
     this.formEditing$.next(true);
   }
 
   ngAfterViewInit() {
-    
+    this.formEditing$.next(true);
   }
 
   compareWith(o1: any, o2: any): boolean {

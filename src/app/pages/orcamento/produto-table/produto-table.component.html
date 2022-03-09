@@ -79,18 +79,34 @@
                 </mat-cell>
             </ng-container>
 
-            <ng-container matColumnDef="valorCobrado">
+            <ng-container matColumnDef="valorUnitario">
                 <mat-header-cell fxFlex="20"
                                  fxLayoutAlign="center center"
-                                 *matHeaderCellDef> Valor Cobrado </mat-header-cell>
+                                 *matHeaderCellDef> Valor Unitário </mat-header-cell>
                 <mat-cell fxFlex="20"
                           *matCellDef="let element"
                           [formGroup]="element">
                     <mat-form-field fxLayout="column">
                         <input matInput
-                               formControlName="valorCobrado"
+                               formControlName="valorUnitario"
                                currencyMask
                                [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', allowNegative: false, precision: 2 }" />
+                    </mat-form-field>
+                </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="porcentagemLucro">
+                <mat-header-cell fxFlex="20"
+                                 fxLayoutAlign="center center"
+                                 *matHeaderCellDef> Porcentagem Lucro </mat-header-cell>
+                <mat-cell fxFlex="20"
+                          *matCellDef="let element"
+                          [formGroup]="element">
+                    <mat-form-field fxLayout="column">
+                        <input matInput
+                               formControlName="porcentagemLucro"
+                               currencyMask
+                               [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', allowNegative: false, precision: 0, suffix: '%' }" />
                     </mat-form-field>
                 </mat-cell>
             </ng-container>

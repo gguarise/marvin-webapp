@@ -60,6 +60,11 @@ export class PecasTableComponent extends ChildBaseTableComponent {
     ];
   }
 
+  override setNewItem() {
+    super.setNewItem();
+    this.lastAddedItem.get('orcamentoId')?.setValue(this.parentId);
+  }
+
   emitCalculateCustoTotalEvent() {
     this.calculateCustoPecas.emit();
   }
