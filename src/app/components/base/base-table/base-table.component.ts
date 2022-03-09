@@ -1,12 +1,8 @@
 import {
-  AfterViewInit,
   Component,
   ElementRef,
-  EventEmitter,
-  Input,
   OnDestroy,
   OnInit,
-  Output,
   ViewChild,
 } from '@angular/core';
 import { FormArray, FormBuilder, FormControl, FormGroup } from '@angular/forms';
@@ -26,7 +22,6 @@ import {
 } from 'rxjs';
 import { AppInjectorService } from 'src/app/services/app-injector.service';
 import { BaseService } from 'src/app/services/base.service';
-import { ConfirmDialogComponent } from 'src/app/components/shared/dialogs/confirm-dialog/confirm-dialog.component';
 import { FormHelper } from 'src/core/helpers/form-helper';
 import { DialogHelper } from 'src/core/helpers/dialog-helper';
 
@@ -45,6 +40,10 @@ export abstract class BaseTableComponent implements OnInit, OnDestroy {
   lastAddedItem: FormGroup; // Última linha adicionada na tabela
   displayedColumns: string[]; // Colunas a serem mostradas na tabela
   formHelper = FormHelper; // Funções auxiliares
+
+  // Mensagens de erro ao chamar save()
+  errosInserirAlterar = new Array();
+  errosDeletar = new Array();
 
   // Para tratar do double click no mobile
   eventSubscription: Subscription;
@@ -141,14 +140,14 @@ export abstract class BaseTableComponent implements OnInit, OnDestroy {
     statusFormArray ? this.formArray.disable() : null;
   }
 
-  async beforeSave(deletePropertyName: string = 'nome') {
+  async beforeSave(propertyNameErrorMessage: string = 'nome') {
     if (this.formArray.dirty) {
       if (this.formArray.invalid) {
         this.toastr.error('Existem campos inválidos na tabela.');
         this.formArray.markAllAsTouched(); // Para mostrar erros nas linhas
       } else {
         this.setRowsAsModified();
-        await this.save(deletePropertyName);
+        await this.save(propertyNameErrorMessage);
       }
     } else {
       this.toastr.error('Nenhum campo foi modificado.');
@@ -156,9 +155,9 @@ export abstract class BaseTableComponent implements OnInit, OnDestroy {
   }
 
   async save(propertyNameErrorMessage: string = 'nome') {
+    this.errosInserirAlterar = [];
+    this.errosDeletar = [];
     const data = this.getRawData();
-    const errosSalvar = new Array();
-    const errosDeletar = new Array();
 
     const promises = data.map(async (item: any) => {
       if (item.new) {
@@ -166,14 +165,14 @@ export abstract class BaseTableComponent implements OnInit, OnDestroy {
           .then()
           .catch(() => {
             const index = data.findIndex((x: any) => x === item);
-            errosSalvar.push(index);
+            this.errosInserirAlterar.push(index);
           });
       } else if (item.modified) {
         await firstValueFrom(this.tableService.put(item))
           .then()
           .catch(() => {
             const index = data.findIndex((x: any) => x === item);
-            errosSalvar.push(index);
+            this.errosInserirAlterar.push(index);
           });
       }
     });
@@ -185,7 +184,7 @@ export abstract class BaseTableComponent implements OnInit, OnDestroy {
             this.originalDataSource.forEach((x: any) => {
               // TODO ver caso não tenha ID
               if (x.id === id) {
-                errosDeletar.push({
+                this.errosDeletar.push({
                   nome: x[propertyNameErrorMessage],
                   erro: e.error.errors.Id[0],
                 });
@@ -196,18 +195,21 @@ export abstract class BaseTableComponent implements OnInit, OnDestroy {
     }
 
     await Promise.all(promises);
+    await this.afterSave();
+  }
 
-    if (errosSalvar.length > 0) {
-      let message = `Ocorreram erros ao salvar a(s) linha(s): ${errosSalvar.map(
+  afterSave() {
+    if (this.errosInserirAlterar.length > 0) {
+      let message = `Ocorreram erros ao salvar a(s) linha(s): ${this.errosInserirAlterar.map(
         (x) => ` ${++x}`
       )}`;
-      if (errosDeletar.length > 0) {
-        message += ` e ao deletar: ${errosDeletar.map((x) => ` ${x}`)}`;
+      if (this.errosDeletar.length > 0) {
+        message += ` e ao deletar: ${this.errosDeletar.map((x) => ` ${x}`)}`;
       }
       this.toastr.error(message);
-    } else if (errosDeletar.length > 0) {
+    } else if (this.errosDeletar.length > 0) {
       this.toastr.error(
-        `Ocorreram erros ao deletar: ${errosDeletar.map(
+        `Ocorreram erros ao deletar: ${this.errosDeletar.map(
           (x) => ` ${x.nome} (${x.erro})`
         )}`
       );
@@ -248,6 +250,8 @@ export abstract class BaseTableComponent implements OnInit, OnDestroy {
   }
 
   setInitialData() {
+    this.errosInserirAlterar = [];
+    this.errosDeletar = [];
     this.deletedData = [];
     this.formEditing$.next(false);
     this.clearSelections();

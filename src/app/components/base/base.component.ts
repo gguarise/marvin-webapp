@@ -5,7 +5,12 @@ import {
   OnInit,
   ViewChild,
 } from '@angular/core';
-import { AbstractControl, FormBuilder, FormControl, FormGroup } from '@angular/forms';
+import {
+  AbstractControl,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+} from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
@@ -52,7 +57,7 @@ export class BaseComponent implements OnInit {
 
     this.formEditing$.subscribe((isEditing) => {
       isEditing ? this.mainForm.enable() : this.mainForm.disable();
-      this.componentTables?.forEach(table => {
+      this.componentTables?.forEach((table) => {
         isEditing ? table.formArray.enable() : table.formArray.disable();
       });
     });
@@ -63,8 +68,7 @@ export class BaseComponent implements OnInit {
 
     if (!this.routeId) {
       this.isNewRecord = true;
-    }
-    else {
+    } else {
       await this.select();
       this.formEditing$.next(false);
     }
@@ -94,7 +98,9 @@ export class BaseComponent implements OnInit {
       if (this.mainForm.invalid || this.isTable('invalid')) {
         this.toastr.error('Existem campos inválidos.');
         this.mainForm.markAllAsTouched(); // Para mostrar erros nas linhas
-        this.componentTables?.forEach(table => table.formArray.markAllAsTouched()); // Para mostrar erros nas tabelas
+        this.componentTables?.forEach((table) =>
+          table.formArray.markAllAsTouched()
+        ); // Para mostrar erros nas tabelas
       } else {
         await this.save();
       }
@@ -112,43 +118,65 @@ export class BaseComponent implements OnInit {
           this.afterInsert(response);
           this.toastr.success('Novo registro inserido com sucesso.');
         })
-        .catch(() => this.toastr.error('Não foi possível criar novo registro.'));
+        .catch(() =>
+          this.toastr.error('Não foi possível criar novo registro.')
+        );
     } else {
       await firstValueFrom(this.baseService.put(data))
         .then(() => {
           if (this.componentTables?.length > 0) {
             this.saveComponentTables();
-          }
-          else {
+          } else {
             this.toastr.success('Registro alterado com sucesso.');
             this.onClear();
             this.select();
           }
         })
-        .catch(() => this.toastr.error('Não foi possível salvar as alterações.'));
+        .catch(() =>
+          this.toastr.error('Não foi possível salvar as alterações.')
+        );
     }
   }
 
   async saveComponentTables() {
-    await this.componentTables.forEach(async table => {
-      await table.beforeSave();
+    let tableHasErrors = false;
+    const tablesWithErrors = new Array<string>();
+
+    const promises = this.componentTables.map(async (table) => {
+      if (!tableHasErrors) {
+        await table.save();
+        tablesWithErrors.push(table.tableName);
+        tableHasErrors = table.tableHasErrors;
+      }
     });
-    this.toastr.success('Registro alterado com sucesso.');
-    this.onClear();
-    this.select();
+    await Promise.all(promises);
+
+    if (!tableHasErrors) {
+      this.toastr.success('Registros alterados com sucesso.');
+      this.onClear();
+      this.select();
+    } else {
+      this.toastr.error(
+        `Erro ao salvar tabela(s) ${tablesWithErrors.map(
+          (x) => ` ${x}`
+        )}, os demais registros já foram salvos.`
+      );
+    }
   }
 
   afterInsert(response: any) {
-    throw new Error('Método de redirecionamento após inserção não implementado.');
+    throw new Error(
+      'Método de redirecionamento após inserção não implementado.'
+    );
   }
 
   isTable(option: string) {
     if (this.componentTables?.length > 0) {
       switch (option) {
         case 'dirty':
-          return this.componentTables.some(table => table.formArray.dirty);
+          return this.componentTables.some((table) => table.formArray.dirty);
         case 'invalid':
-          return this.componentTables.some(table => table.formArray.invalid);
+          return this.componentTables.some((table) => table.formArray.invalid);
         default:
           return null;
       }
@@ -219,7 +247,7 @@ export class BaseComponent implements OnInit {
   getErrorMessage(control: FormControl | AbstractControl | null) {
     return FormHelper.getErrorMessage(control as FormControl);
   }
-  
+
   getRawData() {
     return this.mainForm.getRawValue();
   }
