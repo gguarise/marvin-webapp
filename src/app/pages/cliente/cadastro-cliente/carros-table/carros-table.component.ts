@@ -1,4 +1,9 @@
-import { ChangeDetectionStrategy, Component, ElementRef, forwardRef } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  forwardRef,
+} from '@angular/core';
 import { NG_VALUE_ACCESSOR, Validators } from '@angular/forms';
 import { firstValueFrom, Subject } from 'rxjs';
 import { ChildBaseTableComponent } from 'src/app/components/base/child-base-table/child-base-table.component';
@@ -18,9 +23,10 @@ import { CarroService } from 'src/app/services/carro.service';
     },
   ],
   styleUrls: ['./carros-table.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CarrosTableComponent extends ChildBaseTableComponent {
+  override tableName = 'Carros';
   marcas: TabelaFipe[];
   modelosPorMarca: Array<TabelaFipe[]> = [];
   protected _onDestroy = new Subject<void>();
@@ -76,18 +82,25 @@ export class CarrosTableComponent extends ChildBaseTableComponent {
     return payload;
   }
 
+  override async save() {
+    await super.save('placa');
+  }
+
   async getMarcas() {
-    this.marcas = (await firstValueFrom(
-      this.carroService.getCarBrands()
-      ).then((x) => x)
-      ).sort((a, b) =>
-        a.name > b.name ? 1 : b.name > a.name ? -1 : 0
-      );
+    this.marcas = (
+      await firstValueFrom(this.carroService.getCarBrands()).then((x) => x)
+    ).sort((a, b) => (a.name > b.name ? 1 : b.name > a.name ? -1 : 0));
   }
 
   filterMarcas(element: any) {
     const filterValue = element.get('marca')?.value?.toLowerCase();
-    element.get('marcasFiltradas').setValue(this.marcas.filter(option => option.name.toLowerCase().includes(filterValue)));
+    element
+      .get('marcasFiltradas')
+      .setValue(
+        this.marcas.filter((option) =>
+          option.name.toLowerCase().includes(filterValue)
+        )
+      );
   }
 
   async getModelos(element: any) {
@@ -95,7 +108,9 @@ export class CarrosTableComponent extends ChildBaseTableComponent {
 
     if (!!marca && element.get('marca').dirty) {
       if (!this.modelosPorMarca[marca]) {
-        const marcaObject = this.marcas.filter(option => option.name.toLowerCase() === marca);
+        const marcaObject = this.marcas.filter(
+          (option) => option.name.toLowerCase() === marca
+        );
 
         if (marcaObject?.length === 1) {
           this.modelosPorMarca[marca] = await firstValueFrom(
@@ -112,8 +127,12 @@ export class CarrosTableComponent extends ChildBaseTableComponent {
     const filterValue = element.get('modelo')?.value;
     const marca = element.get('marca')?.value?.toLowerCase();
 
-    element.get('modelosFiltrados').setValue(
-      this.modelosPorMarca[marca]?.filter(option => option.name.toLowerCase().includes(filterValue))
-    );
+    element
+      .get('modelosFiltrados')
+      .setValue(
+        this.modelosPorMarca[marca]?.filter((option) =>
+          option.name.toLowerCase().includes(filterValue)
+        )
+      );
   }
 }
