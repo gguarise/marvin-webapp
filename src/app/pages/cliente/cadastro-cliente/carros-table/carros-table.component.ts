@@ -86,6 +86,41 @@ export class CarrosTableComponent extends ChildBaseTableComponent {
     await super.save('placa');
   }
 
+  // TODO ver se não é melhor travar a placa, testar modificar um registro ja existente e tal
+  async searchPlaca(element: any) {
+    const placa = element.get('placa')?.value?.replace('-', '');
+
+    if (!!placa && placa.length === 7) {
+      const carros = await firstValueFrom(
+        this.carroService.searchByPlaca(placa)
+      )
+        .then((x) => x)
+        .catch((e) => e);
+
+      if (!!carros && !carros.error && carros.length > 0) {
+        const id = element.get('id').value;
+        if (!!id) {
+          this.deletedData.push(element.get('id').value);
+        }
+        const carro = carros[0];
+        element.get('id').setValue(carro.id);
+        element.get('marca').setValue(carro.marca);
+        element.get('modelo').setValue(carro.modelo);
+        element.get('ano').setValue(carro.ano);
+        element.get('quilometragem').setValue(carro.quilometragem);
+        element.get('descricao').setValue(carro.descricao);
+        element.get('new').setValue(false);
+
+        this.toastr.info(
+          'Um carro já existe para essa placa. As informações modificadas nele aqui alterarão o registro para demais clientes.'
+        );
+      } else {
+        element.get('id').setValue(null);
+        element.get('new').setValue(true);
+      }
+    }
+  }
+
   async getMarcas() {
     this.marcas = (
       await firstValueFrom(this.carroService.getCarBrands()).then((x) => x)

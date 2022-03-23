@@ -64,6 +64,7 @@ export abstract class BaseTableComponent implements OnInit, OnDestroy {
 
   constructor(public tableService: BaseService, public elementRef: ElementRef) {
     this.toastr = AppInjectorService.injector.get(ToastrService);
+    this.dialog = AppInjectorService.injector.get(MatDialog);
     this.fb = AppInjectorService.injector.get(FormBuilder);
 
     this.formEditing$.subscribe((isEditing) => {

@@ -2,27 +2,27 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { catchError, map, Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { Produto } from '../models/produto';
+import { Estoque } from '../models/estoque';
 import { BaseService } from './base.service';
 
 @Injectable({
   providedIn: 'root',
 })
-export class ProdutoService extends BaseService {
-  private produtoUrl = `${environment.apiUrl.fornecedor}Produto`;
+export class EstoqueService extends BaseService {
+  private estoqueUrl = `${environment.apiUrl.fornecedor}Produto`; // É o antigo produto, manteve a rota igual
 
   constructor(private http: HttpClient) {
     super();
   }
 
-  override getAll(search: any = null): Observable<Produto[]> {
+  override getAll(search: any = null): Observable<Estoque[]> {
     return this.http
-      .get<Produto[]>(`${this.produtoUrl}${this.getSearchString(search)}`)
+      .get<Estoque[]>(`${this.estoqueUrl}${this.getSearchString(search)}`)
       .pipe(catchError(this.handleServiceError<any>()));
   }
 
   override post(payload: any): Observable<any> {
-    return this.http.post(`${this.produtoUrl}`, payload).pipe(
+    return this.http.post(`${this.estoqueUrl}`, payload).pipe(
       map((ent) => {
         if (ent) {
           return ent;
@@ -34,7 +34,7 @@ export class ProdutoService extends BaseService {
   }
 
   override put(payload: any): Observable<any> {
-    return this.http.put(`${this.produtoUrl}`, payload).pipe(
+    return this.http.put(`${this.estoqueUrl}`, payload).pipe(
       map((ent) => {
         if (ent) {
           return ent;
@@ -46,7 +46,7 @@ export class ProdutoService extends BaseService {
   }
 
   override delete(id: string): Observable<any> {
-    return this.http.delete(`${this.produtoUrl}/${id}`).pipe(
+    return this.http.delete(`${this.estoqueUrl}/${id}`).pipe(
       map((ent) => {
         if (ent) {
           return ent;
