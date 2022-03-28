@@ -59,6 +59,7 @@ export class BaseComponent implements OnInit {
       isEditing ? this.mainForm.enable() : this.mainForm.disable();
       this.componentTables?.forEach((table) => {
         isEditing ? table.formArray.enable() : table.formArray.disable();
+        isEditing ? table.afterFormEnable() : null;
       });
     });
   }

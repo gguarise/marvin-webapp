@@ -84,16 +84,13 @@ export abstract class BaseTableComponent implements OnInit, OnDestroy {
     this.elementRef.nativeElement.remove();
   }
 
-  select(parent: any = null, sortItems: any = null, filterItems: any = null) {
+  select(parent: any = null, sortItems: any = null, searchParams: any = null) {
     if (!!parent) {
-      this.tableService.getByParent(parent).subscribe({
+      this.tableService.getByParent(parent, searchParams).subscribe({
         next: (items) => {
           if (!!items) {
             if (!!sortItems) {
               items.sort((a, b) => sortItems(a, b));
-            }
-            if (!!filterItems) {
-              items = items.filter((a) => filterItems(a));
             }
             this.setItems(items);
           }
@@ -101,14 +98,11 @@ export abstract class BaseTableComponent implements OnInit, OnDestroy {
         error: () => this.toastr.error('Um erro ocorreu ao buscar itens.'),
       });
     } else {
-      this.tableService.getAll().subscribe({
+      this.tableService.getAll(searchParams).subscribe({
         next: (items) => {
           if (!!items) {
             if (!!sortItems) {
               items.sort((a, b) => sortItems(a, b));
-            }
-            if (!!filterItems) {
-              items = items.filter((a) => filterItems(a));
             }
             this.setItems(items);
           }
@@ -179,7 +173,7 @@ export abstract class BaseTableComponent implements OnInit, OnDestroy {
     });
     if (this.deletedData.length > 0) {
       for (const id of this.deletedData) {
-        await firstValueFrom(this.tableService.delete(id))
+        await firstValueFrom(this.tableDeleteMethod(id))
           .then()
           .catch((e) => {
             this.originalDataSource.forEach((x: any) => {
@@ -197,6 +191,10 @@ export abstract class BaseTableComponent implements OnInit, OnDestroy {
 
     await Promise.all(promises);
     await this.afterSave();
+  }
+
+  tableDeleteMethod(id: string) {
+    return this.tableService.delete(id);
   }
 
   afterSave() {
@@ -239,6 +237,10 @@ export abstract class BaseTableComponent implements OnInit, OnDestroy {
 
   edit() {
     this.formEditing$.next(true);
+  }
+
+  afterFormEnable() {
+    // Pode ser usado pra desabilitar campos após formulário ser habilitado
   }
 
   async undo() {
