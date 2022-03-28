@@ -1,16 +1,17 @@
 import {
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   ElementRef,
   forwardRef,
 } from '@angular/core';
 import { NG_VALUE_ACCESSOR, Validators } from '@angular/forms';
-import { firstValueFrom, Subject } from 'rxjs';
+import { firstValueFrom, Observable } from 'rxjs';
 import { ChildBaseTableComponent } from 'src/app/components/base/child-base-table/child-base-table.component';
 import { Carro } from 'src/app/models/carro';
-import { Fornecedor } from 'src/app/models/fornecedor';
 import { TabelaFipe } from 'src/app/models/tabela-fipe';
 import { CarroService } from 'src/app/services/carro.service';
+import { duplicateTableValueValidator } from 'src/core/validators/duplicate-table-value-validator';
 
 @Component({
   selector: 'app-carros-table',
@@ -27,11 +28,14 @@ import { CarroService } from 'src/app/services/carro.service';
 })
 export class CarrosTableComponent extends ChildBaseTableComponent {
   override tableName = 'Carros';
-  marcas: TabelaFipe[];
-  modelosPorMarca: Array<TabelaFipe[]> = [];
-  protected _onDestroy = new Subject<void>();
+  marcas: TabelaFipe[]; // Todas as marcas
+  modelosPorMarca: Array<TabelaFipe[]> = []; // A chave do Array é o nome da marca em minusculo: array['fiat'] -> possui lista de modelos da fiat
 
-  constructor(public carroService: CarroService, elementRef: ElementRef) {
+  constructor(
+    public carroService: CarroService,
+    public cdr: ChangeDetectorRef,
+    elementRef: ElementRef
+  ) {
     super(carroService, elementRef);
     this.formGroupConfig = {
       select: [false],
@@ -39,12 +43,17 @@ export class CarrosTableComponent extends ChildBaseTableComponent {
       id: [],
       placa: [
         null,
-        Validators.compose([Validators.required, Validators.maxLength(8)]),
+        Validators.compose([
+          Validators.required,
+          Validators.maxLength(8),
+          duplicateTableValueValidator('placa', 'Placa', true),
+        ]),
       ],
       marca: [],
-      marcasFiltradas: [],
+      marcasFiltradas: [], // Lista de marcas disponíveis para selecionar em cada linha (baseadas no texto)
       modelo: [],
-      modelosFiltrados: [],
+      modelosFiltrados: [], // Lista de modelos disponíveis para selecionar em cada linha
+      carregandoModelos: [false], // Controla o spinner do modelo de cada linha
       ano: [
         null,
         Validators.compose([Validators.min(1850), Validators.max(2100)]),
@@ -77,7 +86,7 @@ export class CarrosTableComponent extends ChildBaseTableComponent {
   override getRawData() {
     const payload = this.formArray.getRawValue();
     payload.map((carro: Carro) => {
-      carro.placa = carro.placa?.replace('-', '');
+      carro.placa = carro.placa?.replace('-', '').toUpperCase();
     });
     return payload;
   }
@@ -86,37 +95,48 @@ export class CarrosTableComponent extends ChildBaseTableComponent {
     await super.save('placa');
   }
 
-  // TODO ver se não é melhor travar a placa, testar modificar um registro ja existente e tal
+  override tableDeleteMethod(id: string): Observable<any> {
+    return this.carroService.deleteByIdCliente(id, this.parentId);
+  }
+
+  override afterFormEnable() {
+    this.formArray.controls.forEach((item) => {
+      item.get('placa')?.disable();
+      this.getModelos(item);
+      this.filterMarcas(item);
+    });
+  }
+
   async searchPlaca(element: any) {
-    const placa = element.get('placa')?.value?.replace('-', '');
+    // Caso a placa esteja repetida ele não vai buscar (duplicateTableValueValidator)
+    if (element.valid) {
+      const placa = element.get('placa')?.value?.replace('-', '');
 
-    if (!!placa && placa.length === 7) {
-      const carros = await firstValueFrom(
-        this.carroService.searchByPlaca(placa)
-      )
-        .then((x) => x)
-        .catch((e) => e);
+      if (!!placa && placa.length === 7) {
+        const carros = await firstValueFrom(
+          this.carroService.searchByPlaca(placa)
+        )
+          .then((x) => x)
+          .catch((e) => e);
 
-      if (!!carros && !carros.error && carros.length > 0) {
-        const id = element.get('id').value;
-        if (!!id) {
-          this.deletedData.push(element.get('id').value);
+        if (!!carros && !carros.error && carros.length > 0) {
+          const carro = carros[0];
+          element.get('id').setValue(carro.id);
+          element.get('marca').setValue(carro.marca);
+          element.get('modelo').setValue(carro.modelo);
+          element.get('ano').setValue(carro.ano);
+          element.get('quilometragem').setValue(carro.quilometragem);
+          element.get('descricao').setValue(carro.descricao);
+          element.get('new').setValue(false);
+
+          this.toastr.info(
+            'Um carro já existe para essa placa. As informações modificadas nele aqui alterarão o registro para demais clientes.'
+          );
+        } else {
+          element.get('clienteId').setValue(this.parentId);
+          element.get('id').setValue(null);
+          element.get('new').setValue(true);
         }
-        const carro = carros[0];
-        element.get('id').setValue(carro.id);
-        element.get('marca').setValue(carro.marca);
-        element.get('modelo').setValue(carro.modelo);
-        element.get('ano').setValue(carro.ano);
-        element.get('quilometragem').setValue(carro.quilometragem);
-        element.get('descricao').setValue(carro.descricao);
-        element.get('new').setValue(false);
-
-        this.toastr.info(
-          'Um carro já existe para essa placa. As informações modificadas nele aqui alterarão o registro para demais clientes.'
-        );
-      } else {
-        element.get('id').setValue(null);
-        element.get('new').setValue(true);
       }
     }
   }
@@ -128,7 +148,7 @@ export class CarrosTableComponent extends ChildBaseTableComponent {
   }
 
   filterMarcas(element: any) {
-    const filterValue = element.get('marca')?.value?.toLowerCase();
+    const filterValue = element.get('marca')?.value?.toLowerCase() ?? '';
     element
       .get('marcasFiltradas')
       .setValue(
@@ -140,8 +160,16 @@ export class CarrosTableComponent extends ChildBaseTableComponent {
 
   async getModelos(element: any) {
     const marca = element.get('marca')?.value?.toLowerCase();
+    const carregandoModelos = element.get('carregandoModelos'); // Controla o spinner
 
-    if (!!marca && element.get('marca').dirty) {
+    if (!!marca) {
+      // Se comando não foi chamado no afterFormEnable
+      if (element.get('marca').dirty) {
+        element.get('modelo').setValue(null);
+        element.get('modelosFiltrados').setValue([]);
+        carregandoModelos.setValue(true);
+      }
+
       if (!this.modelosPorMarca[marca]) {
         const marcaObject = this.marcas.filter(
           (option) => option.name.toLowerCase() === marca
@@ -150,24 +178,37 @@ export class CarrosTableComponent extends ChildBaseTableComponent {
         if (marcaObject?.length === 1) {
           this.modelosPorMarca[marca] = await firstValueFrom(
             this.carroService.getCarModels(marcaObject[0].code)
-          ).then((x) => x);
+          ).then((x) => {
+            carregandoModelos.setValue(false);
+            return x;
+          });
+        } else {
+          carregandoModelos.setValue(false);
         }
+      } else {
+        carregandoModelos.setValue(false);
       }
-      element.get('modelo').setValue(null);
-      element.get('modelosFiltrados').setValue([]);
     }
+
+    // Se comando não foi chamado no afterFormEnable
+    if (element.get('marca').dirty) {
+      element.get('modelosFiltrados').setValue(this.modelosPorMarca[marca]);
+    }
+    this.cdr.detectChanges();
   }
 
   filterModelos(element: any) {
-    const filterValue = element.get('modelo')?.value;
+    const filterValue = element.get('modelo')?.value?.toLowerCase() ?? '';
     const marca = element.get('marca')?.value?.toLowerCase();
 
-    element
-      .get('modelosFiltrados')
-      .setValue(
-        this.modelosPorMarca[marca]?.filter((option) =>
-          option.name.toLowerCase().includes(filterValue)
-        )
-      );
+    if (!!marca) {
+      element
+        .get('modelosFiltrados')
+        .setValue(
+          this.modelosPorMarca[marca]?.filter((option) =>
+            option.name.toLowerCase().includes(filterValue)
+          )
+        );
+    }
   }
 }

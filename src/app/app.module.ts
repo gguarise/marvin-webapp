@@ -38,7 +38,7 @@ import { CadastroClienteComponent } from './pages/cliente/cadastro-cliente/cadas
 import { CarrosTableComponent } from './pages/cliente/cadastro-cliente/carros-table/carros-table.component';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { EstoqueComponent } from './pages/estoque/estoque.component';
-// import { ChildBaseTableComponent } from './components/base/child-base-table/child-base-table.component';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @NgModule({
   declarations: [
@@ -87,6 +87,7 @@ import { EstoqueComponent } from './pages/estoque/estoque.component';
     MatTabsModule,
     TextFieldModule,
     MatAutocompleteModule,
+    MatProgressSpinnerModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

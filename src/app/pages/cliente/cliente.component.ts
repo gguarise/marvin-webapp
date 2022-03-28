@@ -29,28 +29,24 @@ export class ClienteComponent extends BaseTableComponent {
       modified: [],
       new: [],
     };
-    this.displayedColumns = [
-      'nome',
-      'cpf',
-      'telefone',
-    ];
+    this.displayedColumns = ['nome', 'cpf', 'telefone'];
   }
 
   override select() {
     const sortItems = (a: Cliente, b: Cliente) =>
       a.nome > b.nome ? 1 : b.nome > a.nome ? -1 : 0;
-    const filterItems = (a: Cliente) =>
-      a.ativo;
-    super.select(null, sortItems, filterItems);
+
+    // Retorna apenas clientes ativos
+    const searchParams = [{ Ativo: 'true' }];
+    super.select(null, sortItems, searchParams);
   }
 
   override handleDoubleClickEvent(data: any) {
-    // Ao clicar duas vezes na linha
+    // Ao clicar duas vezes na linha (selecionar cliente)
     const id = data.element?.id?.value;
 
     if (!!id) {
       this.router.navigate(['/cadastro-cliente', id]);
     }
   }
-
 }

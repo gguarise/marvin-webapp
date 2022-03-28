@@ -81,11 +81,17 @@
                           *matCellDef="let element"
                           [formGroup]="element">
                     <mat-form-field fxLayout="column">
-                        <input type="text"
-                               matInput
-                               formControlName="modelo"
-                               [matAutocomplete]="auto"
-                               (keyup)="filterModelos(element)">
+                        <div fxLayout="row">
+                            <input fxFlex
+                                   type="text"
+                                   matInput
+                                   formControlName="modelo"
+                                   [matAutocomplete]="auto"
+                                   (keyup)="filterModelos(element)">
+                            <mat-spinner *ngIf="element.get('carregandoModelos').value"
+                                         fxFlex="10"
+                                         diameter="16"></mat-spinner>
+                        </div>
                         <mat-autocomplete autoActiveFirstOption
                                           #auto="matAutocomplete">
                             <mat-option *ngFor="let option of element.get('modelosFiltrados')?.value"
