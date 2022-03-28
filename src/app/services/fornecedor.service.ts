@@ -15,9 +15,11 @@ export class FornecedorService extends BaseService {
     super();
   }
 
-  override getAll(search: any = null): Observable<Fornecedor[]> {
+  override getAll(searchParams: any = null): Observable<Fornecedor[]> {
     return this.http
-      .get<Fornecedor[]>(`${this.fornecedorUrl}${this.getSearchString(search)}`)
+      .get<Fornecedor[]>(
+        `${this.fornecedorUrl}${this.getSearchString(searchParams)}`
+      )
       .pipe(catchError(this.handleServiceError<any>()));
   }
 

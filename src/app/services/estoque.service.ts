@@ -15,9 +15,9 @@ export class EstoqueService extends BaseService {
     super();
   }
 
-  override getAll(search: any = null): Observable<Estoque[]> {
+  override getAll(searchParams: any = null): Observable<Estoque[]> {
     return this.http
-      .get<Estoque[]>(`${this.estoqueUrl}${this.getSearchString(search)}`)
+      .get<Estoque[]>(`${this.estoqueUrl}${this.getSearchString(searchParams)}`)
       .pipe(catchError(this.handleServiceError<any>()));
   }
 

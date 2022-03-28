@@ -17,9 +17,9 @@ export class ClienteService extends BaseService {
     super();
   }
 
-  override getAll(search: any = null): Observable<Cliente[]> {
+  override getAll(searchParams: any = null): Observable<Cliente[]> {
     return this.http
-      .get<Cliente[]>(`${this.clienteUrl}${this.getSearchString(search)}`)
+      .get<Cliente[]>(`${this.clienteUrl}${this.getSearchString(searchParams)}`)
       .pipe(catchError(this.handleServiceError<any>()));
   }
 
@@ -29,9 +29,10 @@ export class ClienteService extends BaseService {
       .pipe(catchError(this.handleServiceError<any>()));
   }
 
+  // TODO verificar site mais confiável
   getEnderecoPorCEP(cep: string): Observable<ViaCEP> {
     return this.http
-      .get<ViaCEP>(`${this.viaCEPUrl}${cep}/json/`)
+      .get<ViaCEP>(`${this.viaCEPUrl}${cep}/json`)
       .pipe(catchError(this.handleServiceError<any>()));
   }
 

@@ -53,8 +53,8 @@ export class CarroService extends BaseService {
     );
   }
 
-  override delete(id: string): Observable<any> {
-    return this.http.delete(`${this.carroUrl}/${id}`).pipe(
+  deleteByIdCliente(id: string, idCliente: string): Observable<any> {
+    return this.http.delete(`${this.carroUrl}/${id}/${idCliente}`).pipe(
       map((ent) => {
         if (ent) {
           return ent;
