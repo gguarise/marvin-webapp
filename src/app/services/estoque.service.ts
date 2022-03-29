@@ -9,7 +9,7 @@ import { BaseService } from './base.service';
   providedIn: 'root',
 })
 export class EstoqueService extends BaseService {
-  private estoqueUrl = `${environment.apiUrl.fornecedor}Produto`; // É o antigo produto, manteve a rota igual
+  private estoqueUrl = `${environment.safeApiUrl.fornecedor}Produto`; // É o antigo produto, manteve a rota igual
 
   constructor(private http: HttpClient) {
     super();
