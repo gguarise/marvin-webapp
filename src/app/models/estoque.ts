@@ -1,8 +1,7 @@
 import { BaseModel } from './base';
 import { Fornecedor } from './fornecedor';
 
-export class Produto extends BaseModel {
-  id: number;
+export class Estoque extends BaseModel {
   nome: string;
   tipo: string;
   descricao: string;

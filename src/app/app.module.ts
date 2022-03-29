@@ -12,7 +12,6 @@ import { MenuComponent } from './components/menu/menu.component';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { FornecedorComponent } from './pages/fornecedor/fornecedor.component';
-import { ProdutoComponent } from './pages/produto/produto.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatTableModule } from '@angular/material/table';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -42,8 +41,10 @@ import { TableToolbarComponent } from './components/templates/table-toolbar/tabl
 import { CadastroClienteComponent } from './pages/cliente/cadastro-cliente/cadastro-cliente.component';
 import { CarrosTableComponent } from './pages/cliente/cadastro-cliente/carros-table/carros-table.component';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { EstoqueComponent } from './pages/estoque/estoque.component';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { ServicoComponent } from './pages/servico/servico.component';
 import { ServicoTableComponent } from './pages/orcamento/servico-table/servico-table.component';
-// import { ChildBaseTableComponent } from './components/base/child-base-table/child-base-table.component';
 
 @NgModule({
   declarations: [
@@ -52,7 +53,6 @@ import { ServicoTableComponent } from './pages/orcamento/servico-table/servico-t
     FooterComponent,
     MenuComponent,
     FornecedorComponent,
-    ProdutoComponent,
     PageHeaderComponent,
     BaseComponent,
     ConfirmDialogComponent,
@@ -63,6 +63,8 @@ import { ServicoTableComponent } from './pages/orcamento/servico-table/servico-t
     TableToolbarComponent,
     CadastroClienteComponent,
     CarrosTableComponent,
+    EstoqueComponent,
+    ServicoComponent,
     ServicoTableComponent,
   ],
   imports: [
@@ -96,7 +98,8 @@ import { ServicoTableComponent } from './pages/orcamento/servico-table/servico-t
     MatTabsModule,
     MatCardModule,
     TextFieldModule,
-    MatAutocompleteModule
+    MatAutocompleteModule,
+    MatProgressSpinnerModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

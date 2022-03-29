@@ -1,20 +1,29 @@
-import { AfterViewInit, ChangeDetectorRef, Component, ElementRef, ViewChild } from '@angular/core';
+import {
+  AfterViewInit,
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  ViewChild,
+} from '@angular/core';
 import { Validators } from '@angular/forms';
 import { firstValueFrom } from 'rxjs';
 import { BaseComponent } from 'src/app/components/base/base.component';
 import { ClienteService } from 'src/app/services/cliente.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CarrosTableComponent } from './carros-table/carros-table.component';
-import { Carro } from 'src/app/models/carro';
+import { FieldValidators } from 'src/core/validators/field-validators';
 
 @Component({
   selector: 'app-cadastro-cliente',
   templateUrl: './cadastro-cliente.component.html',
-  styleUrls: ['./cadastro-cliente.component.scss']
+  styleUrls: ['./cadastro-cliente.component.scss'],
 })
-export class CadastroClienteComponent extends BaseComponent implements AfterViewInit {
-
-  @ViewChild(CarrosTableComponent, { static: false }) carrosTable: CarrosTableComponent;
+export class CadastroClienteComponent
+  extends BaseComponent
+  implements AfterViewInit
+{
+  @ViewChild(CarrosTableComponent, { static: false })
+  carrosTable: CarrosTableComponent;
 
   constructor(
     elementRef: ElementRef,
@@ -26,32 +35,25 @@ export class CadastroClienteComponent extends BaseComponent implements AfterView
     super(clienteService, elementRef, cdr, route);
     this.mainForm = this.fb.group({
       id: [],
-      nome: [null, Validators.compose([Validators.required, Validators.maxLength(150)])],
+      nome: [
+        null,
+        Validators.compose([Validators.required, Validators.maxLength(150)]),
+      ],
       telefone: [],
       email: [],
-      cpf: [],
+      cpf: [null, FieldValidators.CPF],
       cep: [null],
       endereco: [null, Validators.compose([Validators.maxLength(400)])],
       carros: [],
       orcamentos: [],
       atendimentos: [],
       modified: [],
-      new: []
+      new: [],
     });
   }
 
   ngAfterViewInit() {
-    this.componentTables = [
-      this.carrosTable
-    ];
-  }
-
-  override setMainFormData(item?: any) {
-    // TODO descomentar depois de arrumar
-    // if (!!item) {
-    //   item.carros = item.carros?.filter((carro: Carro) => carro.ativo)
-    // }
-    super.setMainFormData(item);
+    this.componentTables = [this.carrosTable];
   }
 
   async searchEndereco() {
@@ -63,7 +65,7 @@ export class CadastroClienteComponent extends BaseComponent implements AfterView
         .then((x) => x)
         .catch((e) => e);
 
-      if (!endereco.erro) {
+      if (!endereco.erro && !!endereco.logradouro) {
         this.mainForm
           .get('endereco')
           ?.setValue(
@@ -79,8 +81,7 @@ export class CadastroClienteComponent extends BaseComponent implements AfterView
     const carros = this.carrosTable.formArray.getRawValue();
     if (!carros || carros?.length <= 0) {
       this.toastr.error('O cliente deve ter ao menos um carro cadastrado');
-    }
-    else {
+    } else {
       super.beforeSave();
     }
   }

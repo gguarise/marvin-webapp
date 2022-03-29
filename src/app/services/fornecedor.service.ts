@@ -9,15 +9,17 @@ import { BaseService } from './base.service';
   providedIn: 'root',
 })
 export class FornecedorService extends BaseService {
-  private fornecedorUrl = `${environment.apiUrl.fornecedor}fornecedor`;
+  private fornecedorUrl = `${environment.safeApiUrl.fornecedor}fornecedor`;
 
   constructor(private http: HttpClient) {
     super();
   }
 
-  override getAll(search: any = null): Observable<Fornecedor[]> {
+  override getAll(searchParams: any = null): Observable<Fornecedor[]> {
     return this.http
-      .get<Fornecedor[]>(`${this.fornecedorUrl}${this.getSearchString(search)}`)
+      .get<Fornecedor[]>(
+        `${this.fornecedorUrl}${this.getSearchString(searchParams)}`
+      )
       .pipe(catchError(this.handleServiceError<any>()));
   }
 
@@ -56,46 +58,4 @@ export class FornecedorService extends BaseService {
       catchError(this.handleServiceError<any>())
     );
   }
-
-  // getByParent(empresa: number): Observable<ConfiguracaoAplicativo[]> {
-  //   if (this.getCacheItem(empresa)) {
-  //     return of(this.getCacheItem(empresa));
-  //   }
-
-  //   return this.http.get<ConfiguracaoAplicativo[]>(`${this.configuracaoAplicativoUrl}${empresa}`).pipe(
-  //     switchMap(x => {
-  //       this.setCacheItem(empresa, x);
-  //       return of(x);
-  //     }),
-  //     catchError(this.handleServiceError<any>('getByParent', [])));
-
-  // }
-
-  // getByKey(item: any): Observable<ConfiguracaoOpcao[]> {
-  //   const params = `Opcoes/${item}`;
-  //   const cacheKey = `opcao-${item}`;
-
-  //   if (this.getCacheItem(cacheKey)) {
-  //     return of(this.getCacheItem(cacheKey));
-  //   }
-
-  //   return this.http.get<ConfiguracaoOpcao[]>(`${this.configuracaoAplicativoUrl}${params}`).pipe(
-  //     switchMap(x => {
-  //       this.setCacheItem(cacheKey, x);
-  //       return of(x);
-  //     }),
-  //     catchError(this.handleServiceError<any>('getByKey', [])));
-  // }
-
-  // putConfiguracaoAplicativo(payload: any): Observable<ConfiguracaoAplicativo> {
-  //   this.deleteAllCache();
-
-  //   return this.http.
-  //     put(`${this.configuracaoAplicativoUrl}${payload.empresa}`, payload).
-  //     pipe(map(ent => {
-  //       if (ent) {
-  //         return ent;
-  //       }
-  //     }), catchError(this.handleServiceError<any>('putConfiguracaoAplicativo', [])));
-  // }
 }
