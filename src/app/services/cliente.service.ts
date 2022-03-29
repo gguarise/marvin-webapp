@@ -10,7 +10,7 @@ import { BaseService } from './base.service';
   providedIn: 'root',
 })
 export class ClienteService extends BaseService {
-  private clienteUrl = `${environment.apiUrl.cliente}cliente`;
+  private clienteUrl = `${environment.safeApiUrl.cliente}cliente`;
   private viaCEPUrl = 'https://viacep.com.br/ws/';
 
   constructor(private http: HttpClient) {

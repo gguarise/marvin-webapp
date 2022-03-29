@@ -39,6 +39,7 @@ import { CarrosTableComponent } from './pages/cliente/cadastro-cliente/carros-ta
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { EstoqueComponent } from './pages/estoque/estoque.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { ServicoComponent } from './pages/servico/servico.component';
 
 @NgModule({
   declarations: [
@@ -55,6 +56,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
     CadastroClienteComponent,
     CarrosTableComponent,
     EstoqueComponent,
+    ServicoComponent,
   ],
   imports: [
     BrowserModule,

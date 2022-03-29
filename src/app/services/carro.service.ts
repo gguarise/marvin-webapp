@@ -10,7 +10,7 @@ import { BaseService } from './base.service';
   providedIn: 'root',
 })
 export class CarroService extends BaseService {
-  private carroUrl = `${environment.apiUrl.cliente}Carro`;
+  private carroUrl = `${environment.safeApiUrl.cliente}Carro`;
   private tabelaFipeUrl = 'https://parallelum.com.br/fipe/api/v2/';
 
   constructor(private http: HttpClient) {
