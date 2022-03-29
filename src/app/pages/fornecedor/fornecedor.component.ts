@@ -2,7 +2,8 @@ import { Component, ElementRef } from '@angular/core';
 import { Validators } from '@angular/forms';
 import { Fornecedor } from 'src/app/models/fornecedor';
 import { FornecedorService } from 'src/app/services/fornecedor.service';
-import { CNPJValidator } from 'src/core/validators/cnpj-validator';
+import { duplicateTableValueValidator } from 'src/core/validators/duplicate-table-value-validator';
+import { FieldValidators } from 'src/core/validators/field-validators';
 import { BaseTableComponent } from '../../components/base/base-table/base-table.component';
 
 @Component({
@@ -23,7 +24,13 @@ export class FornecedorComponent extends BaseTableComponent {
         null,
         Validators.compose([Validators.required, Validators.maxLength(50)]),
       ],
-      cnpj: [null, CNPJValidator],
+      cnpj: [
+        null,
+        Validators.compose([
+          duplicateTableValueValidator('cnpj', 'CNPJ'),
+          FieldValidators.CNPJ,
+        ]),
+      ],
       telefone: [],
       email: [
         null,

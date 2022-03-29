@@ -3,24 +3,24 @@ import { Validators } from '@angular/forms';
 import { Observable, of } from 'rxjs';
 import { Fornecedor } from 'src/app/models/fornecedor';
 import { FornecedorService } from 'src/app/services/fornecedor.service';
-import { ProdutoService } from 'src/app/services/produto.service';
+import { EstoqueService } from 'src/app/services/estoque.service';
 import { BaseTableComponent } from '../../components/base/base-table/base-table.component';
 import { FornecedorComponent } from '../fornecedor/fornecedor.component';
 
 @Component({
-  selector: 'app-produto',
-  templateUrl: './produto.component.html',
-  styleUrls: ['./produto.component.scss'],
+  selector: 'app-estoque',
+  templateUrl: './estoque.component.html',
+  styleUrls: ['./estoque.component.scss'],
 })
-export class ProdutoComponent extends BaseTableComponent {
+export class EstoqueComponent extends BaseTableComponent {
   fornecedores$: Observable<Fornecedor[]>;
 
   constructor(
-    public produtoService: ProdutoService,
+    public estoqueService: EstoqueService,
     elementRef: ElementRef,
     public fornecedorService: FornecedorService
   ) {
-    super(produtoService, elementRef);
+    super(estoqueService, elementRef);
     this.formGroupConfig = {
       select: [false],
       id: [],
@@ -49,14 +49,6 @@ export class ProdutoComponent extends BaseTableComponent {
           Validators.max(9999999999.99),
         ]),
       ],
-      valorCobrado: [
-        null,
-        Validators.compose([
-          Validators.required,
-          Validators.min(0.01),
-          Validators.max(9999999999.99),
-        ]),
-      ],
       fornecedor: [null, Validators.required],
       modified: [],
       new: [],
@@ -68,7 +60,6 @@ export class ProdutoComponent extends BaseTableComponent {
       'descricao',
       'quantidadeEstoque',
       'valorUnitario',
-      'valorCobrado',
       'fornecedor',
     ];
 

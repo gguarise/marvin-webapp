@@ -12,7 +12,6 @@ import { MenuComponent } from './components/menu/menu.component';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { FornecedorComponent } from './pages/fornecedor/fornecedor.component';
-import { ProdutoComponent } from './pages/produto/produto.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatTableModule } from '@angular/material/table';
 import { MatDialogModule } from '@angular/material/dialog';
@@ -30,8 +29,16 @@ import { TextMaskModule } from 'angular2-text-mask';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSelectModule } from '@angular/material/select';
 import { CurrencyMaskModule } from 'ng2-currency-mask';
+import { ClienteComponent } from './pages/cliente/cliente.component';
+import { MatTabsModule } from '@angular/material/tabs';
+import { TextFieldModule } from '@angular/cdk/text-field';
 import { AppInjectorService } from './services/app-injector.service';
 import { TableToolbarComponent } from './components/templates/table-toolbar/table-toolbar.component';
+import { CadastroClienteComponent } from './pages/cliente/cadastro-cliente/cadastro-cliente.component';
+import { CarrosTableComponent } from './pages/cliente/cadastro-cliente/carros-table/carros-table.component';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { EstoqueComponent } from './pages/estoque/estoque.component';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @NgModule({
   declarations: [
@@ -40,11 +47,14 @@ import { TableToolbarComponent } from './components/templates/table-toolbar/tabl
     FooterComponent,
     MenuComponent,
     FornecedorComponent,
-    ProdutoComponent,
     PageHeaderComponent,
     BaseComponent,
     ConfirmDialogComponent,
+    ClienteComponent,
     TableToolbarComponent,
+    CadastroClienteComponent,
+    CarrosTableComponent,
+    EstoqueComponent,
   ],
   imports: [
     BrowserModule,
@@ -62,7 +72,6 @@ import { TableToolbarComponent } from './components/templates/table-toolbar/tabl
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
-    MatInputModule,
     MatCheckboxModule,
     MatIconModule,
     MatTooltipModule,
@@ -75,6 +84,10 @@ import { TableToolbarComponent } from './components/templates/table-toolbar/tabl
     MatPaginatorModule,
     MatSelectModule,
     CurrencyMaskModule,
+    MatTabsModule,
+    TextFieldModule,
+    MatAutocompleteModule,
+    MatProgressSpinnerModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

@@ -11,11 +11,19 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { cloneDeep } from 'lodash';
 import { ToastrService } from 'ngx-toastr';
-import { firstValueFrom, Subject } from 'rxjs';
+import {
+  buffer,
+  debounceTime,
+  filter,
+  firstValueFrom,
+  map,
+  Subject,
+  Subscription,
+} from 'rxjs';
 import { AppInjectorService } from 'src/app/services/app-injector.service';
 import { BaseService } from 'src/app/services/base.service';
-import { ConfirmDialogComponent } from 'src/app/components/shared/dialogs/confirm-dialog/confirm-dialog.component';
-import { FormHelper } from 'src/core/helpers/form-helper.model';
+import { FormHelper } from 'src/core/helpers/form-helper';
+import { DialogHelper } from 'src/core/helpers/dialog-helper';
 
 @Component({
   selector: 'app-base-table',
@@ -33,6 +41,20 @@ export abstract class BaseTableComponent implements OnInit, OnDestroy {
   displayedColumns: string[]; // Colunas a serem mostradas na tabela
   formHelper = FormHelper; // Funções auxiliares
 
+  // Mensagens de erro ao chamar save()
+  errosInserirAlterar = new Array();
+  errosDeletar = new Array();
+
+  // Para tratar do double click no mobile
+  eventSubscription: Subscription;
+  click$ = new Subject<any>();
+  doubleClick$ = this.click$.pipe(
+    buffer(this.click$.pipe(debounceTime(250))),
+    map((list) => list),
+    filter((item) => item.length === 2 && item[0].element === item[1].element),
+    map((item) => item[0])
+  );
+
   // Services
   toastr: ToastrService;
   dialog: MatDialog;
@@ -48,6 +70,9 @@ export abstract class BaseTableComponent implements OnInit, OnDestroy {
     this.formEditing$.subscribe((isEditing) => {
       isEditing ? this.formArray.enable() : this.formArray.disable();
     });
+    this.eventSubscription = this.doubleClick$.subscribe((data) => {
+      this.handleDoubleClickEvent(data);
+    });
   }
 
   ngOnInit() {
@@ -59,9 +84,9 @@ export abstract class BaseTableComponent implements OnInit, OnDestroy {
     this.elementRef.nativeElement.remove();
   }
 
-  select(parent: any = null, sortItems: any = null) {
+  select(parent: any = null, sortItems: any = null, searchParams: any = null) {
     if (!!parent) {
-      this.tableService.getByParent(parent).subscribe({
+      this.tableService.getByParent(parent, searchParams).subscribe({
         next: (items) => {
           if (!!items) {
             if (!!sortItems) {
@@ -73,7 +98,7 @@ export abstract class BaseTableComponent implements OnInit, OnDestroy {
         error: () => this.toastr.error('Um erro ocorreu ao buscar itens.'),
       });
     } else {
-      this.tableService.getAll().subscribe({
+      this.tableService.getAll(searchParams).subscribe({
         next: (items) => {
           if (!!items) {
             if (!!sortItems) {
@@ -89,6 +114,10 @@ export abstract class BaseTableComponent implements OnInit, OnDestroy {
 
   setItems(items: any[]) {
     this.formArray.clear();
+
+    // Para caso esteja desabilitado ele mantenha seu status depois de inserir items
+    const statusFormArray = this.formArray.status === 'DISABLED';
+
     if (!!items) {
       this.originalDataSource = items;
       items.forEach(() => {
@@ -101,17 +130,19 @@ export abstract class BaseTableComponent implements OnInit, OnDestroy {
         this.paginator.firstPage();
       }
     }
+
     this.setInitialData();
+    statusFormArray ? this.formArray.disable() : null;
   }
 
-  async beforeSave(deletePropertyName: string = 'nome') {
+  async beforeSave(propertyNameErrorMessage: string = 'nome') {
     if (this.formArray.dirty) {
       if (this.formArray.invalid) {
         this.toastr.error('Existem campos inválidos na tabela.');
         this.formArray.markAllAsTouched(); // Para mostrar erros nas linhas
       } else {
         this.setRowsAsModified();
-        await this.save(deletePropertyName);
+        await this.save(propertyNameErrorMessage);
       }
     } else {
       this.toastr.error('Nenhum campo foi modificado.');
@@ -119,9 +150,9 @@ export abstract class BaseTableComponent implements OnInit, OnDestroy {
   }
 
   async save(propertyNameErrorMessage: string = 'nome') {
+    this.errosInserirAlterar = [];
+    this.errosDeletar = [];
     const data = this.getRawData();
-    const errosSalvar = new Array();
-    const errosDeletar = new Array();
 
     const promises = data.map(async (item: any) => {
       if (item.new) {
@@ -129,26 +160,26 @@ export abstract class BaseTableComponent implements OnInit, OnDestroy {
           .then()
           .catch(() => {
             const index = data.findIndex((x: any) => x === item);
-            errosSalvar.push(index);
+            this.errosInserirAlterar.push(index);
           });
       } else if (item.modified) {
         await firstValueFrom(this.tableService.put(item))
           .then()
           .catch(() => {
             const index = data.findIndex((x: any) => x === item);
-            errosSalvar.push(index);
+            this.errosInserirAlterar.push(index);
           });
       }
     });
     if (this.deletedData.length > 0) {
       for (const id of this.deletedData) {
-        await firstValueFrom(this.tableService.delete(id))
+        await firstValueFrom(this.tableDeleteMethod(id))
           .then()
           .catch((e) => {
             this.originalDataSource.forEach((x: any) => {
               // TODO ver caso não tenha ID
               if (x.id === id) {
-                errosDeletar.push({
+                this.errosDeletar.push({
                   nome: x[propertyNameErrorMessage],
                   erro: e.error.errors.Id[0],
                 });
@@ -159,23 +190,30 @@ export abstract class BaseTableComponent implements OnInit, OnDestroy {
     }
 
     await Promise.all(promises);
+    await this.afterSave();
+  }
 
-    if (errosSalvar.length > 0) {
-      let message = `Ocorreram erros ao salvar a(s) linha(s): ${errosSalvar.map(
+  tableDeleteMethod(id: string) {
+    return this.tableService.delete(id);
+  }
+
+  afterSave() {
+    if (this.errosInserirAlterar.length > 0) {
+      let message = `Ocorreram erros ao salvar a(s) linha(s): ${this.errosInserirAlterar.map(
         (x) => ` ${++x}`
       )}`;
-      if (errosDeletar.length > 0) {
-        message += ` e ao deletar: ${errosDeletar.map((x) => ` ${x}`)}`;
+      if (this.errosDeletar.length > 0) {
+        message += ` e ao deletar: ${this.errosDeletar.map((x) => ` ${x}`)}`;
       }
       this.toastr.error(message);
-    } else if (errosDeletar.length > 0) {
+    } else if (this.errosDeletar.length > 0) {
       this.toastr.error(
-        `Ocorreram erros ao deletar: ${errosDeletar.map(
+        `Ocorreram erros ao deletar: ${this.errosDeletar.map(
           (x) => ` ${x.nome} (${x.erro})`
         )}`
       );
     } else {
-      this.toastr.success('Salvo com sucesso.');
+      this.toastr.success('Registros da tabela salvos com sucesso.');
       this.setInitialData();
     }
   }
@@ -183,7 +221,7 @@ export abstract class BaseTableComponent implements OnInit, OnDestroy {
   async beforeUndo() {
     this.formEditing$.next(false);
     if (this.formArray.dirty) {
-      const confirma = await this.openDialog(
+      const confirma = await DialogHelper.openDialog(
         'Confirmar',
         'Deseja descartar alterações?'
       );
@@ -201,6 +239,10 @@ export abstract class BaseTableComponent implements OnInit, OnDestroy {
     this.formEditing$.next(true);
   }
 
+  afterFormEnable() {
+    // Pode ser usado pra desabilitar campos após formulário ser habilitado
+  }
+
   async undo() {
     this.select();
     this.onClear();
@@ -211,6 +253,8 @@ export abstract class BaseTableComponent implements OnInit, OnDestroy {
   }
 
   setInitialData() {
+    this.errosInserirAlterar = [];
+    this.errosDeletar = [];
     this.deletedData = [];
     this.formEditing$.next(false);
     this.clearSelections();
@@ -218,6 +262,12 @@ export abstract class BaseTableComponent implements OnInit, OnDestroy {
 
   getRawData() {
     return this.formArray.getRawValue();
+  }
+
+  handleDoubleClickEvent(data: any) {
+    throw new Error(
+      'Método de evento dois cliques em tabela não implementado.'
+    );
   }
 
   // #region Comportamento da Tabela
@@ -230,10 +280,14 @@ export abstract class BaseTableComponent implements OnInit, OnDestroy {
         this.paginator.length = this.paginator.length + 1;
         this.paginator.lastPage();
       }
-      this.lastAddedItem.get('new')?.setValue(true);
+      this.setNewItem();
     }
     this.formArray.push(this.lastAddedItem);
     this.updateDataSource();
+  }
+
+  setNewItem() {
+    this.lastAddedItem.get('new')?.setValue(true);
   }
 
   setRowsAsModified() {
@@ -252,27 +306,12 @@ export abstract class BaseTableComponent implements OnInit, OnDestroy {
   }
   // #endregion
 
-  // #region Dialog de Confirmação
-  async openDialog(title: string, content: string) {
-    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-      width: '250px',
-      data: {
-        title,
-        content,
-      },
-    });
-
-    return await firstValueFrom(dialogRef.beforeClosed()).then((e) => e);
-  }
-  // #endregion
-
   // #region Configuração dos Campos
   getErrorMessage(control: FormControl) {
     return FormHelper.getErrorMessage(control);
   }
 
-  // TODO ver como funciona
-  compareForSelectField(o1: any, o2: any): boolean {
+  compare(o1: any, o2: any): boolean {
     return o1.id === o2.id;
   }
   // #endregion

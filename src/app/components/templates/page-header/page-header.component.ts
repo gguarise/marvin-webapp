@@ -8,17 +8,30 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 export class PageHeaderComponent {
   @Input() title: string = '';
 
+  @Input() showReturnButton = false;
   @Input() showEditButton = true;
   @Input() showSaveButton = true;
   @Input() showUndoButton = true;
+  @Input() showDeleteButton = false;
+  @Input() showNewButton = false;
   @Input() dialogComponentButton: string;
 
+  @Output() returnEvent = new EventEmitter();
   @Output() editEvent = new EventEmitter();
   @Output() saveEvent = new EventEmitter();
   @Output() undoEvent = new EventEmitter();
+  @Output() deleteEvent = new EventEmitter();
   @Output() openDialogEvent = new EventEmitter();
+  @Output() newEvent = new EventEmitter();
 
   constructor() {}
+
+  emitReturnEvent() {
+    if (this.showReturnButton) {
+      this.returnEvent.emit('return');
+    }
+    return true;
+  }
 
   emitEditEvent() {
     if (this.showEditButton) {
@@ -41,9 +54,23 @@ export class PageHeaderComponent {
     return true;
   }
 
+  emitDeleteEvent() {
+    if (!!this.showDeleteButton) {
+      this.deleteEvent.emit();
+    }
+    return true;
+  }
+
   emitOpenDialogEvent() {
     if (!!this.dialogComponentButton) {
       this.openDialogEvent.emit();
+    }
+    return true;
+  }
+
+  emitNewEvent() {
+    if (!!this.dialogComponentButton) {
+      this.newEvent.emit();
     }
     return true;
   }

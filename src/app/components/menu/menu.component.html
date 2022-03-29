@@ -10,14 +10,20 @@
             <a mat-list-item
                routerLink="/fornecedor"
                [routerLinkActive]="['is-active']">
-                <mat-icon>people_alt</mat-icon>
+                <mat-icon>groups</mat-icon>
                 Fornecedores
             </a>
             <a mat-list-item
-               routerLink="/produto"
+               routerLink="/estoque"
                [routerLinkActive]="['is-active']">
                 <mat-icon>inventory</mat-icon>
-                Produtos
+                Estoque
+            </a>
+            <a mat-list-item
+               routerLink="/cliente"
+               [routerLinkActive]="['is-active']">
+                <mat-icon>people_alt</mat-icon>
+                Clientes
             </a>
         </mat-nav-list>
     </mat-sidenav>
