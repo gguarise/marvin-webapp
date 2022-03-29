@@ -32,7 +32,7 @@ import { CurrencyMaskModule } from 'ng2-currency-mask';
 import { OrcamentoComponent } from './pages/orcamento/orcamento.component';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatCardModule } from '@angular/material/card';
-import { ProdutoTableComponent } from './pages/orcamento/produto-table/produto-table.component';
+import { EstoqueTableComponent } from './pages/orcamento/estoque-table/estoque-table.component';
 import { PecasTableComponent } from './pages/orcamento/pecas-table/pecas-table.component';
 import { ClienteComponent } from './pages/cliente/cliente.component';
 import { TextFieldModule } from '@angular/cdk/text-field';
@@ -57,7 +57,7 @@ import { ServicoTableComponent } from './pages/orcamento/servico-table/servico-t
     BaseComponent,
     ConfirmDialogComponent,
     OrcamentoComponent,
-    ProdutoTableComponent,
+    EstoqueTableComponent,
     PecasTableComponent,
     ClienteComponent,
     TableToolbarComponent,

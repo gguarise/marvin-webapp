@@ -69,11 +69,11 @@
                                     appearance="fill">
                         <mat-label>Produtos</mat-label>
                         <input matInput
-                               formControlName="totalProdutos"
+                               formControlName="totalEstoques"
                                currencyMask
                                [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', allowNegative: false, precision: 2 }" />
-                        <mat-error *ngIf="mainForm.get('dados.totalProdutos')?.invalid">
-                            {{getErrorMessage(mainForm.get('dados.totalProdutos'))}}
+                        <mat-error *ngIf="mainForm.get('dados.totalEstoques')?.invalid">
+                            {{getErrorMessage(mainForm.get('dados.totalEstoques'))}}
                         </mat-error>
                     </mat-form-field>
 
@@ -167,8 +167,8 @@
         <mat-tab label="Serviços">
             <app-servico-table (calculateCustoServicos)="calculateCustoServicos()"></app-servico-table>
         </mat-tab>
-        <mat-tab label="Produtos">
-            <app-produto-table (calculateCustoProdutos)="calculateCustoProdutos()"></app-produto-table>
+        <mat-tab label="Estoques">
+            <app-estoque-table (calculateCustoEstoques)="calculateCustoEstoques()"></app-estoque-table>
         </mat-tab>
         <mat-tab label="Peças">
             <app-pecas-table (calculateCustoPecas)="calculateCustoPecas()"></app-pecas-table>

@@ -13,13 +13,13 @@ import { ActivatedRoute } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { of } from 'rxjs';
 import { BaseComponent } from 'src/app/components/base/base.component';
-import { Produto } from 'src/app/models/produto';
+import { Estoque } from 'src/app/models/estoque';
 import { BaseService } from 'src/app/services/base.service';
 import { ClienteService } from 'src/app/services/cliente.service';
 import { OrcamentoService } from 'src/app/services/orcamento.service';
 import { ClienteComponent } from '../cliente/cliente.component';
 import { PecasTableComponent } from './pecas-table/pecas-table.component';
-import { ProdutoTableComponent } from './produto-table/produto-table.component';
+import { EstoqueTableComponent } from './estoque-table/estoque-table.component';
 import { ServicoTableComponent } from './servico-table/servico-table.component';
 
 @Component({
@@ -41,8 +41,8 @@ export class OrcamentoComponent extends BaseComponent implements AfterViewInit {
   ]);
   sumReducer = (accumulator: any, current: any) => accumulator + current;
 
-  @ViewChild(ProdutoTableComponent, { static: false })
-  produtosTable: ProdutoTableComponent;
+  @ViewChild(EstoqueTableComponent, { static: false })
+  estoquesTable: EstoqueTableComponent;
   @ViewChild(ServicoTableComponent, { static: false })
   servicosTable: ServicoTableComponent;
   @ViewChild(PecasTableComponent, { static: false })
@@ -58,7 +58,7 @@ export class OrcamentoComponent extends BaseComponent implements AfterViewInit {
     this.mainForm = this.fb.group({
       cliente: [],
       carro: [],
-      totalProdutos: [{ value: 0, disabled: true }],
+      totalEstoques: [{ value: 0, disabled: true }],
       totalPecas: [{ value: 0, disabled: true }],
       totalServicos: [{ value: 0, disabled: true }],
       subtotal: [{ value: 0, disabled: true }],
@@ -67,14 +67,14 @@ export class OrcamentoComponent extends BaseComponent implements AfterViewInit {
       valorFinal: [{ value: 0, disabled: true }],
       pagamentoEfetuado: [],
       servicos: [],
-      produtos: [],
+      estoques: [],
       pecas: [],
     });
   }
 
   override async ngOnInit() {
     // this.componentTables = [
-    //   this.produtosTable
+    //   this.estoquesTable
     // ];
     super.ngOnInit();
     this.formEditing$.next(true);
@@ -122,10 +122,10 @@ export class OrcamentoComponent extends BaseComponent implements AfterViewInit {
     }
   }
 
-  calculateCustoProdutos() {
-    const tabela = this.produtosTable.formArray.getRawValue();
-    const total = tabela.map((x) => x.total).reduce(this.sumReducer);
-    this.mainForm.get('totalProdutos')?.setValue(total);
+  calculateCustoEstoques() {
+    const tabela = this.estoquesTable.formArray.getRawValue();
+    const total = tabela.map((x: any) => x.total).reduce(this.sumReducer);
+    this.mainForm.get('totalEstoques')?.setValue(total);
     this.calculateSubtotal();
   }
 
@@ -145,7 +145,7 @@ export class OrcamentoComponent extends BaseComponent implements AfterViewInit {
 
   calculateSubtotal() {
     const total =
-      this.mainForm.get('totalProdutos')?.value +
+      this.mainForm.get('totalEstoques')?.value +
       this.mainForm.get('totalPecas')?.value +
       this.mainForm.get('totalServicos')?.value;
     this.mainForm.get('subtotal')?.setValue(total);
