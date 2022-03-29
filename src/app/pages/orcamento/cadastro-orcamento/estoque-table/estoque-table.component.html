@@ -39,24 +39,24 @@
                 </mat-cell>
             </ng-container>
 
-            <ng-container matColumnDef="estoque">
+            <ng-container matColumnDef="produto">
                 <mat-header-cell fxFlex
                                  fxLayoutAlign="center center"
-                                 *matHeaderCellDef> Estoque </mat-header-cell>
+                                 *matHeaderCellDef> Produto </mat-header-cell>
                 <mat-cell fxFlex
                           *matCellDef="let element"
                           [formGroup]="element">
                     <mat-form-field fxLayout="column">
-                        <mat-select formControlName="estoque"
+                        <mat-select formControlName="produto"
                                     [compareWith]="compare"
                                     (selectionChange)="fillProductPrice(element)">
-                            <mat-option *ngFor="let estoque of estoques$ | async"
-                                        [value]="estoque">
-                                {{estoque?.nome}}
+                            <mat-option *ngFor="let produto of produtos$ | async"
+                                        [value]="produto">
+                                {{produto?.nome}}
                             </mat-option>
                         </mat-select>
-                        <mat-error *ngIf="element.get('estoque').invalid">
-                            {{getErrorMessage(element.get('estoque'))}}
+                        <mat-error *ngIf="element.get('produto').invalid">
+                            {{getErrorMessage(element.get('produto'))}}
                         </mat-error>
                     </mat-form-field>
                 </mat-cell>

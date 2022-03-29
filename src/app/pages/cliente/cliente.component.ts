@@ -18,7 +18,6 @@ export class ClienteComponent extends BaseTableComponent {
   ) {
     super(clienteService, elementRef);
     this.formGroupConfig = {
-      select: [false],
       id: [],
       nome: [
         null,
@@ -26,8 +25,6 @@ export class ClienteComponent extends BaseTableComponent {
       ],
       cpf: [],
       telefone: [],
-      modified: [],
-      new: [],
     };
     this.displayedColumns = ['nome', 'cpf', 'telefone'];
   }

@@ -32,8 +32,8 @@ import { CurrencyMaskModule } from 'ng2-currency-mask';
 import { OrcamentoComponent } from './pages/orcamento/orcamento.component';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatCardModule } from '@angular/material/card';
-import { EstoqueTableComponent } from './pages/orcamento/estoque-table/estoque-table.component';
-import { PecasTableComponent } from './pages/orcamento/pecas-table/pecas-table.component';
+import { ProdutoTableComponent } from './pages/orcamento/cadastro-orcamento/produto-table/produto-table.component';
+import { PecasTableComponent } from './pages/orcamento/cadastro-orcamento/pecas-table/pecas-table.component';
 import { ClienteComponent } from './pages/cliente/cliente.component';
 import { TextFieldModule } from '@angular/cdk/text-field';
 import { AppInjectorService } from './services/app-injector.service';
@@ -41,10 +41,11 @@ import { TableToolbarComponent } from './components/templates/table-toolbar/tabl
 import { CadastroClienteComponent } from './pages/cliente/cadastro-cliente/cadastro-cliente.component';
 import { CarrosTableComponent } from './pages/cliente/cadastro-cliente/carros-table/carros-table.component';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { EstoqueComponent } from './pages/estoque/estoque.component';
+import { ProdutoComponent } from './pages/produto/produto.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ServicoComponent } from './pages/servico/servico.component';
-import { ServicoTableComponent } from './pages/orcamento/servico-table/servico-table.component';
+import { ServicoTableComponent } from './pages/orcamento/cadastro-orcamento/servico-table/servico-table.component';
+import { CadastroOrcamentoComponent } from './pages/orcamento/cadastro-orcamento/cadastro-orcamento.component';
 
 @NgModule({
   declarations: [
@@ -57,15 +58,16 @@ import { ServicoTableComponent } from './pages/orcamento/servico-table/servico-t
     BaseComponent,
     ConfirmDialogComponent,
     OrcamentoComponent,
-    EstoqueTableComponent,
+    ProdutoTableComponent,
     PecasTableComponent,
     ClienteComponent,
     TableToolbarComponent,
     CadastroClienteComponent,
     CarrosTableComponent,
-    EstoqueComponent,
+    ProdutoComponent,
     ServicoComponent,
     ServicoTableComponent,
+    CadastroOrcamentoComponent,
   ],
   imports: [
     BrowserModule,

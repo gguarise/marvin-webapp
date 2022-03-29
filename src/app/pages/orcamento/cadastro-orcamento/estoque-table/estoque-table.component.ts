@@ -2,25 +2,25 @@ import { Component, ElementRef, EventEmitter, Output } from '@angular/core';
 import { Validators } from '@angular/forms';
 import { Observable, of } from 'rxjs';
 import { ChildBaseTableComponent } from 'src/app/components/base/child-base-table/child-base-table.component';
-import { Estoque } from 'src/app/models/estoque';
-import { EstoqueService } from 'src/app/services/estoque.service';
+import { Produto } from 'src/app/models/produto';
+import { ProdutoService } from 'src/app/services/produto.service';
 
 @Component({
-  selector: 'app-estoque-table',
-  templateUrl: './estoque-table.component.html',
-  styleUrls: ['./estoque-table.component.scss'],
+  selector: 'app-produto-table',
+  templateUrl: './produto-table.component.html',
+  styleUrls: ['./produto-table.component.scss'],
 })
-export class EstoqueTableComponent extends ChildBaseTableComponent {
-  estoques$: Observable<Estoque[]>;
+export class ProdutoTableComponent extends ChildBaseTableComponent {
+  produtos$: Observable<Produto[]>;
 
-  @Output() calculateCustoEstoques = new EventEmitter();
+  @Output() calculateCustoProdutos = new EventEmitter();
 
-  constructor(elementRef: ElementRef, estoqueService: EstoqueService) {
-    super(estoqueService, elementRef);
+  constructor(elementRef: ElementRef, produtoService: ProdutoService) {
+    super(produtoService, elementRef);
     this.formGroupConfig = {
       select: [false],
       id: [],
-      estoque: [null, Validators.required],
+      produto: [null, Validators.required],
       quantidade: [
         1,
         Validators.compose([
@@ -50,14 +50,14 @@ export class EstoqueTableComponent extends ChildBaseTableComponent {
     };
     this.displayedColumns = [
       'select',
-      'estoque',
+      'produto',
       'quantidade',
       'valorUnitario',
       'porcentagemLucro',
       'total',
     ];
-    estoqueService.getAll().subscribe((t: any) => {
-      this.estoques$ = of(t);
+    produtoService.getAll().subscribe((t: any) => {
+      this.produtos$ = of(t);
     });
   }
 
@@ -68,7 +68,7 @@ export class EstoqueTableComponent extends ChildBaseTableComponent {
   }
 
   override compare(o1: any, o2: any): boolean {
-    return o1.estoque.nome === o2.estoque.nome;
+    return o1.produto.nome === o2.produto.nome;
   }
 
   override setNewItem() {
@@ -77,8 +77,8 @@ export class EstoqueTableComponent extends ChildBaseTableComponent {
   }
 
   fillProductPrice(element: any) {
-    const estoque = element.get('estoque').value;
-    element.get('valorUnitario').setValue(estoque.valorUnitario);
+    const produto = element.get('produto').value;
+    element.get('valorUnitario').setValue(produto.valorUnitario);
     this.calculateTotalPrice(element);
   }
 
@@ -94,6 +94,6 @@ export class EstoqueTableComponent extends ChildBaseTableComponent {
   }
 
   emitCalculateCustoTotalEvent() {
-    this.calculateCustoEstoques.emit();
+    this.calculateCustoProdutos.emit();
   }
 }

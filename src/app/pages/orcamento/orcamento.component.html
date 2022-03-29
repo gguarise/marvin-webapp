@@ -1,177 +1,83 @@
-<app-page-header title="Orçamento"
-                 [showSaveButton]="true"
-                 [showEditButton]="false"
-                 [showUndoButton]="true"
-                 (saveEvent)="salvar()"
-                 (undoEvent)="descartar()"></app-page-header>
-<form [formGroup]="mainForm">
-    <mat-tab-group>
-        <mat-tab label="Dados">
-            <div fxFlex
-                 fxLayout="column">
-                <div fxFlex
-                     fxLayout="row"
-                     fxLayoutAlign="space-between center">
+<div class="container text-center">
+    <app-page-header title="Orçamentos"
+                     [showSaveButton]="false"
+                     [showEditButton]="false"
+                     [showUndoButton]="false"
+                     [showNewButton]="true">
+    </app-page-header>
 
-                    <mat-form-field fxFlex="80"
-                                    appearance="fill">
-                        <mat-label>Cliente</mat-label>
-                        <mat-select formControlName="cliente"
-                                    [compareWith]="compareWith">
-                            <mat-option *ngFor="let cliente of clientes$ | async"
-                                        [value]="cliente.id">
-                                {{cliente?.nome}}
-                            </mat-option>
-                        </mat-select>
-                    </mat-form-field>
+    <div class="table-container"
+         [class.mat-elevation-z4]="true">
+        <mat-table [dataSource]="dataSource">
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns; let i = index"
+                     [class.invalid-table-row]="row.invalid"
+                     (click)="click$.next({event: $event, element: row.controls})">
+                >
+            </mat-row>
 
-                    <button mat-raised-button
-                            class="new-button"
-                            color="primary"
-                            (click)="addClient()">Novo</button>
-                </div>
-
-                <mat-form-field appearance="fill">
-                    <mat-label>Carro</mat-label>
-                    <mat-select formControlName="cliente"
-                                [compareWith]="compareWith">
-                        <ng-container *ngFor="let carro of carros$ | async">
-                            <mat-option *ngIf="carro.idCliente == mainForm.get('cliente')?.value"
-                                        [value]="carro.id">
-                                {{carro?.nome}}
-                            </mat-option>
-                        </ng-container>
-                    </mat-select>
-                </mat-form-field>
-
-            </div>
-
-            <!-- Total Tabelas -->
-            <fieldset class="field-set"
-                      fxFlex>
-                <legend class="field-set-legend">Total das Tabelas</legend>
-                <div fxLayout="row"
-                     fxLayoutAlign="space-between">
-
-                    <mat-form-field fxFlex
-                                    appearance="fill">
-                        <mat-label>Serviços</mat-label>
+            <!-- <ng-container matColumnDef="nome">
+                <mat-header-cell fxFlex="50"
+                                 fxLayoutAlign="center center"
+                                 *matHeaderCellDef>
+                    Nome
+                </mat-header-cell>
+                <mat-cell fxFlex="50"
+                          *matCellDef="let element"
+                          [formGroup]="element">
+                    <mat-form-field fxLayout="column">
                         <input matInput
-                               formControlName="totalServicos"
-                               currencyMask
-                               [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', allowNegative: false, precision: 2 }" />
-                        <mat-error *ngIf="mainForm.get('dados.totalServicos')?.invalid">
-                            {{getErrorMessage(mainForm.get('dados.totalServicos'))}}
+                               formControlName="nome" />
+                        <mat-error>
+                            {{ getErrorMessage(element.get("nome")) }}
                         </mat-error>
                     </mat-form-field>
+                </mat-cell>
+            </ng-container>
 
-                    <mat-form-field fxFlex
-                                    appearance="fill">
-                        <mat-label>Produtos</mat-label>
+            <ng-container matColumnDef="cpf">
+                <mat-header-cell fxFlex
+                                 fxLayoutAlign="center center"
+                                 *matHeaderCellDef>
+                    CPF
+                </mat-header-cell>
+                <mat-cell fxFlex
+                          *matCellDef="let element"
+                          [formGroup]="element">
+                    <mat-form-field fxLayout="column">
                         <input matInput
-                               formControlName="totalEstoques"
-                               currencyMask
-                               [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', allowNegative: false, precision: 2 }" />
-                        <mat-error *ngIf="mainForm.get('dados.totalEstoques')?.invalid">
-                            {{getErrorMessage(mainForm.get('dados.totalEstoques'))}}
+                               formControlName="cpf"
+                               [textMask]="formHelper.getTextMask('cpf')" />
+                        <mat-error>
+                            {{ getErrorMessage(element.get("cpf")) }}
                         </mat-error>
                     </mat-form-field>
+                </mat-cell>
+            </ng-container>
 
-                    <mat-form-field fxFlex
-                                    appearance="fill">
-                        <mat-label>Peças</mat-label>
+            <ng-container matColumnDef="telefone">
+                <mat-header-cell fxFlex
+                                 fxLayoutAlign="center center"
+                                 *matHeaderCellDef>
+                    Telefone
+                </mat-header-cell>
+                <mat-cell fxFlex
+                          *matCellDef="let element"
+                          [formGroup]="element">
+                    <mat-form-field fxLayout="column">
                         <input matInput
-                               formControlName="totalPecas"
-                               currencyMask
-                               [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', allowNegative: false, precision: 2 }" />
-                        <mat-error *ngIf="mainForm.get('dados.totalPecas')?.invalid">
-                            {{getErrorMessage(mainForm.get('dados.totalPecas'))}}
+                               formControlName="telefone"
+                               [textMask]="formHelper.getTextMask('telefone9')" />
+                        <mat-error>
+                            {{ getErrorMessage(element.get("telefone")) }}
                         </mat-error>
                     </mat-form-field>
-
-                    <mat-form-field fxFlex
-                                    appearance="fill">
-                        <mat-label>Subtotal</mat-label>
-                        <input matInput
-                               formControlName="subtotal"
-                               currencyMask
-                               [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', allowNegative: false, precision: 2 }" />
-                        <mat-error *ngIf="mainForm.get('dados.subtotal')?.invalid">
-                            {{getErrorMessage(mainForm.get('dados.subtotal'))}}
-                        </mat-error>
-                    </mat-form-field>
-
-                </div>
-            </fieldset>
-
-            <!-- Descontos -->
-            <fieldset class="field-set"
-                      fxFlex>
-                <legend class="field-set-legend">Descontos</legend>
-                <div fxLayout="row"
-                     fxLayoutAlign="space-between">
-
-                    <mat-form-field fxFlex="49"
-                                    appearance="fill">
-                        <mat-label>Porcentagem</mat-label>
-                        <input matInput
-                               formControlName="porcentagemDesconto"
-                               currencyMask
-                               (keyup)="calculateDesconto(true)"
-                               [options]="{ prefix: '', thousands: '.', decimal: ',', allowNegative: false, precision: 2, suffix: '%' }" />
-                        <mat-error *ngIf="mainForm.get('dados.porcentagemDesconto')?.invalid">
-                            {{getErrorMessage(mainForm.get('dados.porcentagemDesconto'))}}
-                        </mat-error>
-                    </mat-form-field>
-
-                    <mat-form-field fxFlex="49"
-                                    appearance="fill">
-                        <mat-label>Valor</mat-label>
-                        <input matInput
-                               formControlName="valorDesconto"
-                               currencyMask
-                               (keyup)="calculateDesconto()"
-                               [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', allowNegative: false, precision: 2 }" />
-                        <mat-error *ngIf="mainForm.get('dados.valorDesconto')?.invalid">
-                            {{getErrorMessage(mainForm.get('dados.valorDesconto'))}}
-                        </mat-error>
-                    </mat-form-field>
-
-                </div>
-            </fieldset>
-
-            <fieldset class="field-set"
-                      fxFlex>
-                <legend>Resumo</legend>
-                <mat-form-field fxFlex
-                                appearance="fill">
-                    <mat-label>Valor</mat-label>
-                    <input matInput
-                           formControlName="valorFinal"
-                           currencyMask
-                           (keyup)="calculateDesconto()"
-                           [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', allowNegative: false, precision: 2 }" />
-                    <mat-error *ngIf="mainForm.get('dados.valorFinal')?.invalid">
-                        {{getErrorMessage(mainForm.get('dados.valorFinal'))}}
-                    </mat-error>
-                </mat-form-field>
-
-                <mat-checkbox fxFlex
-                              fxLayoutAlign="center center"
-                              formControlName="pagamentoEfetuado">
-                    Pagamento Efetuado
-                </mat-checkbox>
-            </fieldset>
-        </mat-tab>
-        <!-- Passar parentId -->
-        <mat-tab label="Serviços">
-            <app-servico-table (calculateCustoServicos)="calculateCustoServicos()"></app-servico-table>
-        </mat-tab>
-        <mat-tab label="Estoques">
-            <app-estoque-table (calculateCustoEstoques)="calculateCustoEstoques()"></app-estoque-table>
-        </mat-tab>
-        <mat-tab label="Peças">
-            <app-pecas-table (calculateCustoPecas)="calculateCustoPecas()"></app-pecas-table>
-        </mat-tab>
-    </mat-tab-group>
-</form>
+                </mat-cell>
+            </ng-container> -->
+        </mat-table>
+    </div>
+    <div [class.mat-elevation-z2]="true">
+        <mat-paginator [pageSize]="10"
+                       [pageSizeOptions]="[5, 10]"></mat-paginator>
+    </div>
+</div>
