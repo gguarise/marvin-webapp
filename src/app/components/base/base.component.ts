@@ -52,8 +52,9 @@ export class BaseComponent implements OnInit {
     protected cdr: ChangeDetectorRef,
     public route: ActivatedRoute
   ) {
-    this.toastr = AppInjectorService.injector.get(ToastrService);
+    this.dialog = AppInjectorService.injector.get(MatDialog);
     this.fb = AppInjectorService.injector.get(FormBuilder);
+    this.toastr = AppInjectorService.injector.get(ToastrService);
 
     this.formEditing$.subscribe((isEditing) => {
       isEditing ? this.mainForm.enable() : this.mainForm.disable();
@@ -66,7 +67,6 @@ export class BaseComponent implements OnInit {
 
   async ngOnInit() {
     this.routeId = this.route.snapshot.paramMap.get('id');
-
     if (!this.routeId) {
       this.isNewRecord = true;
     } else {

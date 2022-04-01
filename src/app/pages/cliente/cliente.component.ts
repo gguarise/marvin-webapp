@@ -34,7 +34,7 @@ export class ClienteComponent extends BaseTableComponent {
       a.nome > b.nome ? 1 : b.nome > a.nome ? -1 : 0;
 
     // Retorna apenas clientes ativos
-    const searchParams = [{ Ativo: 'true' }];
+    const searchParams = { Ativo: 'true' };
     super.select(null, sortItems, searchParams);
   }
 

@@ -3,6 +3,8 @@ import {
   ChangeDetectorRef,
   Component,
   ElementRef,
+  Inject,
+  Optional,
   ViewChild,
 } from '@angular/core';
 import { Validators } from '@angular/forms';
@@ -12,6 +14,7 @@ import { ClienteService } from 'src/app/services/cliente.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CarrosTableComponent } from './carros-table/carros-table.component';
 import { FieldValidators } from 'src/core/validators/field-validators';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-cadastro-cliente',
@@ -30,7 +33,10 @@ export class CadastroClienteComponent
     cdr: ChangeDetectorRef,
     route: ActivatedRoute,
     public router: Router,
-    public clienteService: ClienteService
+    public clienteService: ClienteService,
+    // Ambos abaixo para controlar o comportamento para Tela de Cadastro de Orçamento
+    @Optional() public dialogRef: MatDialogRef<CadastroClienteComponent>,
+    @Optional() @Inject(MAT_DIALOG_DATA) public isDialogComponent: boolean
   ) {
     super(clienteService, elementRef, cdr, route);
     this.mainForm = this.fb.group({
@@ -91,7 +97,11 @@ export class CadastroClienteComponent
   }
 
   override afterInsert(response: any) {
-    this.router.navigate(['/cadastro-cliente', response?.id]);
+    if (!this.isDialogComponent) {
+      this.router.navigate(['/cadastro-cliente', response?.id]);
+    } else {
+      this.dialogRef.close();
+    }
   }
 
   override getRawData() {

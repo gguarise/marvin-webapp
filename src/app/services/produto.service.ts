@@ -9,12 +9,13 @@ import { BaseService } from './base.service';
   providedIn: 'root',
 })
 export class ProdutoService extends BaseService {
-  private produtoUrl = `${environment.safeApiUrl.fornecedor}Produto`;
+  private produtoUrl = `${environment.safeApiUrl.fornecedor}produto`;
 
   constructor(private http: HttpClient) {
     super();
   }
 
+  // searchParams: Nome
   override getAll(searchParams: any = null): Observable<Produto[]> {
     return this.http
       .get<Produto[]>(`${this.produtoUrl}${this.getSearchString(searchParams)}`)

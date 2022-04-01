@@ -56,8 +56,8 @@ export class ProdutoTableComponent extends ChildBaseTableComponent {
       'porcentagemLucro',
       'total',
     ];
-    produtoService.getAll().subscribe((t: any) => {
-      this.produtos$ = of(t);
+    produtoService.getAll().subscribe((p: any) => {
+      this.produtos$ = of(p);
     });
   }
 

@@ -3,7 +3,8 @@
                      [showSaveButton]="false"
                      [showEditButton]="false"
                      [showUndoButton]="false"
-                     [showNewButton]="true">
+                     [showNewButton]="true"
+                     newButtonRoute="/cadastro-orcamento">
     </app-page-header>
 
     <div class="table-container"
@@ -16,46 +17,45 @@
                 >
             </mat-row>
 
-            <!-- <ng-container matColumnDef="nome">
+            <ng-container matColumnDef="clienteId">
                 <mat-header-cell fxFlex="50"
                                  fxLayoutAlign="center center"
                                  *matHeaderCellDef>
-                    Nome
+                    Cliente
                 </mat-header-cell>
                 <mat-cell fxFlex="50"
                           *matCellDef="let element"
                           [formGroup]="element">
                     <mat-form-field fxLayout="column">
                         <input matInput
-                               formControlName="nome" />
+                               formControlName="clienteId" />
                         <mat-error>
-                            {{ getErrorMessage(element.get("nome")) }}
+                            {{ getErrorMessage(element.get("clienteId")) }}
                         </mat-error>
                     </mat-form-field>
                 </mat-cell>
             </ng-container>
 
-            <ng-container matColumnDef="cpf">
+            <ng-container matColumnDef="carroId">
                 <mat-header-cell fxFlex
                                  fxLayoutAlign="center center"
                                  *matHeaderCellDef>
-                    CPF
+                    Carro
                 </mat-header-cell>
                 <mat-cell fxFlex
                           *matCellDef="let element"
                           [formGroup]="element">
                     <mat-form-field fxLayout="column">
                         <input matInput
-                               formControlName="cpf"
-                               [textMask]="formHelper.getTextMask('cpf')" />
+                               formControlName="carroId" />
                         <mat-error>
-                            {{ getErrorMessage(element.get("cpf")) }}
+                            {{ getErrorMessage(element.get("carroId")) }}
                         </mat-error>
                     </mat-form-field>
                 </mat-cell>
             </ng-container>
 
-            <ng-container matColumnDef="telefone">
+            <ng-container matColumnDef="dataOrcamento">
                 <mat-header-cell fxFlex
                                  fxLayoutAlign="center center"
                                  *matHeaderCellDef>
@@ -66,14 +66,14 @@
                           [formGroup]="element">
                     <mat-form-field fxLayout="column">
                         <input matInput
-                               formControlName="telefone"
-                               [textMask]="formHelper.getTextMask('telefone9')" />
+                               formControlName="dataOrcamento" />
                         <mat-error>
                             {{ getErrorMessage(element.get("telefone")) }}
                         </mat-error>
                     </mat-form-field>
                 </mat-cell>
-            </ng-container> -->
+            </ng-container>
+
         </mat-table>
     </div>
     <div [class.mat-elevation-z2]="true">

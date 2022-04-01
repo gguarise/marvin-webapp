@@ -14,6 +14,7 @@ export class PageHeaderComponent {
   @Input() showUndoButton = true;
   @Input() showDeleteButton = false;
   @Input() showNewButton = false;
+  @Input() newButtonRoute = '/'; // TODO mudar pra error page
   @Input() dialogComponentButton: string;
 
   @Output() returnEvent = new EventEmitter();
@@ -61,16 +62,16 @@ export class PageHeaderComponent {
     return true;
   }
 
-  emitOpenDialogEvent() {
-    if (!!this.dialogComponentButton) {
-      this.openDialogEvent.emit();
+  emitNewEvent() {
+    if (!!this.showNewButton) {
+      this.newEvent.emit();
     }
     return true;
   }
 
-  emitNewEvent() {
+  emitOpenDialogEvent() {
     if (!!this.dialogComponentButton) {
-      this.newEvent.emit();
+      this.openDialogEvent.emit();
     }
     return true;
   }

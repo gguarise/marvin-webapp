@@ -49,13 +49,13 @@
                 (click)="emitOpenDialogEvent()">
             {{dialogComponentButton}}
         </button>
-        <a [routerLink]="['/cadastro-cliente']">
-        <button *ngIf="showNewButton"
+        <a [routerLink]="[newButtonRoute]">
+            <button *ngIf="showNewButton"
                     mat-raised-button
                     color="primary"
                     matTooltipPosition="left"
                     (click)="emitNewEvent()">
                 Novo
-        </button></a>
+            </button></a>
     </mat-toolbar-row>
 </mat-toolbar>

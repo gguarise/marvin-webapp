@@ -17,21 +17,25 @@ export class OrcamentoComponent extends BaseTableComponent {
   ) {
     super(orcamentoService, elementRef);
     this.formGroupConfig = {
-      // TODO modificar
-      id: [],
-      cliente: [],
-      carro: [],
-      dataOrcamento: [],
-      valor: [],
+      id: [], // c0ea60dd-3136-455d-b816-96615c0ec03b
+      clienteId: [],
+      carroId: [],
+      dataOrcamento: [], // TODO faltou na API
+      // pagamento: [],
     };
-    this.displayedColumns = ['cliente', 'carro', 'dataOrcamento', 'valor'];
+    this.displayedColumns = [
+      'clienteId',
+      'carroId',
+      'dataOrcamento',
+      // 'pagamento',
+    ];
   }
 
   override select() {
-    const sortItems = (a: Orcamento, b: Orcamento) =>
-      a.clienteId > b.clienteId ? 1 : b.clienteId > a.clienteId ? -1 : 0;
+    // const sortItems = (a: Orcamento, b: Orcamento) =>
+    //   a.clienteId > b.clienteId ? 1 : b.clienteId > a.clienteId ? -1 : 0;
 
-    super.select(null, sortItems);
+    super.select();
   }
 
   override handleDoubleClickEvent(data: any) {

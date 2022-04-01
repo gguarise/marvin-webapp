@@ -1,9 +1,14 @@
 <app-page-header title="Orçamento"
-                 [showSaveButton]="true"
-                 [showEditButton]="false"
-                 [showUndoButton]="true"
+                 [showReturnButton]="mainForm.disabled"
+                 [showSaveButton]="mainForm.enabled"
+                 [showEditButton]="mainForm.disabled"
+                 [showUndoButton]="mainForm.enabled"
+                 [showDeleteButton]="mainForm.disabled"
+                 (returnEvent)="redirectPreviousRoute()"
                  (saveEvent)="beforeSave()"
-                 (undoEvent)="beforeUndo()"></app-page-header>
+                 (editEvent)="edit()"
+                 (undoEvent)="beforeUndo()"
+                 (deleteEvent)="beforeDelete()"></app-page-header>
 <form [formGroup]="mainForm">
     <mat-tab-group>
         <mat-tab label="Dados">
@@ -16,13 +21,29 @@
                     <mat-form-field fxFlex="80"
                                     appearance="fill">
                         <mat-label>Cliente</mat-label>
-                        <mat-select formControlName="cliente"
-                                    [compareWith]="compareWith">
-                            <mat-option *ngFor="let cliente of clientes$ | async"
-                                        [value]="cliente.id">
-                                {{cliente?.nome}}
+                        <input fxFlex
+                               type="text"
+                               matInput
+                               formControlName="clienteId"
+                               [matAutocomplete]="auto"
+                               (keyup)="filterClientes()"
+                               (blur)="isValidCliente()">
+                        <!-- <mat-spinner *ngIf="element.get('carregandoModelos').value"
+                                         fxFlex="10"
+                                         diameter="16"></mat-spinner>
+                        </div> -->
+                        <mat-autocomplete autoActiveFirstOption
+                                          #auto="matAutocomplete"
+                                          [displayWith]="displayFnCliente.bind(this)">
+                            <mat-option *ngFor="let cliente of clientesFiltrados"
+                                        [value]="cliente.id"
+                                        (click)="updateCarros()">
+                                {{cliente.nome}}
                             </mat-option>
-                        </mat-select>
+                        </mat-autocomplete>
+                        <mat-error *ngIf="mainForm.get('clienteId')?.invalid">
+                            {{getErrorMessage(mainForm.get('clienteId'))}}
+                        </mat-error>
                     </mat-form-field>
 
                     <button mat-raised-button
@@ -33,15 +54,17 @@
 
                 <mat-form-field appearance="fill">
                     <mat-label>Carro</mat-label>
-                    <mat-select formControlName="cliente"
+                    <mat-select formControlName="carroId"
                                 [compareWith]="compareWith">
-                        <ng-container *ngFor="let carro of carros$ | async">
-                            <mat-option *ngIf="carro.idCliente == mainForm.get('cliente')?.value"
-                                        [value]="carro.id">
-                                {{carro?.nome}}
+                        <ng-container *ngFor="let carro of carros">
+                            <mat-option [value]="carro.id">
+                                {{carro?.placa}}
                             </mat-option>
                         </ng-container>
                     </mat-select>
+                    <mat-error *ngIf="mainForm.get('carroId')?.invalid">
+                        {{getErrorMessage(mainForm.get('carroId'))}}
+                    </mat-error>
                 </mat-form-field>
 
             </div>
@@ -115,12 +138,12 @@
                                     appearance="fill">
                         <mat-label>Porcentagem</mat-label>
                         <input matInput
-                               formControlName="porcentagemDesconto"
+                               formControlName="percentual"
                                currencyMask
                                (keyup)="calculateDesconto(true)"
                                [options]="{ prefix: '', thousands: '.', decimal: ',', allowNegative: false, precision: 2, suffix: '%' }" />
-                        <mat-error *ngIf="mainForm.get('dados.porcentagemDesconto')?.invalid">
-                            {{getErrorMessage(mainForm.get('dados.porcentagemDesconto'))}}
+                        <mat-error *ngIf="mainForm.get('dados.percentual')?.invalid">
+                            {{getErrorMessage(mainForm.get('dados.percentual'))}}
                         </mat-error>
                     </mat-form-field>
 
@@ -128,12 +151,12 @@
                                     appearance="fill">
                         <mat-label>Valor</mat-label>
                         <input matInput
-                               formControlName="valorDesconto"
+                               formControlName="desconto"
                                currencyMask
                                (keyup)="calculateDesconto()"
                                [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', allowNegative: false, precision: 2 }" />
-                        <mat-error *ngIf="mainForm.get('dados.valorDesconto')?.invalid">
-                            {{getErrorMessage(mainForm.get('dados.valorDesconto'))}}
+                        <mat-error *ngIf="mainForm.get('dados.desconto')?.invalid">
+                            {{getErrorMessage(mainForm.get('dados.desconto'))}}
                         </mat-error>
                     </mat-form-field>
 
@@ -156,22 +179,27 @@
                     </mat-error>
                 </mat-form-field>
 
-                <mat-checkbox fxFlex
-                              fxLayoutAlign="center center"
-                              formControlName="pagamentoEfetuado">
-                    Pagamento Efetuado
-                </mat-checkbox>
+                <ng-container formGroupName="pagamento">
+                    <mat-checkbox fxFlex
+                                  fxLayoutAlign="center center"
+                                  formControlName="pagamentoEfetuado">
+                        Pagamento Efetuado
+                    </mat-checkbox>
+                </ng-container>
             </fieldset>
         </mat-tab>
         <!-- Passar parentId -->
         <mat-tab label="Serviços">
-            <app-servico-table (calculateCustoServicos)="calculateCustoServicos()"></app-servico-table>
+            <app-servico-table formControlName="servicos"
+                               [originalDataSource]="mainForm.get('servicos')?.value"
+                               [parentId]="routeId"
+                               (calculateCustoServicos)="calculateCustoServicos()"></app-servico-table>
         </mat-tab>
         <mat-tab label="Produtos">
             <app-produto-table (calculateCustoProdutos)="calculateCustoProdutos()"></app-produto-table>
         </mat-tab>
-        <mat-tab label="Peças">
+        <!--     <mat-tab label="Peças">
             <app-pecas-table (calculateCustoPecas)="calculateCustoPecas()"></app-pecas-table>
-        </mat-tab>
+        </mat-tab> -->
     </mat-tab-group>
 </form>
