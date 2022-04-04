@@ -46,6 +46,11 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ServicoComponent } from './pages/servico/servico.component';
 import { ServicoTableComponent } from './pages/orcamento/cadastro-orcamento/servico-table/servico-table.component';
 import { CadastroOrcamentoComponent } from './pages/orcamento/cadastro-orcamento/cadastro-orcamento.component';
+import { HomePageComponent } from './pages/home-page/home-page.component';
+import { FullCalendarModule } from '@fullcalendar/angular';
+import dayGridPlugin from '@fullcalendar/daygrid';
+import interactionPlugin from '@fullcalendar/interaction';
+FullCalendarModule.registerPlugins([dayGridPlugin, interactionPlugin]);
 
 @NgModule({
   declarations: [
@@ -68,6 +73,7 @@ import { CadastroOrcamentoComponent } from './pages/orcamento/cadastro-orcamento
     ServicoComponent,
     ServicoTableComponent,
     CadastroOrcamentoComponent,
+    HomePageComponent,
   ],
   imports: [
     BrowserModule,
@@ -102,6 +108,7 @@ import { CadastroOrcamentoComponent } from './pages/orcamento/cadastro-orcamento
     TextFieldModule,
     MatAutocompleteModule,
     MatProgressSpinnerModule,
+    FullCalendarModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

@@ -8,6 +8,12 @@
                  fixedTopGap="56">
         <mat-nav-list class="nav-list">
             <a mat-list-item
+               routerLink="/home"
+               [routerLinkActive]="['is-active']">
+                <mat-icon>home</mat-icon>
+                Início
+            </a>
+            <a mat-list-item
                routerLink="/fornecedor"
                [routerLinkActive]="['is-active']">
                 <mat-icon>groups</mat-icon>
