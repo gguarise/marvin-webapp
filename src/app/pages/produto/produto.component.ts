@@ -33,7 +33,7 @@ export class ProdutoComponent extends BaseTableComponent {
         Validators.compose([Validators.required, Validators.maxLength(50)]),
       ],
       descricao: [null, Validators.maxLength(500)],
-      quantidadeProduto: [
+      quantidadeEstoque: [
         null,
         Validators.compose([
           Validators.required,
@@ -58,7 +58,7 @@ export class ProdutoComponent extends BaseTableComponent {
       'nome',
       'tipo',
       'descricao',
-      'quantidadeProduto',
+      'quantidadeEstoque',
       'valorUnitario',
       'fornecedor',
     ];

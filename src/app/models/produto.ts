@@ -5,8 +5,7 @@ export class Produto extends BaseModel {
   nome: string;
   tipo: string;
   descricao: string;
-  quantidadeProduto: number;
+  quantidadeEstoque: number;
   valorUnitario: number;
-  valorCobrado: number;
   fornecedor: Fornecedor;
 }

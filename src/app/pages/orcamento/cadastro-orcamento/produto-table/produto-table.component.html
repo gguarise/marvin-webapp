@@ -6,13 +6,23 @@
         <mat-icon class="lightgrey-icon"
                   matTooltip="Remover Linhas Selecionadas">delete</mat-icon>
     </mat-toolbar>
-    <mat-toolbar *ngIf="this.formArray.enabled">
-        <mat-icon class="orange-icon"
-                  matTooltip="Adicionar Linha"
-                  (click)="addRow()">add_circle</mat-icon>
-        <mat-icon class="orange-icon"
-                  matTooltip="Remover Linhas Selecionadas"
-                  (click)="deleteSelectedRows()">delete</mat-icon>
+    <mat-toolbar *ngIf="this.formArray.enabled"
+                 fxLayoutAlign="space-between center">
+        <div>
+            <mat-icon class="orange-icon"
+                      matTooltip="Adicionar Linha"
+                      (click)="addRow()">add_circle</mat-icon>
+            <mat-icon class="orange-icon"
+                      matTooltip="Remover Linhas Selecionadas"
+                      (click)="deleteSelectedRows()">delete</mat-icon>
+        </div>
+        <a>
+            <button mat-raised-button
+                    color="primary"
+                    (click)="addProduto()">
+                Editar Estoque
+            </button>
+        </a>
     </mat-toolbar>
 
     <div class="table-container"
@@ -39,7 +49,7 @@
                 </mat-cell>
             </ng-container>
 
-            <ng-container matColumnDef="produto">
+            <ng-container matColumnDef="produtoId">
                 <mat-header-cell fxFlex
                                  fxLayoutAlign="center center"
                                  *matHeaderCellDef> Produto </mat-header-cell>
@@ -47,26 +57,26 @@
                           *matCellDef="let element"
                           [formGroup]="element">
                     <mat-form-field fxLayout="column">
-                        <mat-select formControlName="produto"
+                        <mat-select formControlName="produtoId"
                                     [compareWith]="compare"
-                                    (selectionChange)="fillProductPrice(element)">
-                            <mat-option *ngFor="let produto of produtos$ | async"
-                                        [value]="produto">
+                                    (selectionChange)="setValorUnitario(element)">
+                            <mat-option *ngFor="let produto of produtos"
+                                        [value]="produto.id">
                                 {{produto?.nome}}
                             </mat-option>
                         </mat-select>
-                        <mat-error *ngIf="element.get('produto').invalid">
-                            {{getErrorMessage(element.get('produto'))}}
+                        <mat-error *ngIf="element.get('produtoId').invalid">
+                            {{getErrorMessage(element.get('produtoId'))}}
                         </mat-error>
                     </mat-form-field>
                 </mat-cell>
             </ng-container>
 
             <ng-container matColumnDef="quantidade">
-                <mat-header-cell fxFlex="20"
+                <mat-header-cell fxFlex="15"
                                  fxLayoutAlign="center center"
                                  *matHeaderCellDef> Quantidade </mat-header-cell>
-                <mat-cell fxFlex="20"
+                <mat-cell fxFlex="15"
                           *matCellDef="let element"
                           [formGroup]="element">
                     <mat-form-field fxLayout="column">
@@ -74,16 +84,34 @@
                                formControlName="quantidade"
                                currencyMask
                                (keyup)="calculateTotalPrice(element)"
+                               (blur)="verifyQuantidadeDisponivel(element)"
                                [options]="{ prefix: '', thousands: '', decimal: '', allowNegative: false, precision: 0 }" />
                     </mat-form-field>
                 </mat-cell>
             </ng-container>
 
+            <ng-container matColumnDef="percentual">
+                <mat-header-cell fxFlex="15"
+                                 fxLayoutAlign="center center"
+                                 *matHeaderCellDef> Percentual de Lucro </mat-header-cell>
+                <mat-cell fxFlex="15"
+                          *matCellDef="let element"
+                          [formGroup]="element">
+                    <mat-form-field fxLayout="column">
+                        <input matInput
+                               formControlName="percentual"
+                               currencyMask
+                               (keyup)="setValorUnitario(element)"
+                               [options]="{ prefix: '', thousands: '.', decimal: ',', allowNegative: false, precision: 0, suffix: '%' }" />
+                    </mat-form-field>
+                </mat-cell>
+            </ng-container>
+
             <ng-container matColumnDef="valorUnitario">
-                <mat-header-cell fxFlex="20"
+                <mat-header-cell fxFlex="18"
                                  fxLayoutAlign="center center"
                                  *matHeaderCellDef> Valor Unitário </mat-header-cell>
-                <mat-cell fxFlex="20"
+                <mat-cell fxFlex="18"
                           *matCellDef="let element"
                           [formGroup]="element">
                     <mat-form-field fxLayout="column">
@@ -95,32 +123,16 @@
                 </mat-cell>
             </ng-container>
 
-            <ng-container matColumnDef="porcentagemLucro">
-                <mat-header-cell fxFlex="20"
-                                 fxLayoutAlign="center center"
-                                 *matHeaderCellDef> Porcentagem Lucro </mat-header-cell>
-                <mat-cell fxFlex="20"
-                          *matCellDef="let element"
-                          [formGroup]="element">
-                    <mat-form-field fxLayout="column">
-                        <input matInput
-                               formControlName="porcentagemLucro"
-                               currencyMask
-                               [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', allowNegative: false, precision: 0, suffix: '%' }" />
-                    </mat-form-field>
-                </mat-cell>
-            </ng-container>
-
-            <ng-container matColumnDef="total">
-                <mat-header-cell fxFlex="20"
+            <ng-container matColumnDef="valorTotal">
+                <mat-header-cell fxFlex="18"
                                  fxLayoutAlign="center center"
                                  *matHeaderCellDef> Total </mat-header-cell>
-                <mat-cell fxFlex="20"
+                <mat-cell fxFlex="18"
                           *matCellDef="let element"
                           [formGroup]="element">
                     <mat-form-field fxLayout="column">
                         <input matInput
-                               formControlName="total"
+                               formControlName="valorTotal"
                                currencyMask
                                [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', allowNegative: false, precision: 2 }" />
                     </mat-form-field>

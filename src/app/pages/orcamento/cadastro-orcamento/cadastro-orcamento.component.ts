@@ -58,26 +58,23 @@ export class CadastroOrcamentoComponent
       clienteId: [null, Validators.required],
       carroId: [null, Validators.required],
       descricao: [],
-      percentual: [null, Validators.compose([Validators.max(100)])],
-      desconto: [],
-      valorFinal: [{ value: 0, disabled: true }],
       pagamento: this.fb.group({
         id: [],
-        percentual: [],
+        percentual: [null, Validators.compose([Validators.max(100)])],
         desconto: [],
-        valorFinal: [],
-        pagamentoEfetuado: [],
+        valorFinal: [{ value: 0, disabled: true }],
+        pagamentoEfetuado: [false],
         modoPagamento: this.fb.group({
           id: [],
-          cartaoCredito: [],
-          cartaoDebito: [],
-          dinheiro: [],
-          pix: [],
+          cartaoCredito: [false],
+          cartaoDebito: [false],
+          dinheiro: [false],
+          pix: [false],
         }),
       }),
       // Tabelas
-      custoServicos: [],
-      produtoOrcamentos: [],
+      servicos: [],
+      produtos: [],
       pecas: [],
       // Usados apenas em Tela
       totalProdutos: [{ value: 0, disabled: true }],
@@ -85,7 +82,7 @@ export class CadastroOrcamentoComponent
       totalServicos: [{ value: 0, disabled: true }],
       subtotal: [{ value: 0, disabled: true }],
     });
-    this.getClients();
+    this.getClientes();
   }
 
   override async ngOnInit() {
@@ -94,18 +91,28 @@ export class CadastroOrcamentoComponent
   }
 
   ngAfterViewInit() {
-    this.componentTables = [this.produtosTable];
+    this.componentTables = [
+      this.produtosTable,
+      this.servicosTable,
+      this.pecasTable,
+    ];
   }
 
-  // override async beforeSave() {
-  //   // TODO VALIDAR TODAS
-  //   const carros = this.produtosTable.formArray.getRawValue();
-  //   if (!carros || carros?.length <= 0) {
-  //     this.toastr.error('O cliente deve ter ao menos um carro cadastrado');
-  //   } else {
-  //     super.beforeSave();
-  //   }
-  // }
+  override async beforeSave() {
+    const produtos = this.produtosTable.formArray.getRawValue();
+    const pecas = this.pecasTable.formArray.getRawValue();
+    const servicos = this.servicosTable.formArray.getRawValue();
+
+    if (
+      (!produtos || produtos?.length === 0) &&
+      (!pecas || pecas?.length === 0) &&
+      (!servicos || servicos?.length === 0)
+    ) {
+      this.toastr.error('É preciso inserir itens em ao menos uma tabela.');
+    } else if (this.calculateTotal()) {
+      super.beforeSave();
+    }
+  }
 
   override redirectPreviousRoute(): void {
     this.router.navigate(['/orcamento']);
@@ -115,15 +122,13 @@ export class CadastroOrcamentoComponent
     this.router.navigate(['/cadastro-orcamento', response?.id]);
   }
 
-  // override getRawData() {
-  //   const form = super.getRawData();
-
-  //   if (this.isNewRecord) {
-  //     // TODO VER SE FUNCIONAMENTO TA IGUAL
-  //     form.produtoOrcamentos = this.produtosTable.formArray.getRawValue();
-  //   }
-  //   return form;
-  // }
+  override getRawData() {
+    const form = super.getRawData();
+    form.produtos = this.produtosTable.formArray.getRawValue();
+    form.pecas = this.pecasTable.formArray.getRawValue();
+    form.servicos = this.servicosTable.formArray.getRawValue();
+    return form;
+  }
 
   isValidCliente() {
     const clienteId = this.mainForm.get('clienteId')?.value;
@@ -155,7 +160,7 @@ export class CadastroOrcamentoComponent
   }
 
   // Para aparecer o nome no select de Cliente
-  displayFnCliente(value?: number) {
+  displayFnCliente(value?: string) {
     return this.clientes?.find((c) => c.id === value)?.nome ?? '';
   }
 
@@ -163,21 +168,21 @@ export class CadastroOrcamentoComponent
     return o1 === o2;
   }
 
-  addClient() {
+  addCliente() {
     const screenSize = window.innerWidth;
     const dialogRef = this.dialog.open(CadastroClienteComponent, {
-      data: 'a',
+      data: true,
       width: screenSize > 599 ? '70%' : '90%',
       height: 'auto',
       disableClose: false,
     });
 
     dialogRef.afterClosed().subscribe(() => {
-      this.getClients();
+      this.getClientes();
     });
   }
 
-  getClients() {
+  getClientes() {
     this.clienteService.getAll().subscribe((c: Cliente[]) => {
       this.clientes = c; // antes: this.clientes$ = of(c);
       this.clientesFiltrados = c;
@@ -193,19 +198,19 @@ export class CadastroOrcamentoComponent
 
     if (subtotal > 0) {
       if (isPercent) {
-        const porcentagem = this.mainForm.get('porcentagemDesconto')?.value;
+        const porcentagem = this.mainForm.get('pagamento.percentual')?.value;
         const porcentagemCalculada = porcentagem / 100;
         if (porcentagemCalculada > 0) {
           this.mainForm
-            .get('valorDesconto')
+            .get('pagamento.desconto')
             ?.setValue(subtotal * porcentagemCalculada);
         } else {
-          this.mainForm.get('valorDesconto')?.setValue(0);
+          this.mainForm.get('pagamento.desconto')?.setValue(0);
         }
       } else {
-        const valor = this.mainForm.get('valorDesconto')?.value;
+        const valor = this.mainForm.get('pagamento.desconto')?.value;
         const porcentagem = (valor * 100) / subtotal;
-        this.mainForm.get('porcentagemDesconto')?.setValue(porcentagem);
+        this.mainForm.get('pagamento.percentual')?.setValue(porcentagem);
       }
       this.calculateTotal();
     }
@@ -213,7 +218,7 @@ export class CadastroOrcamentoComponent
 
   calculateCustoProdutos() {
     const tabela = this.produtosTable.formArray.getRawValue();
-    const total = tabela.map((x: any) => x.total).reduce(this.sumReducer);
+    const total = tabela.map((x: any) => x.valorTotal).reduce(this.sumReducer);
     this.mainForm.get('totalProdutos')?.setValue(total);
     this.calculateSubtotal();
   }
@@ -227,7 +232,7 @@ export class CadastroOrcamentoComponent
 
   calculateCustoServicos() {
     const tabela = this.servicosTable.formArray.getRawValue();
-    const total = tabela.map((x) => x.honorario).reduce(this.sumReducer);
+    const total = tabela.map((x) => x.valor).reduce(this.sumReducer);
     this.mainForm.get('totalServicos')?.setValue(total);
     this.calculateSubtotal();
   }
@@ -243,7 +248,14 @@ export class CadastroOrcamentoComponent
 
   calculateTotal() {
     const subtotal = this.mainForm.get('subtotal')?.value;
-    const desconto = this.mainForm.get('valorDesconto')?.value;
-    this.mainForm.get('valorFinal')?.setValue(subtotal - desconto);
+    const desconto = this.mainForm.get('pagamento.desconto')?.value;
+    const valorFinal = subtotal - desconto;
+    if (valorFinal >= 0) {
+      this.mainForm.get('pagamento.valorFinal')?.setValue(valorFinal);
+      return true;
+    } else {
+      this.toastr.error('Desconto informado superior ao total.');
+      return false;
+    }
   }
 }

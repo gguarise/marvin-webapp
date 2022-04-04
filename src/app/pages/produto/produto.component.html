@@ -83,7 +83,7 @@
                 </mat-cell>
             </ng-container>
 
-            <ng-container matColumnDef="quantidadeProduto">
+            <ng-container matColumnDef="quantidadeEstoque">
                 <mat-header-cell fxFlex="10"
                                  fxLayoutAlign="center center"
                                  *matHeaderCellDef> Qtde. Produto </mat-header-cell>
@@ -92,10 +92,10 @@
                           [formGroup]="element">
                     <mat-form-field fxLayout="column">
                         <input matInput
-                               formControlName="quantidadeProduto"
+                               formControlName="quantidadeEstoque"
                                currencyMask
                                [options]="formHelper.getNumericMask('integer')" />
-                        <mat-error>{{getErrorMessage(element.get('quantidadeProduto'))}}</mat-error>
+                        <mat-error>{{getErrorMessage(element.get('quantidadeEstoque'))}}</mat-error>
                     </mat-form-field>
                 </mat-cell>
             </ng-container>

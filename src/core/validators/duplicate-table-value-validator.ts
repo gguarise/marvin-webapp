@@ -36,7 +36,7 @@ export function hasDuplicate(
     }
   });
 
-  return (
+  const a =
     keyValuesArray.filter(
       (x: any) =>
         x ===
@@ -45,6 +45,6 @@ export function hasDuplicate(
           .trim()
           .toUpperCase()
           .replace(/[^\w\s]/gi, '')
-    ).length > 1
-  );
+    ).length > 1;
+  return a;
 }

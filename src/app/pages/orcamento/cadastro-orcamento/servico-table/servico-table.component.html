@@ -6,13 +6,23 @@
     <mat-icon class="lightgrey-icon"
               matTooltip="Remover Linhas Selecionadas">delete</mat-icon>
   </mat-toolbar>
-  <mat-toolbar *ngIf="this.formArray.enabled">
-    <mat-icon class="orange-icon"
-              matTooltip="Adicionar Linha"
-              (click)="addRow()">add_circle</mat-icon>
-    <mat-icon class="orange-icon"
-              matTooltip="Remover Linhas Selecionadas"
-              (click)="deleteSelectedRows()">delete</mat-icon>
+  <mat-toolbar *ngIf="this.formArray.enabled"
+               fxLayoutAlign="space-between center">
+    <div>
+      <mat-icon class="orange-icon"
+                matTooltip="Adicionar Linha"
+                (click)="addRow()">add_circle</mat-icon>
+      <mat-icon class="orange-icon"
+                matTooltip="Remover Linhas Selecionadas"
+                (click)="deleteSelectedRows()">delete</mat-icon>
+    </div>
+    <a>
+      <button mat-raised-button
+              color="primary"
+              (click)="addServico()">
+        Editar Serviços
+      </button>
+    </a>
   </mat-toolbar>
 
   <div class="table-container"

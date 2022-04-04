@@ -1,22 +1,29 @@
 import {
+  ChangeDetectionStrategy,
   Component,
   ElementRef,
   EventEmitter,
+  forwardRef,
   Output,
 } from '@angular/core';
-import { Validators } from '@angular/forms';
+import { NG_VALUE_ACCESSOR, Validators } from '@angular/forms';
 import { ChildBaseTableComponent } from 'src/app/components/base/child-base-table/child-base-table.component';
-import { BaseService } from 'src/app/services/base.service';
-import { ClienteService } from 'src/app/services/cliente.service';
 import { OrcamentoService } from 'src/app/services/orcamento.service';
 
 @Component({
   selector: 'app-pecas-table',
   templateUrl: './pecas-table.component.html',
+  providers: [
+    {
+      provide: NG_VALUE_ACCESSOR,
+      useExisting: forwardRef(() => PecasTableComponent),
+      multi: true,
+    },
+  ],
   styleUrls: ['./pecas-table.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class PecasTableComponent extends ChildBaseTableComponent {
-
   @Output() calculateCustoPecas = new EventEmitter();
 
   constructor(
@@ -60,10 +67,13 @@ export class PecasTableComponent extends ChildBaseTableComponent {
     ];
   }
 
-  override setNewItem() {
-    super.setNewItem();
-    this.lastAddedItem.get('orcamentoId')?.setValue(this.parentId);
-  }
+  // override setNewItem() {
+  //   super.setNewItem();
+  //   this.lastAddedItem.get('orcamentoId')?.setValue(this.parentId);
+  // }
+
+  // Salva no próprio orçamento
+  override async beforeSave() {}
 
   emitCalculateCustoTotalEvent() {
     this.calculateCustoPecas.emit();

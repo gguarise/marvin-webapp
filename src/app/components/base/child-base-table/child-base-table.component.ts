@@ -36,6 +36,8 @@ export abstract class ChildBaseTableComponent extends BaseTableComponent {
     this.fb = AppInjectorService.injector.get(FormBuilder);
   }
 
+  override ngOnInit() {}
+
   override async beforeUndo() {
     this.undo();
   }
@@ -55,10 +57,18 @@ export abstract class ChildBaseTableComponent extends BaseTableComponent {
     this.clearSelections();
   }
 
+  override compare(o1: any, o2: any): boolean {
+    return o1 === o2;
+  }
+
   override afterSave() {
     // Para BaseComponent ver se existem erros
     this.tableHasErrors =
       this.errosInserirAlterar.length > 0 || this.errosDeletar.length > 0;
+  }
+
+  override afterFormEnable() {
+    // Pode ser usado pra desabilitar campos após formulário ser habilitado
   }
 
   writeValue(values: any): void {
