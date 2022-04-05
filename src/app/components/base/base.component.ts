@@ -13,12 +13,9 @@ import {
 } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
-import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute } from '@angular/router';
-import { cloneDeep } from 'lodash';
 import { ToastrService } from 'ngx-toastr';
 import { firstValueFrom, Subject } from 'rxjs';
-import { ConfirmDialogComponent } from 'src/app/components/shared/dialogs/confirm-dialog/confirm-dialog.component';
 import { AppInjectorService } from 'src/app/services/app-injector.service';
 import { BaseService } from 'src/app/services/base.service';
 import { DialogHelper } from 'src/core/helpers/dialog-helper';
@@ -58,6 +55,7 @@ export class BaseComponent implements OnInit {
 
     this.formEditing$.subscribe((isEditing) => {
       isEditing ? this.mainForm.enable() : this.mainForm.disable();
+      isEditing ? this.afterFormEnable() : null;
       this.componentTables?.forEach((table) => {
         isEditing ? table.formArray.enable() : table.formArray.disable();
         isEditing ? table.afterFormEnable() : null;
@@ -93,6 +91,8 @@ export class BaseComponent implements OnInit {
   edit() {
     this.formEditing$.next(true);
   }
+
+  afterFormEnable() {}
 
   async beforeSave() {
     if (this.mainForm.dirty || this.isTable('dirty')) {
@@ -243,6 +243,7 @@ export class BaseComponent implements OnInit {
     for (let key of keys) {
       this.mainForm.get(key)?.setValue(item[key]);
     }
+    this.cdr.detectChanges();
   }
 
   getErrorMessage(control: FormControl | AbstractControl | null) {

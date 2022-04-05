@@ -6,21 +6,16 @@ import {
   ViewChild,
 } from '@angular/core';
 import { Validators } from '@angular/forms';
-import { BaseComponent } from 'src/app/components/base/base.component';
 import { ActivatedRoute, Router } from '@angular/router';
+import { BaseComponent } from 'src/app/components/base/base.component';
+import { Carro } from 'src/app/models/carro';
+import { Cliente } from 'src/app/models/cliente';
+import { ClienteService } from 'src/app/services/cliente.service';
+import { OrcamentoService } from 'src/app/services/orcamento.service';
+import { CadastroClienteComponent } from '../../cliente/cadastro-cliente/cadastro-cliente.component';
 import { PecasTableComponent } from './pecas-table/pecas-table.component';
 import { ProdutoTableComponent } from './produto-table/produto-table.component';
 import { ServicoTableComponent } from './servico-table/servico-table.component';
-import { OrcamentoService } from 'src/app/services/orcamento.service';
-import { ClienteComponent } from '../../cliente/cliente.component';
-import { firstValueFrom, map, Observable, of } from 'rxjs';
-import { Cliente } from 'src/app/models/cliente';
-import { Carro } from 'src/app/models/carro';
-import { ClienteService } from 'src/app/services/cliente.service';
-import { CarroService } from 'src/app/services/carro.service';
-import { Dialog } from 'src/app/models/dialog';
-import { MatDialog } from '@angular/material/dialog';
-import { CadastroClienteComponent } from '../../cliente/cadastro-cliente/cadastro-cliente.component';
 
 @Component({
   selector: 'app-cadastro-orcamento',
@@ -57,7 +52,7 @@ export class CadastroOrcamentoComponent
       id: [],
       clienteId: [null, Validators.required],
       carroId: [null, Validators.required],
-      descricao: [],
+      descricao: [null, Validators.maxLength(500)],
       pagamento: this.fb.group({
         id: [],
         percentual: [null, Validators.compose([Validators.max(100)])],
@@ -85,17 +80,36 @@ export class CadastroOrcamentoComponent
     this.getClientes();
   }
 
-  override async ngOnInit() {
-    super.ngOnInit();
-    this.updateCarros();
-  }
-
   ngAfterViewInit() {
     this.componentTables = [
       this.produtosTable,
       this.servicosTable,
       this.pecasTable,
     ];
+  }
+
+  override setMainFormData(item: any = this.originalData) {
+    super.setMainFormData(item);
+
+    // Operações após tela estar com valores
+    const clienteId = this.mainForm.get('clienteId')?.value;
+    this.carros = this.clientes.find((c) => c.id === clienteId)?.carros ?? [];
+
+    this.calculateCustoProdutos(true);
+    this.calculateCustoPecas(true);
+    this.calculateCustoServicos();
+  }
+
+  override afterFormEnable() {
+    const disabledFields = [
+      'pagamento.valorFinal',
+      'totalProdutos',
+      'totalPecas',
+      'totalServicos',
+      'subtotal',
+    ];
+
+    disabledFields.forEach((field) => this.mainForm.get(field)?.disable());
   }
 
   override async beforeSave() {
@@ -216,25 +230,43 @@ export class CadastroOrcamentoComponent
     }
   }
 
-  calculateCustoProdutos() {
+  calculateCustoProdutos(onInit: boolean = false) {
     const tabela = this.produtosTable.formArray.getRawValue();
-    const total = tabela.map((x: any) => x.valorTotal).reduce(this.sumReducer);
-    this.mainForm.get('totalProdutos')?.setValue(total);
-    this.calculateSubtotal();
+    if (!!tabela && tabela.length > 0) {
+      const total = tabela
+        .map((x: any) => x.valorTotal)
+        .reduce(this.sumReducer);
+      this.mainForm.get('totalProdutos')?.setValue(total);
+
+      // Só calcula caso não seja na abertura da tela
+      if (!onInit) {
+        this.calculateSubtotal();
+      }
+    }
   }
 
-  calculateCustoPecas() {
+  calculateCustoPecas(onInit: boolean = false) {
     const tabela = this.pecasTable.formArray.getRawValue();
-    const total = tabela.map((x) => x.valorCobrado).reduce(this.sumReducer);
-    this.mainForm.get('totalPecas')?.setValue(total);
-    this.calculateSubtotal();
+    if (!!tabela && tabela.length > 0) {
+      const total = tabela
+        .map((x: any) => x.valorCobrado)
+        .reduce(this.sumReducer);
+      this.mainForm.get('totalPecas')?.setValue(total);
+
+      // Só calcula caso não seja na abertura da tela
+      if (!onInit) {
+        this.calculateSubtotal();
+      }
+    }
   }
 
   calculateCustoServicos() {
     const tabela = this.servicosTable.formArray.getRawValue();
-    const total = tabela.map((x) => x.valor).reduce(this.sumReducer);
-    this.mainForm.get('totalServicos')?.setValue(total);
-    this.calculateSubtotal();
+    if (!!tabela && tabela.length > 0) {
+      const total = tabela.map((x: any) => x.valor).reduce(this.sumReducer);
+      this.mainForm.get('totalServicos')?.setValue(total);
+      this.calculateSubtotal();
+    }
   }
 
   calculateSubtotal() {
@@ -247,8 +279,8 @@ export class CadastroOrcamentoComponent
   }
 
   calculateTotal() {
-    const subtotal = this.mainForm.get('subtotal')?.value;
-    const desconto = this.mainForm.get('pagamento.desconto')?.value;
+    const subtotal = Number(this.mainForm.get('subtotal')?.value);
+    const desconto = Number(this.mainForm.get('pagamento.desconto')?.value);
     const valorFinal = subtotal - desconto;
     if (valorFinal >= 0) {
       this.mainForm.get('pagamento.valorFinal')?.setValue(valorFinal);

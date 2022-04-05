@@ -1,5 +1,6 @@
 import {
   ChangeDetectionStrategy,
+  ChangeDetectorRef,
   Component,
   ElementRef,
   EventEmitter,
@@ -25,14 +26,18 @@ import { duplicateTableValueValidator } from 'src/core/validators/duplicate-tabl
     },
   ],
   styleUrls: ['./servico-table.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.Default,
 })
 export class ServicoTableComponent extends ChildBaseTableComponent {
   servicos$: Observable<Servico[]>;
 
   @Output() calculateCustoServicos = new EventEmitter();
 
-  constructor(elementRef: ElementRef, public servicoService: ServicoService) {
+  constructor(
+    elementRef: ElementRef,
+    public servicoService: ServicoService,
+    public cdr: ChangeDetectorRef
+  ) {
     super(servicoService, elementRef);
     this.formGroupConfig = {
       select: [false],

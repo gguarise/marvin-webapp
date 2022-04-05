@@ -1,7 +1,9 @@
 import { Component, ElementRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { BaseTableComponent } from 'src/app/components/base/base-table/base-table.component';
-import { Orcamento } from 'src/app/models/orcamento';
+import { Carro } from 'src/app/models/carro';
+import { Cliente } from 'src/app/models/cliente';
+import { ClienteService } from 'src/app/services/cliente.service';
 import { OrcamentoService } from 'src/app/services/orcamento.service';
 
 @Component({
@@ -10,32 +12,41 @@ import { OrcamentoService } from 'src/app/services/orcamento.service';
   styleUrls: ['./orcamento.component.scss'],
 })
 export class OrcamentoComponent extends BaseTableComponent {
+  clientes: Cliente[] = [];
+  carros: Carro[] = [];
+
   constructor(
     public router: Router,
     public orcamentoService: OrcamentoService,
+    public clienteService: ClienteService,
     elementRef: ElementRef
   ) {
     super(orcamentoService, elementRef);
     this.formGroupConfig = {
-      id: [], // c0ea60dd-3136-455d-b816-96615c0ec03b
+      id: [],
       clienteId: [],
       carroId: [],
-      dataOrcamento: [], // TODO faltou na API
-      // pagamento: [],
+      valorFinal: [], // TODO vai mudar na API
+      dataCadastro: [],
     };
-    this.displayedColumns = [
-      'clienteId',
-      'carroId',
-      'dataOrcamento',
-      // 'pagamento',
-    ];
+    this.displayedColumns = ['clienteId', 'carroId', 'dataCadastro'];
   }
 
-  override select() {
-    // const sortItems = (a: Orcamento, b: Orcamento) =>
-    //   a.clienteId > b.clienteId ? 1 : b.clienteId > a.clienteId ? -1 : 0;
+  override compare(o1: any, o2: any): boolean {
+    return o1 === o2;
+  }
 
-    super.select();
+  override setItems(items: any[]) {
+    super.setItems(items);
+
+    // Preenche lista de Clientes e Carros para select-fields
+    this.clienteService.getAll().subscribe((c: Cliente[]) => {
+      this.clientes = this.clientes.concat(c);
+
+      c.forEach((cliente: Cliente) => {
+        this.carros = this.carros.concat(cliente.carros);
+      });
+    });
   }
 
   override handleDoubleClickEvent(data: any) {

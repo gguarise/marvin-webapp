@@ -18,19 +18,25 @@
             </mat-row>
 
             <ng-container matColumnDef="clienteId">
-                <mat-header-cell fxFlex="50"
+                <mat-header-cell fxFlex
                                  fxLayoutAlign="center center"
                                  *matHeaderCellDef>
                     Cliente
                 </mat-header-cell>
-                <mat-cell fxFlex="50"
+                <mat-cell fxFlex
                           *matCellDef="let element"
                           [formGroup]="element">
                     <mat-form-field fxLayout="column">
-                        <input matInput
-                               formControlName="clienteId" />
-                        <mat-error>
-                            {{ getErrorMessage(element.get("clienteId")) }}
+                        <mat-select formControlName="clienteId"
+                                    [compareWith]="compare">
+                            <ng-container *ngFor="let cliente of clientes">
+                                <mat-option [value]="cliente.id">
+                                    {{cliente?.nome}}
+                                </mat-option>
+                            </ng-container>
+                        </mat-select>
+                        <mat-error *ngIf="element.get('clienteId')?.invalid">
+                            {{getErrorMessage(element.get('clienteId'))}}
                         </mat-error>
                     </mat-form-field>
                 </mat-cell>
@@ -46,29 +52,37 @@
                           *matCellDef="let element"
                           [formGroup]="element">
                     <mat-form-field fxLayout="column">
-                        <input matInput
-                               formControlName="carroId" />
-                        <mat-error>
-                            {{ getErrorMessage(element.get("carroId")) }}
+                        <mat-select formControlName="carroId"
+                                    [compareWith]="compare">
+                            <ng-container *ngFor="let carro of carros">
+                                <mat-option [value]="carro.id">
+                                    {{carro?.placa}}
+                                </mat-option>
+                            </ng-container>
+                        </mat-select>
+                        <mat-error *ngIf="element.get('carroId')?.invalid">
+                            {{ getErrorMessage(element.get('carroId')) }}
                         </mat-error>
                     </mat-form-field>
                 </mat-cell>
             </ng-container>
 
-            <ng-container matColumnDef="dataOrcamento">
+            <ng-container matColumnDef="dataCadastro">
                 <mat-header-cell fxFlex
                                  fxLayoutAlign="center center"
                                  *matHeaderCellDef>
-                    Telefone
+                    Data de Cadastro
                 </mat-header-cell>
                 <mat-cell fxFlex
                           *matCellDef="let element"
                           [formGroup]="element">
                     <mat-form-field fxLayout="column">
                         <input matInput
-                               formControlName="dataOrcamento" />
+                               [matDatepicker]="picker"
+                               formControlName="dataCadastro">
+                        <mat-datepicker #picker></mat-datepicker>
                         <mat-error>
-                            {{ getErrorMessage(element.get("telefone")) }}
+                            {{ getErrorMessage(element.get("dataCadastro")) }}
                         </mat-error>
                     </mat-form-field>
                 </mat-cell>

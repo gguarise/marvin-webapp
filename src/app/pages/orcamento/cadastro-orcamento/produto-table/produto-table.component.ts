@@ -24,7 +24,7 @@ import { duplicateTableValueValidator } from 'src/core/validators/duplicate-tabl
     },
   ],
   styleUrls: ['./produto-table.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.Default,
 })
 export class ProdutoTableComponent extends ChildBaseTableComponent {
   produtos: Produto[];
@@ -122,10 +122,6 @@ export class ProdutoTableComponent extends ChildBaseTableComponent {
 
   returnProdutoById(id: string = '') {
     return this.produtos.find((x) => x.id === id);
-  }
-
-  override compare(o1: any, o2: any): boolean {
-    return o1.produtoId === o2.produtoId;
   }
 
   override afterFormEnable() {

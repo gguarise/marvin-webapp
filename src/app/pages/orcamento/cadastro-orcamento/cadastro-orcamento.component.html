@@ -166,10 +166,10 @@
 
             <fieldset class="field-set"
                       fxFlex
-                      fxLayout="column"
-                      formGroupName="pagamento">
+                      fxLayout="column">
                 <legend>Resumo</legend>
-                <div fxFlex>
+                <div fxFlex
+                     formGroupName="pagamento">
                     <mat-form-field fxFlex
                                     appearance="fill">
                         <mat-label>Valor Total</mat-label>
@@ -223,6 +223,7 @@
                                     appearance="fill">
                         <mat-label>Descrição do Orçamento</mat-label>
                         <textarea matInput
+                                  formControlName="descricao"
                                   cdkTextareaAutosize
                                   #autosize="cdkTextareaAutosize"
                                   cdkAutosizeMinRows="1"

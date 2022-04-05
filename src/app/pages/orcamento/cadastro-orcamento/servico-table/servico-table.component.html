@@ -64,7 +64,7 @@
               </mat-option>
             </mat-select>
             <mat-error *ngIf="element.get('servicoId').invalid">
-              {{ getErrorMessage(element.get("nome")) }}
+              {{ getErrorMessage(element.get('servicoId')) }}
             </mat-error>
           </mat-form-field>
         </mat-cell>
@@ -83,7 +83,7 @@
             <input matInput
                    formControlName="descricao" />
             <mat-error *ngIf="element.get('descricao').invalid">
-              {{ getErrorMessage(element.get("descricao")) }}
+              {{ getErrorMessage(element.get('descricao')) }}
             </mat-error>
           </mat-form-field>
         </mat-cell>
@@ -111,7 +111,7 @@
                 precision: 2
               }" />
             <mat-error *ngIf="element.get('valor').invalid">
-              {{ getErrorMessage(element.get("valor")) }}
+              {{ getErrorMessage(element.get('valor')) }}
             </mat-error>
           </mat-form-field>
         </mat-cell>
