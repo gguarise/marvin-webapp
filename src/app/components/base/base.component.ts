@@ -243,7 +243,6 @@ export class BaseComponent implements OnInit {
     for (let key of keys) {
       this.mainForm.get(key)?.setValue(item[key]);
     }
-    this.cdr.detectChanges();
   }
 
   getErrorMessage(control: FormControl | AbstractControl | null) {

@@ -50,7 +50,14 @@ export class ServicoTableComponent extends ChildBaseTableComponent {
         ]),
       ],
       descricao: [],
-      valor: [],
+      valor: [
+        null,
+        Validators.compose([
+          Validators.required,
+          Validators.min(0),
+          Validators.max(9999999999.99),
+        ]),
+      ],
       modified: [],
       new: [],
     };
@@ -63,11 +70,6 @@ export class ServicoTableComponent extends ChildBaseTableComponent {
 
   // Salva no próprio orçamento
   override async beforeSave() {}
-
-  // override setNewItem() {
-  //   super.setNewItem();
-  //   this.lastAddedItem.get('orcamentoId')?.setValue(this.parentId);
-  // }
 
   emitCalculateCustoTotalEvent() {
     this.calculateCustoServicos.emit();

@@ -155,7 +155,8 @@ export class CadastroOrcamentoComponent
   }
 
   filterClientes() {
-    const filterValue = this.mainForm.get('clienteId')?.value ?? '';
+    const filterValue =
+      this.mainForm.get('clienteId')?.value.toLowerCase() ?? '';
     this.clientesFiltrados = this.clientes.filter((cliente) =>
       cliente.nome.toLowerCase().includes(filterValue)
     );
@@ -163,12 +164,12 @@ export class CadastroOrcamentoComponent
 
   updateCarros() {
     const clienteId = this.mainForm.get('clienteId')?.value;
+    this.mainForm.get('carroId')?.setValue(null);
     if (!!clienteId) {
       this.carros = this.clientes.find((c) => c.id === clienteId)?.carros ?? [];
       this.mainForm.get('carroId')?.enable();
     } else {
       this.carros = [];
-      this.mainForm.get('carroId')?.setValue(null);
       this.mainForm.get('carroId')?.disable();
     }
   }
@@ -198,38 +199,12 @@ export class CadastroOrcamentoComponent
 
   getClientes() {
     this.clienteService.getAll().subscribe((c: Cliente[]) => {
-      this.clientes = c; // antes: this.clientes$ = of(c);
+      this.clientes = c;
       this.clientesFiltrados = c;
-      // c.forEach((cliente: Cliente) => { // teste 1
-      //   this.carros$[cliente.id] = of(cliente.carros);
-      // });
     });
   }
 
-  // TODO Colocar numa classe separada que nem field-validator
-  calculateDesconto(isPercent = false) {
-    const subtotal = this.mainForm.get('subtotal')?.value;
-
-    if (subtotal > 0) {
-      if (isPercent) {
-        const porcentagem = this.mainForm.get('pagamento.percentual')?.value;
-        const porcentagemCalculada = porcentagem / 100;
-        if (porcentagemCalculada > 0) {
-          this.mainForm
-            .get('pagamento.desconto')
-            ?.setValue(subtotal * porcentagemCalculada);
-        } else {
-          this.mainForm.get('pagamento.desconto')?.setValue(0);
-        }
-      } else {
-        const valor = this.mainForm.get('pagamento.desconto')?.value;
-        const porcentagem = (valor * 100) / subtotal;
-        this.mainForm.get('pagamento.percentual')?.setValue(porcentagem);
-      }
-      this.calculateTotal();
-    }
-  }
-
+  // TODO Opcional - Colocar numa classe separada que nem field-validator
   calculateCustoProdutos(onInit: boolean = false) {
     const tabela = this.produtosTable.formArray.getRawValue();
     if (!!tabela && tabela.length > 0) {
@@ -274,8 +249,30 @@ export class CadastroOrcamentoComponent
       this.mainForm.get('totalProdutos')?.value +
       this.mainForm.get('totalPecas')?.value +
       this.mainForm.get('totalServicos')?.value;
-    this.mainForm.get('subtotal')?.setValue(total);
-    this.calculateTotal();
+    this.mainForm.get('subtotal')?.setValue(total.toFixed(2));
+    this.calculateDesconto(true);
+  }
+
+  calculateDesconto(isPercent = false) {
+    const subtotal = this.mainForm.get('subtotal')?.value;
+
+    if (subtotal > 0) {
+      if (isPercent) {
+        const porcentagem = this.mainForm.get('pagamento.percentual')?.value;
+        const porcentagemCalculada = porcentagem / 100;
+        if (porcentagemCalculada > 0) {
+          const valorDesconto = (subtotal * porcentagemCalculada).toFixed(2);
+          this.mainForm.get('pagamento.desconto')?.setValue(valorDesconto);
+        } else {
+          this.mainForm.get('pagamento.desconto')?.setValue(0);
+        }
+      } else {
+        const valor = this.mainForm.get('pagamento.desconto')?.value;
+        const porcentagem = Math.round((valor * 100) / subtotal);
+        this.mainForm.get('pagamento.percentual')?.setValue(porcentagem);
+      }
+      this.calculateTotal();
+    }
   }
 
   calculateTotal() {

@@ -56,16 +56,23 @@ export class ProdutoTableComponent extends ChildBaseTableComponent {
         Validators.compose([
           Validators.required,
           Validators.min(0),
-          Validators.max(9999999999999999999999999999.99),
+          Validators.max(9999999999.99),
         ]),
       ],
-      percentual: [],
+      percentual: [
+        null,
+        Validators.compose([
+          Validators.required,
+          Validators.min(0),
+          Validators.max(9999999999.99),
+        ]),
+      ],
       valorTotal: [
         { value: null, disabled: true },
         Validators.compose([
           Validators.required,
           Validators.min(0),
-          Validators.max(9999999999999999999999999999.99),
+          Validators.max(9999999999.99),
         ]),
       ],
       modified: [],
@@ -131,11 +138,6 @@ export class ProdutoTableComponent extends ChildBaseTableComponent {
       item.get('valorTotal')?.disable();
     });
   }
-
-  // override setNewItem() {
-  //   super.setNewItem();
-  //   this.lastAddedItem.get('orcamentoId')?.setValue(this.parentId);
-  // }
 
   setValorUnitario(element: any) {
     const produto = this.returnProdutoById(element.get('produtoId')?.value);

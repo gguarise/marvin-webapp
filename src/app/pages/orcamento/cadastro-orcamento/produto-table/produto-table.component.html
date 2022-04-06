@@ -86,6 +86,9 @@
                                (keyup)="calculateTotalPrice(element)"
                                (blur)="verifyQuantidadeDisponivel(element)"
                                [options]="{ prefix: '', thousands: '', decimal: '', allowNegative: false, precision: 0 }" />
+                        <mat-error *ngIf="element.get('quantidade').invalid">
+                            {{getErrorMessage(element.get('quantidade'))}}
+                        </mat-error>
                     </mat-form-field>
                 </mat-cell>
             </ng-container>
@@ -102,7 +105,10 @@
                                formControlName="percentual"
                                currencyMask
                                (keyup)="setValorUnitario(element)"
-                               [options]="{ prefix: '', thousands: '.', decimal: ',', allowNegative: false, precision: 0, suffix: '%' }" />
+                               [options]="{ prefix: '', thousands: '.', decimal: ',', allowNegative: false, precision: 2, suffix: '%' }" />
+                        <mat-error *ngIf="element.get('percentual').invalid">
+                            {{getErrorMessage(element.get('percentual'))}}
+                        </mat-error>
                     </mat-form-field>
                 </mat-cell>
             </ng-container>
@@ -120,6 +126,9 @@
                                currencyMask
                                [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', allowNegative: false, precision: 2 }" />
                     </mat-form-field>
+                    <mat-error *ngIf="element.get('valorUnitario').invalid">
+                        {{getErrorMessage(element.get('valorUnitario'))}}
+                    </mat-error>
                 </mat-cell>
             </ng-container>
 
@@ -136,6 +145,9 @@
                                currencyMask
                                [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', allowNegative: false, precision: 2 }" />
                     </mat-form-field>
+                    <mat-error *ngIf="element.get('valorTotal').invalid">
+                        {{getErrorMessage(element.get('valorTotal'))}}
+                    </mat-error>
                 </mat-cell>
             </ng-container>
 

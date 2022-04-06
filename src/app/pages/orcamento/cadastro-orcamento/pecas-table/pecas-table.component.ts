@@ -9,6 +9,7 @@ import {
 import { NG_VALUE_ACCESSOR, Validators } from '@angular/forms';
 import { ChildBaseTableComponent } from 'src/app/components/base/child-base-table/child-base-table.component';
 import { OrcamentoService } from 'src/app/services/orcamento.service';
+import { minValueValidator } from 'src/core/validators/min-value-validator';
 
 @Component({
   selector: 'app-pecas-table',
@@ -21,7 +22,7 @@ import { OrcamentoService } from 'src/app/services/orcamento.service';
     },
   ],
   styleUrls: ['./pecas-table.component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush,
+  changeDetection: ChangeDetectionStrategy.Default,
 })
 export class PecasTableComponent extends ChildBaseTableComponent {
   @Output() calculateCustoPecas = new EventEmitter();
@@ -44,7 +45,7 @@ export class PecasTableComponent extends ChildBaseTableComponent {
         Validators.compose([
           Validators.required,
           Validators.min(0),
-          Validators.max(9999999999999999999999999999.99),
+          Validators.max(9999999999.99),
         ]),
       ],
       valorCobrado: [
@@ -52,7 +53,8 @@ export class PecasTableComponent extends ChildBaseTableComponent {
         Validators.compose([
           Validators.required,
           Validators.min(0),
-          Validators.max(9999999999999999999999999999.99),
+          Validators.max(9999999999.99),
+          minValueValidator('valorUnitario', 'Valor Unitário'),
         ]),
       ],
       modified: [],
@@ -66,11 +68,6 @@ export class PecasTableComponent extends ChildBaseTableComponent {
       'valorCobrado',
     ];
   }
-
-  // override setNewItem() {
-  //   super.setNewItem();
-  //   this.lastAddedItem.get('orcamentoId')?.setValue(this.parentId);
-  // }
 
   // Salva no próprio orçamento
   override async beforeSave() {}

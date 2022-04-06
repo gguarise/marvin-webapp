@@ -26,10 +26,15 @@ export class OrcamentoComponent extends BaseTableComponent {
       id: [],
       clienteId: [],
       carroId: [],
-      valorFinal: [], // TODO vai mudar na API
+      valorFinal: [],
       dataCadastro: [],
     };
-    this.displayedColumns = ['clienteId', 'carroId', 'dataCadastro'];
+    this.displayedColumns = [
+      'clienteId',
+      'carroId',
+      'valorFinal',
+      'dataCadastro',
+    ];
   }
 
   override compare(o1: any, o2: any): boolean {

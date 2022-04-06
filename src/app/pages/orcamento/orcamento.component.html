@@ -35,9 +35,6 @@
                                 </mat-option>
                             </ng-container>
                         </mat-select>
-                        <mat-error *ngIf="element.get('clienteId')?.invalid">
-                            {{getErrorMessage(element.get('clienteId'))}}
-                        </mat-error>
                     </mat-form-field>
                 </mat-cell>
             </ng-container>
@@ -60,9 +57,24 @@
                                 </mat-option>
                             </ng-container>
                         </mat-select>
-                        <mat-error *ngIf="element.get('carroId')?.invalid">
-                            {{ getErrorMessage(element.get('carroId')) }}
-                        </mat-error>
+                    </mat-form-field>
+                </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="valorFinal">
+                <mat-header-cell fxFlex
+                                 fxLayoutAlign="center center"
+                                 *matHeaderCellDef>
+                    Valor Final
+                </mat-header-cell>
+                <mat-cell fxFlex
+                          *matCellDef="let element"
+                          [formGroup]="element">
+                    <mat-form-field fxLayout="column">
+                        <input matInput
+                               formControlName="valorFinal"
+                               currencyMask
+                               [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', allowNegative: false, precision: 2 }" />
                     </mat-form-field>
                 </mat-cell>
             </ng-container>
@@ -73,17 +85,13 @@
                                  *matHeaderCellDef>
                     Data de Cadastro
                 </mat-header-cell>
-                <mat-cell fxFlex
-                          *matCellDef="let element"
+                <mat-cell *matCellDef="let element"
                           [formGroup]="element">
                     <mat-form-field fxLayout="column">
                         <input matInput
                                [matDatepicker]="picker"
                                formControlName="dataCadastro">
                         <mat-datepicker #picker></mat-datepicker>
-                        <mat-error>
-                            {{ getErrorMessage(element.get("dataCadastro")) }}
-                        </mat-error>
                     </mat-form-field>
                 </mat-cell>
             </ng-container>
