@@ -26,12 +26,6 @@
                 Estoque
             </a>
             <a mat-list-item
-               routerLink="/orcamento"
-               [routerLinkActive]="['is-active']">
-                <mat-icon>request_quote</mat-icon>
-                Orçamentos
-            </a>
-            <a mat-list-item
                routerLink="/cliente"
                [routerLinkActive]="['is-active']">
                 <mat-icon>people_alt</mat-icon>
@@ -42,6 +36,18 @@
                [routerLinkActive]="['is-active']">
                 <mat-icon>home_repair_service</mat-icon>
                 Serviços
+            </a>
+            <a mat-list-item
+               routerLink="/orcamento"
+               [routerLinkActive]="['is-active']">
+                <mat-icon>request_quote</mat-icon>
+                Orçamentos
+            </a>
+            <a mat-list-item
+               routerLink="/agendamento"
+               [routerLinkActive]="['is-active']">
+                <mat-icon>event_note</mat-icon>
+                Agendamentos
             </a>
         </mat-nav-list>
     </mat-sidenav>

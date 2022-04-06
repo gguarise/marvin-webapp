@@ -1,18 +1,18 @@
-import { Component, ElementRef, Inject, Optional } from '@angular/core';
-import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Component, ElementRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { BaseTableComponent } from 'src/app/components/base/base-table/base-table.component';
 import { Carro } from 'src/app/models/carro';
 import { Cliente } from 'src/app/models/cliente';
+import { StatusOrcamento } from 'src/app/models/enum/status-orcamento';
 import { ClienteService } from 'src/app/services/cliente.service';
 import { OrcamentoService } from 'src/app/services/orcamento.service';
 
 @Component({
-  selector: 'app-orcamento',
-  templateUrl: './orcamento.component.html',
-  styleUrls: ['./orcamento.component.scss'],
+  selector: 'app-agendamento',
+  templateUrl: './agendamento.component.html',
+  styleUrls: ['./agendamento.component.scss'],
 })
-export class OrcamentoComponent extends BaseTableComponent {
+export class AgendamentoComponent extends BaseTableComponent {
   clientes: Cliente[] = [];
   carros: Carro[] = [];
 
@@ -20,10 +20,7 @@ export class OrcamentoComponent extends BaseTableComponent {
     public router: Router,
     public orcamentoService: OrcamentoService,
     public clienteService: ClienteService,
-    elementRef: ElementRef,
-    // Ambos abaixo para controlar o comportamento para Tela de Agendamento > Selecionar Orçamento
-    @Optional() public dialogRef: MatDialogRef<OrcamentoComponent>,
-    @Optional() @Inject(MAT_DIALOG_DATA) public isDialogComponent: boolean
+    elementRef: ElementRef
   ) {
     super(orcamentoService, elementRef);
     this.formGroupConfig = {
@@ -31,14 +28,20 @@ export class OrcamentoComponent extends BaseTableComponent {
       clienteId: [],
       carroId: [],
       valorFinal: [],
-      dataCadastro: [],
+      dataAgendamento: [],
     };
     this.displayedColumns = [
       'clienteId',
       'carroId',
       'valorFinal',
-      'dataCadastro',
+      'dataAgendamento',
     ];
+  }
+
+  override select() {
+    // Retorna apenas orçamentos Agendados (Agendamentos)
+    const searchParams = { Status: StatusOrcamento.Agendado };
+    super.select(null, null, searchParams);
   }
 
   override compare(o1: any, o2: any): boolean {
@@ -59,15 +62,11 @@ export class OrcamentoComponent extends BaseTableComponent {
   }
 
   override handleDoubleClickEvent(data: any) {
-    // Ao clicar duas vezes na linha (selecionar Orcamento)
+    // Ao clicar duas vezes na linha (selecionar Agendamento)
     const id = data.element?.id?.value;
 
-    if (this.isDialogComponent) {
-      // Manda id de volta para a Tela de Agendamento
-      this.dialogRef.close(id);
-    } else if (!!id) {
-      // Visualizar/Editar Orçamento
-      this.router.navigate(['/cadastro-orcamento', id]);
+    if (!!id) {
+      this.router.navigate(['/cadastro-agendamento', id]);
     }
   }
 }

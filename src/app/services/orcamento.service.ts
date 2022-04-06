@@ -15,7 +15,7 @@ export class OrcamentoService extends BaseService {
     super();
   }
 
-  // searchParams: ClienteId | CarroId | DiaCadastro | MesCadastro | AnoCadastro |
+  // searchParams: ClienteId | CarroId | Status | DiaCadastro | MesCadastro | AnoCadastro |
   //               DiaAgendamento | MesAgendamento | AnoAgendamento
   override getAll(searchParams: any = null): Observable<Orcamento[]> {
     return this.http

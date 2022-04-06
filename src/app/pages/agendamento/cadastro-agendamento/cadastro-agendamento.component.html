@@ -1,0 +1,175 @@
+<app-page-header title="Agendamento"
+                 [showReturnButton]="mainForm.disabled"
+                 [showSaveButton]="mainForm.enabled"
+                 [showEditButton]="mainForm.disabled"
+                 [showUndoButton]="mainForm.enabled"
+                 [showDeleteButton]="mainForm.disabled"
+                 (returnEvent)="redirectPreviousRoute()"
+                 (saveEvent)="beforeSave()"
+                 (editEvent)="edit()"
+                 (undoEvent)="beforeUndo()"
+                 (deleteEvent)="beforeDelete()"></app-page-header>
+<form [formGroup]="mainForm"
+      fxLayout="column">
+
+    <div fxFlex
+         fxLayoutAlign="center">
+        <button mat-raised-button
+                class="new-button"
+                color="primary"
+                (click)="selectOrcamento()">Selecionar Orçamento</button>
+    </div>
+
+    <fieldset class="field-set"
+              fxFlex
+              fxLayout="column">
+        <legend>Resumo do Orçamento Selecionado</legend>
+
+        <div fxFlex
+             fxLayout="row">
+            <mat-form-field fxFlex="70"
+                            appearance="fill">
+                <mat-label>Cliente</mat-label>
+                <mat-select formControlName="clienteId"
+                            [compareWith]="compareWith">
+                    <ng-container *ngFor="let cliente of clientes">
+                        <mat-option [value]="cliente.id">
+                            {{cliente?.nome}}
+                        </mat-option>
+                    </ng-container>
+                </mat-select>
+            </mat-form-field>
+
+            <mat-form-field fxFlex
+                            appearance="fill">
+                <mat-label>Carro</mat-label>
+                <mat-select formControlName="carroId"
+                            [compareWith]="compareWith">
+                    <ng-container *ngFor="let carro of carros">
+                        <mat-option [value]="carro.id">
+                            {{carro?.placa}}
+                        </mat-option>
+                    </ng-container>
+                </mat-select>
+            </mat-form-field>
+
+        </div>
+
+        <div fxLayout="row"
+             fxLayoutAlign="space-between">
+
+            <mat-form-field fxFlex
+                            appearance="fill">
+                <mat-label>Serviços</mat-label>
+                <input matInput
+                       formControlName="totalServicos"
+                       currencyMask
+                       [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', allowNegative: false, precision: 2 }" />
+            </mat-form-field>
+
+            <mat-form-field fxFlex
+                            appearance="fill">
+                <mat-label>Estoque</mat-label>
+                <input matInput
+                       formControlName="totalProdutos"
+                       currencyMask
+                       [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', allowNegative: false, precision: 2 }" />
+            </mat-form-field>
+
+            <mat-form-field fxFlex
+                            appearance="fill">
+                <mat-label>Peças</mat-label>
+                <input matInput
+                       formControlName="totalPecas"
+                       currencyMask
+                       [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', allowNegative: false, precision: 2 }" />
+            </mat-form-field>
+
+            <mat-form-field fxFlex
+                            appearance="fill">
+                <mat-label>Subtotal</mat-label>
+                <input matInput
+                       formControlName="subtotal"
+                       currencyMask
+                       [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', allowNegative: false, precision: 2 }" />
+            </mat-form-field>
+
+            <ng-container formGroupName="pagamento">
+                <mat-form-field fxFlex
+                                appearance="fill">
+                    <mat-label>Desconto</mat-label>
+                    <input matInput
+                           formControlName="desconto"
+                           currencyMask
+                           [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', allowNegative: false, precision: 2 }" />
+                </mat-form-field>
+            </ng-container>
+
+        </div>
+
+        <div fxFlex>
+            <ng-container fxFlex
+                          formGroupName="pagamento">
+                <mat-form-field fxFlex
+                                appearance="fill">
+                    <mat-label>Valor Total</mat-label>
+                    <input matInput
+                           formControlName="valorFinal"
+                           currencyMask
+                           [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', allowNegative: false, precision: 2 }" />
+                </mat-form-field>
+
+                <ng-container>
+                    <mat-checkbox fxFlex
+                                  fxLayoutAlign="center center"
+                                  formControlName="pagamentoEfetuado">
+                        Pagamento Efetuado
+                    </mat-checkbox>
+                </ng-container>
+            </ng-container>
+
+            <mat-form-field fxLayout="column">
+                <mat-label>Data de Cadastro</mat-label>
+                <input matInput
+                       [matDatepicker]="picker"
+                       formControlName="dataCadastro">
+                <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
+
+            <div fxFlex>
+                <button mat-raised-button
+                        class="new-button"
+                        color="primary"
+                        (click)="selectOrcamento()">Visualizar</button>
+            </div>
+        </div>
+
+    </fieldset>
+
+    <fieldset class="field-set"
+              fxFlex
+              fxLayout="column">
+        <legend>Agendamento</legend>
+
+        <!-- <mat-form-field fxLayout="column">
+            <mat-label>Data do Agendamento</mat-label>
+            <input matInput
+                   [matDatepicker]="picker"
+                   formControlName="dataCadastro">
+            <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field> -->
+
+        <mat-form-field fxLayout="column">
+            <mat-label>Data do Agendamento</mat-label>
+            <input matInput
+                   [ngxMatDatetimePicker]="picker"
+                   placeholder="Escolha uma data"
+                   formControlName="dataAgendamento">
+            <mat-datepicker-toggle matSuffix
+                                   [for]="picker"></mat-datepicker-toggle>
+            <ngx-mat-datetime-picker #picker>
+            </ngx-mat-datetime-picker>
+        </mat-form-field>
+
+    </fieldset>
+</form>

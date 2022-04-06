@@ -1,10 +1,10 @@
 <div class="container text-center">
-    <app-page-header title="Orçamentos"
+    <app-page-header title="Agendamentos"
                      [showSaveButton]="false"
                      [showEditButton]="false"
                      [showUndoButton]="false"
-                     [showNewButton]="!isDialogComponent"
-                     newButtonRoute="/cadastro-orcamento">
+                     [showNewButton]="true"
+                     newButtonRoute="/cadastro-agendamento">
     </app-page-header>
 
     <div class="table-container"
@@ -79,7 +79,7 @@
                 </mat-cell>
             </ng-container>
 
-            <ng-container matColumnDef="dataCadastro">
+            <ng-container matColumnDef="dataAgendamento">
                 <mat-header-cell fxFlex
                                  fxLayoutAlign="center center"
                                  *matHeaderCellDef>
@@ -90,7 +90,7 @@
                     <mat-form-field fxLayout="column">
                         <input matInput
                                [matDatepicker]="picker"
-                               formControlName="dataCadastro">
+                               formControlName="dataAgendamento">
                         <mat-datepicker #picker></mat-datepicker>
                     </mat-form-field>
                 </mat-cell>

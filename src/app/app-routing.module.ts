@@ -1,5 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { AgendamentoComponent } from './pages/agendamento/agendamento.component';
+import { CadastroAgendamentoComponent } from './pages/agendamento/cadastro-agendamento/cadastro-agendamento.component';
 import { CadastroClienteComponent } from './pages/cliente/cadastro-cliente/cadastro-cliente.component';
 import { ClienteComponent } from './pages/cliente/cliente.component';
 import { FornecedorComponent } from './pages/fornecedor/fornecedor.component';
@@ -21,6 +23,8 @@ const routes: Routes = [
   { path: 'orcamento', component: OrcamentoComponent },
   { path: 'cadastro-orcamento/:id', component: CadastroOrcamentoComponent },
   { path: 'cadastro-orcamento', component: CadastroOrcamentoComponent },
+  { path: 'agendamento', component: AgendamentoComponent },
+  { path: 'cadastro-agendamento', component: CadastroAgendamentoComponent },
 ];
 
 @NgModule({

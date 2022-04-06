@@ -52,6 +52,8 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule, MAT_DATE_LOCALE } from '@angular/material/core';
+import { AgendamentoComponent } from './pages/agendamento/agendamento.component';
+import { CadastroAgendamentoComponent } from './pages/agendamento/cadastro-agendamento/cadastro-agendamento.component';
 FullCalendarModule.registerPlugins([dayGridPlugin, interactionPlugin]);
 
 @NgModule({
@@ -76,6 +78,8 @@ FullCalendarModule.registerPlugins([dayGridPlugin, interactionPlugin]);
     ServicoTableComponent,
     CadastroOrcamentoComponent,
     HomePageComponent,
+    AgendamentoComponent,
+    CadastroAgendamentoComponent,
   ],
   imports: [
     BrowserModule,
@@ -112,6 +116,8 @@ FullCalendarModule.registerPlugins([dayGridPlugin, interactionPlugin]);
     MatProgressSpinnerModule,
     FullCalendarModule,
     MatDatepickerModule,
+    // MatMomentDatetimeModule,
+    // MatDatetimepickerModule,
     MatNativeDateModule,
   ],
   providers: [{ provide: MAT_DATE_LOCALE, useValue: 'pt-BR' }],

@@ -8,6 +8,11 @@ export class Orcamento extends BaseModel {
   clienteId: string;
   carroId: string;
   descricao: string;
+  dataCadastro: Date;
+  dataAgendamento: Date;
+  dataHoraInicio: Date;
+  dataHoraFim: Date;
+  duracao: string; // TODO VER O TIPO
   produtos: OrcamentoProduto[];
   pecas: OrcamentoPeca[];
   servicos: OrcamentoServico[];
