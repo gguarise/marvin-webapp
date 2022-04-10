@@ -1,0 +1,9 @@
+<ng-container [formGroup]="form">
+    <input matInput
+           [matDatepicker]="picker"
+           [formControlName]="formControlName" />
+    <mat-datepicker-toggle matSuffix
+                           [for]="picker"></mat-datepicker-toggle>
+    <mat-datepicker type="datetime"
+                    #picker></mat-datepicker>
+</ng-container>

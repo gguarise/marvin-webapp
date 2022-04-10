@@ -1,4 +1,9 @@
-import { ChangeDetectorRef, Component, ElementRef } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  ElementRef,
+  ViewChild,
+} from '@angular/core';
 import { Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BaseComponent } from 'src/app/components/base/base.component';
@@ -20,6 +25,8 @@ export class CadastroAgendamentoComponent extends BaseComponent {
   carros: Carro[];
 
   sumReducer = (accumulator: any, current: any) => accumulator + current;
+
+  // @ViewChild('dataAgendamentoPicker') picker: any;
 
   constructor(
     elementRef: ElementRef,
@@ -156,11 +163,18 @@ export class CadastroAgendamentoComponent extends BaseComponent {
       'totalPecas',
       'totalServicos',
       'subtotal',
+      'dataCadastro',
     ];
 
     disabledFields.forEach((field) => this.mainForm.get(field)?.disable());
     this.cdr.detectChanges();
   }
+
+  // datePickerOpen() {
+  //   if (!this.picker.opened) {
+  //     this.picker.open();
+  //   }
+  // }
 
   // TODO Opcional - Colocar numa classe separada que nem field-validator
   calculateCustoProdutos() {

@@ -9,11 +9,12 @@
                  (editEvent)="edit()"
                  (undoEvent)="beforeUndo()"
                  (deleteEvent)="beforeDelete()"></app-page-header>
-<form [formGroup]="mainForm"
+<form class="form-style"
+      [formGroup]="mainForm"
       fxLayout="column">
 
     <div fxFlex
-         fxLayoutAlign="center">
+         fxLayoutAlign="start">
         <button mat-raised-button
                 class="new-button"
                 color="primary"
@@ -108,8 +109,7 @@
         </div>
 
         <div fxFlex>
-            <ng-container fxFlex
-                          formGroupName="pagamento">
+            <ng-container formGroupName="pagamento">
                 <mat-form-field fxFlex
                                 appearance="fill">
                     <mat-label>Valor Total</mat-label>
@@ -129,11 +129,14 @@
             </ng-container>
 
             <mat-form-field fxLayout="column">
-                <mat-label>Data de Cadastro</mat-label>
+                <mat-label>Data do Cadastro</mat-label>
                 <input matInput
-                       [matDatepicker]="picker"
-                       formControlName="dataCadastro">
-                <mat-datepicker #picker></mat-datepicker>
+                       [matDatepicker]="pickerCadastro"
+                       formControlName="dataCadastro" />
+                <mat-datepicker-toggle matSuffix
+                                       [for]="pickerCadastro"></mat-datepicker-toggle>
+                <mat-datepicker type="datetime"
+                                #pickerCadastro></mat-datepicker>
             </mat-form-field>
 
             <div fxFlex>
@@ -151,24 +154,20 @@
               fxLayout="column">
         <legend>Agendamento</legend>
 
-        <!-- <mat-form-field fxLayout="column">
-            <mat-label>Data do Agendamento</mat-label>
-            <input matInput
-                   [matDatepicker]="picker"
-                   formControlName="dataCadastro">
-            <mat-datepicker #picker></mat-datepicker>
-        </mat-form-field> -->
-
         <mat-form-field fxLayout="column">
             <mat-label>Data do Agendamento</mat-label>
-            <input matInput
-                   [ngxMatDatetimePicker]="picker"
-                   placeholder="Escolha uma data"
-                   formControlName="dataAgendamento">
+            <!-- <input matInput
+                   [matDatepicker]="dataAgendamentoPicker"
+                   formControlName="dataAgendamento"
+                   [readonly]="true"
+                   (click)="datePickerOpen()" />
             <mat-datepicker-toggle matSuffix
-                                   [for]="picker"></mat-datepicker-toggle>
-            <ngx-mat-datetime-picker #picker>
-            </ngx-mat-datetime-picker>
+                                   [for]="dataAgendamentoPicker"></mat-datepicker-toggle>
+            <mat-datepicker type="datetime"
+                            #dataAgendamentoPicker></mat-datepicker> -->
+            <app-datetime-field ngDefaultControl
+                                [formGroup]="mainForm"
+                                formControlName="dataAgendamento"></app-datetime-field>
         </mat-form-field>
 
     </fieldset>

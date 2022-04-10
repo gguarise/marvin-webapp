@@ -50,10 +50,13 @@ import { HomePageComponent } from './pages/home-page/home-page.component';
 import { FullCalendarModule } from '@fullcalendar/angular';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatNativeDateModule, MAT_DATE_LOCALE } from '@angular/material/core';
+import { MatDatepickerModule } from '@matheo/datepicker';
+import { MatNativeDateModule } from '@matheo/datepicker/core';
+// import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MAT_DATE_LOCALE } from '@angular/material/core';
 import { AgendamentoComponent } from './pages/agendamento/agendamento.component';
 import { CadastroAgendamentoComponent } from './pages/agendamento/cadastro-agendamento/cadastro-agendamento.component';
+import { DatetimeFieldComponent } from './components/datetime-field/datetime-field.component';
 FullCalendarModule.registerPlugins([dayGridPlugin, interactionPlugin]);
 
 @NgModule({
@@ -80,6 +83,7 @@ FullCalendarModule.registerPlugins([dayGridPlugin, interactionPlugin]);
     HomePageComponent,
     AgendamentoComponent,
     CadastroAgendamentoComponent,
+    DatetimeFieldComponent,
   ],
   imports: [
     BrowserModule,
