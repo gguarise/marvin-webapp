@@ -3,9 +3,12 @@ import {
   ChangeDetectorRef,
   Component,
   ElementRef,
+  Inject,
+  Optional,
   ViewChild,
 } from '@angular/core';
 import { Validators } from '@angular/forms';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BaseComponent } from 'src/app/components/base/base.component';
 import { Carro } from 'src/app/models/carro';
@@ -29,6 +32,7 @@ export class CadastroOrcamentoComponent
   clientes: Cliente[];
   clientesFiltrados: Cliente[];
   carros: Carro[];
+  isDialogComponent: boolean = false;
 
   sumReducer = (accumulator: any, current: any) => accumulator + current;
 
@@ -45,7 +49,10 @@ export class CadastroOrcamentoComponent
     route: ActivatedRoute,
     orcamentoService: OrcamentoService,
     public clienteService: ClienteService,
-    public router: Router
+    public router: Router,
+    // Ambos abaixo para controlar o comportamento para Tela de Agendamento > Selecionar Orçamento
+    @Optional() public dialogRef: MatDialogRef<CadastroOrcamentoComponent>,
+    @Optional() @Inject(MAT_DIALOG_DATA) public idAgendamento: any = null
   ) {
     super(orcamentoService, elementRef, cdr, route);
     this.mainForm = this.fb.group({
@@ -78,6 +85,13 @@ export class CadastroOrcamentoComponent
       subtotal: [{ value: 0, disabled: true }],
     });
     this.getClientes();
+  }
+
+  override async ngOnInit() {
+    super.ngOnInit(this.idAgendamento);
+    if (!!this.idAgendamento) {
+      this.isDialogComponent = true;
+    }
   }
 
   ngAfterViewInit() {

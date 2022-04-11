@@ -4,6 +4,8 @@ import { Router } from '@angular/router';
 import { BaseTableComponent } from 'src/app/components/base/base-table/base-table.component';
 import { Carro } from 'src/app/models/carro';
 import { Cliente } from 'src/app/models/cliente';
+import { StatusOrcamento } from 'src/app/models/enum/status-orcamento';
+import { Orcamento } from 'src/app/models/orcamento';
 import { ClienteService } from 'src/app/services/cliente.service';
 import { OrcamentoService } from 'src/app/services/orcamento.service';
 
@@ -28,17 +30,48 @@ export class OrcamentoComponent extends BaseTableComponent {
     super(orcamentoService, elementRef);
     this.formGroupConfig = {
       id: [],
+      status: [],
       clienteId: [],
       carroId: [],
       valorFinal: [],
       dataCadastro: [],
     };
     this.displayedColumns = [
+      'status',
       'clienteId',
       'carroId',
       'valorFinal',
       'dataCadastro',
     ];
+  }
+
+  // A tabela terá orçamentos Cadastrados e Agendados
+  // Orçamentos Finalizados apenas na Tela de Agendamentos
+  override select() {
+    let tableItems: Orcamento[] = [];
+    // Retorna orçamentos apenas Cadastrados
+    let searchParams = { Status: StatusOrcamento.Cadastrado };
+    this.orcamentoService.getAll(searchParams).subscribe({
+      next: (items: Orcamento[]) => {
+        if (!!items) {
+          tableItems = items;
+        }
+        // Retorna orçamentos Agendados
+        searchParams = { Status: StatusOrcamento.Agendado };
+        this.orcamentoService.getAll(searchParams).subscribe({
+          next: (items: Orcamento[]) => {
+            if (!!items) {
+              tableItems = tableItems.concat(items);
+            }
+            this.setItems(tableItems);
+          },
+          error: () =>
+            this.toastr.error('Um erro ocorreu ao buscar os orçamentos.'),
+        });
+      },
+      error: () =>
+        this.toastr.error('Um erro ocorreu ao buscar os orçamentos.'),
+    });
   }
 
   override compare(o1: any, o2: any): boolean {

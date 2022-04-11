@@ -1,9 +1,9 @@
 <app-page-header title="Orçamento"
-                 [showReturnButton]="mainForm.disabled"
+                 [showReturnButton]="mainForm.disabled && !isDialogComponent"
                  [showSaveButton]="mainForm.enabled"
-                 [showEditButton]="mainForm.disabled"
+                 [showEditButton]="mainForm.disabled && !isDialogComponent"
                  [showUndoButton]="mainForm.enabled"
-                 [showDeleteButton]="mainForm.disabled"
+                 [showDeleteButton]="mainForm.disabled && !isDialogComponent"
                  (returnEvent)="redirectPreviousRoute()"
                  (saveEvent)="beforeSave()"
                  (editEvent)="edit()"
@@ -18,7 +18,7 @@
                      fxLayout="row"
                      fxLayoutAlign="space-between center">
 
-                    <mat-form-field fxFlex="80"
+                    <mat-form-field fxFlex
                                     appearance="fill">
                         <mat-label>Cliente</mat-label>
                         <input fxFlex
@@ -46,10 +46,13 @@
                         </mat-error>
                     </mat-form-field>
 
-                    <button mat-raised-button
-                            class="new-button"
-                            color="primary"
-                            (click)="addCliente()">Novo</button>
+                    <div *ngIf="mainForm.enabled"
+                         fxFlex="20">
+                        <button mat-raised-button
+                                class="new-button"
+                                color="accent"
+                                (click)="addCliente()">Novo</button>
+                    </div>
                 </div>
 
                 <mat-form-field appearance="fill">

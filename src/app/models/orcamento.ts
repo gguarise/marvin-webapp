@@ -12,9 +12,10 @@ export class Orcamento extends BaseModel {
   dataAgendamento: Date;
   dataHoraInicio: Date;
   dataHoraFim: Date;
-  duracao: string; // TODO VER O TIPO
+  duracao: number;
   produtos: OrcamentoProduto[];
   pecas: OrcamentoPeca[];
   servicos: OrcamentoServico[];
   pagamento: OrcamentoPagamento;
+  status: string;
 }

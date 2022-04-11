@@ -4,6 +4,7 @@ import { BaseTableComponent } from 'src/app/components/base/base-table/base-tabl
 import { Carro } from 'src/app/models/carro';
 import { Cliente } from 'src/app/models/cliente';
 import { StatusOrcamento } from 'src/app/models/enum/status-orcamento';
+import { Orcamento } from 'src/app/models/orcamento';
 import { ClienteService } from 'src/app/services/cliente.service';
 import { OrcamentoService } from 'src/app/services/orcamento.service';
 
@@ -25,12 +26,14 @@ export class AgendamentoComponent extends BaseTableComponent {
     super(orcamentoService, elementRef);
     this.formGroupConfig = {
       id: [],
+      status: [],
       clienteId: [],
       carroId: [],
       valorFinal: [],
       dataAgendamento: [],
     };
     this.displayedColumns = [
+      'status',
       'clienteId',
       'carroId',
       'valorFinal',
@@ -38,10 +41,32 @@ export class AgendamentoComponent extends BaseTableComponent {
     ];
   }
 
+  // A tabela terá orçamentos Agendados e Finalizados
   override select() {
-    // Retorna apenas orçamentos Agendados (Agendamentos)
-    const searchParams = { Status: StatusOrcamento.Agendado };
-    super.select(null, null, searchParams);
+    let tableItems: Orcamento[] = [];
+    // Retorna orçamentos Agendados
+    let searchParams = { Status: StatusOrcamento.Agendado };
+    this.orcamentoService.getAll(searchParams).subscribe({
+      next: (items: Orcamento[]) => {
+        if (!!items) {
+          tableItems = items;
+        }
+        // Retorna orçamentos Finalizados
+        searchParams = { Status: StatusOrcamento.Finalizado };
+        this.orcamentoService.getAll(searchParams).subscribe({
+          next: (items: Orcamento[]) => {
+            if (!!items) {
+              tableItems = tableItems.concat(items);
+            }
+            this.setItems(tableItems);
+          },
+          error: () =>
+            this.toastr.error('Um erro ocorreu ao buscar os agendamentos.'),
+        });
+      },
+      error: () =>
+        this.toastr.error('Um erro ocorreu ao buscar os agendamentos.'),
+    });
   }
 
   override compare(o1: any, o2: any): boolean {

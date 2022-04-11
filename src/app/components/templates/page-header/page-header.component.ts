@@ -14,6 +14,7 @@ export class PageHeaderComponent {
   @Input() showUndoButton = true;
   @Input() showDeleteButton = false;
   @Input() showNewButton = false;
+  @Input() newButtonLabel = 'Novo';
   @Input() newButtonRoute = '/'; // TODO mudar pra error page
   @Input() dialogComponentButton: string;
 

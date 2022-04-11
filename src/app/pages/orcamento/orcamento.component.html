@@ -17,13 +17,29 @@
                 >
             </mat-row>
 
-            <ng-container matColumnDef="clienteId">
+            <ng-container matColumnDef="status">
                 <mat-header-cell fxFlex
+                                 fxLayoutAlign="center center"
+                                 *matHeaderCellDef>
+                    Status
+                </mat-header-cell>
+                <mat-cell fxFlex
+                          *matCellDef="let element"
+                          [formGroup]="element">
+                    <mat-form-field fxLayout="column">
+                        <input matInput
+                               formControlName="status" />
+                    </mat-form-field>
+                </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="clienteId">
+                <mat-header-cell fxFlex="45"
                                  fxLayoutAlign="center center"
                                  *matHeaderCellDef>
                     Cliente
                 </mat-header-cell>
-                <mat-cell fxFlex
+                <mat-cell fxFlex="45"
                           *matCellDef="let element"
                           [formGroup]="element">
                     <mat-form-field fxLayout="column">

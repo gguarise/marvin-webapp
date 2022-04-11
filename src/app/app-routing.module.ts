@@ -24,6 +24,7 @@ const routes: Routes = [
   { path: 'cadastro-orcamento/:id', component: CadastroOrcamentoComponent },
   { path: 'cadastro-orcamento', component: CadastroOrcamentoComponent },
   { path: 'agendamento', component: AgendamentoComponent },
+  { path: 'cadastro-agendamento/:id', component: CadastroAgendamentoComponent },
   { path: 'cadastro-agendamento', component: CadastroAgendamentoComponent },
 ];
 

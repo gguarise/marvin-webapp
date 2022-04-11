@@ -63,8 +63,12 @@ export class BaseComponent implements OnInit {
     });
   }
 
-  async ngOnInit() {
+  async ngOnInit(id: any = null) {
     this.routeId = this.route.snapshot.paramMap.get('id');
+    if (!!id) {
+      // id existirá quando for para visualizar em um dialog
+      this.routeId = id;
+    }
     if (!this.routeId) {
       this.isNewRecord = true;
     } else {
@@ -201,7 +205,18 @@ export class BaseComponent implements OnInit {
         this.afterDelete();
         this.toastr.success('Registro excluído com sucesso.');
       })
-      .catch(() => this.toastr.error('Não foi possível excluir registro.'));
+      .catch((e) => this.throwErrorMessage(e));
+  }
+
+  throwErrorMessage(
+    e: any,
+    defaultMessage: string = 'Não foi possível excluir registro.'
+  ) {
+    if (!!e?.error?.errors?.Id && e.error.errors.Id.length > 0) {
+      this.toastr.error(e.error.errors.Id[0]);
+    } else {
+      this.toastr.error(defaultMessage);
+    }
   }
 
   afterDelete() {
