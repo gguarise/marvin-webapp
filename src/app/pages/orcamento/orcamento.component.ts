@@ -56,18 +56,29 @@ export class OrcamentoComponent extends BaseTableComponent {
         if (!!items) {
           tableItems = items;
         }
-        // Retorna orçamentos Agendados
-        searchParams = { Status: StatusOrcamento.Agendado };
-        this.orcamentoService.getAll(searchParams).subscribe({
-          next: (items: Orcamento[]) => {
-            if (!!items) {
-              tableItems = tableItems.concat(items);
-            }
+        // Retorna orçamentos Agendados se não for o dialog
+        if (!this.isDialogComponent) {
+          searchParams = { Status: StatusOrcamento.Agendado };
+          this.orcamentoService.getAll(searchParams).subscribe({
+            next: (items: Orcamento[]) => {
+              if (!!items) {
+                tableItems = tableItems.concat(items);
+              }
+              this.setItems(tableItems);
+            },
+            error: () =>
+              this.toastr.error('Um erro ocorreu ao buscar os orçamentos.'),
+          });
+        } else {
+          if (tableItems.length === 0) {
+            this.toastr.error(
+              'Nenhum orçamento com status "Cadastrado" foi encontrado.'
+            );
+            this.dialogRef.close();
+          } else {
             this.setItems(tableItems);
-          },
-          error: () =>
-            this.toastr.error('Um erro ocorreu ao buscar os orçamentos.'),
-        });
+          }
+        }
       },
       error: () =>
         this.toastr.error('Um erro ocorreu ao buscar os orçamentos.'),

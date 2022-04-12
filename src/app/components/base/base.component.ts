@@ -210,7 +210,7 @@ export class BaseComponent implements OnInit {
 
   throwErrorMessage(
     e: any,
-    defaultMessage: string = 'Não foi possível excluir registro.'
+    defaultMessage: string = 'Ocorreram erros ao realizar a operação.'
   ) {
     if (!!e?.error?.errors?.Id && e.error.errors.Id.length > 0) {
       this.toastr.error(e.error.errors.Id[0]);
@@ -226,7 +226,7 @@ export class BaseComponent implements OnInit {
   async beforeUndo() {
     if (this.mainForm.dirty || this.isTable('dirty')) {
       const confirma = await DialogHelper.openDialog(
-        'Confirmar',
+        'Confirmação',
         'Deseja descartar alterações?'
       );
       if (confirma) {
@@ -266,5 +266,10 @@ export class BaseComponent implements OnInit {
 
   getRawData() {
     return this.mainForm.getRawValue();
+  }
+
+  setFieldValueAsNull(fieldName: string) {
+    this.mainForm.get(fieldName)?.setValue(null);
+    this.mainForm.get(fieldName)?.markAsDirty();
   }
 }

@@ -222,7 +222,7 @@ export abstract class BaseTableComponent implements OnInit, OnDestroy {
     this.formEditing$.next(false);
     if (this.formArray.dirty) {
       const confirma = await DialogHelper.openDialog(
-        'Confirmar',
+        'Confirmação',
         'Deseja descartar alterações?'
       );
       if (confirma) {

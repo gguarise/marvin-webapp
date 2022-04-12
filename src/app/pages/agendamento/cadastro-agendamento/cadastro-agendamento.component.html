@@ -4,14 +4,14 @@
                  [showEditButton]="mainForm.disabled"
                  [showUndoButton]="mainForm.enabled"
                  [showDeleteButton]="mainForm.disabled"
-                 [showNewButton]="!isNewRecord && mainForm.disabled"
-                 [newButtonLabel]="finalizeButtonLabel"
+                 [showCustomButton]="!isNewRecord && mainForm.disabled"
+                 [customButtonLabel]="finalizeButtonLabel"
                  (returnEvent)="redirectPreviousRoute()"
                  (saveEvent)="beforeSave()"
                  (editEvent)="edit()"
                  (undoEvent)="beforeUndo()"
                  (deleteEvent)="beforeDelete()"
-                 (newEvent)="finalizeAgendamento()"></app-page-header>
+                 (customEvent)="buttonClickEvent()"></app-page-header>
 <form class="form-style"
       [formGroup]="mainForm"
       fxLayout="column">
@@ -188,13 +188,17 @@
                     <mat-label>Data do Agendamento</mat-label>
                     <input matInput
                            [matDatepicker]="dataAgendamentoPicker"
-                           [matDatepickerFilter]="filterTimeAgendamento"
+                           [matDatepickerFilter]="filterTime"
                            formControlName="dataAgendamento"
-                           [min]="minimalDateAgendamento"
+                           [min]="minimalDate"
                            [readonly]="true"
                            (click)="datePickerControler(this.dataAgendamentoPicker)" />
                     <mat-datepicker-toggle matSuffix
                                            [for]="dataAgendamentoPicker"></mat-datepicker-toggle>
+                    <mat-datepicker-toggle matSuffix
+                                           (click)="setFieldValueAsNull('dataAgendamento')">
+                        <mat-icon matDatepickerToggleIcon>clear</mat-icon>
+                    </mat-datepicker-toggle>
                     <mat-datepicker type="datetime"
                                     [twelveHour]="false"
                                     [touchUi]="this.screenSize < 599"
@@ -212,22 +216,24 @@
                     <mat-label>Data da Finalização</mat-label>
                     <input matInput
                            [matDatepicker]="dataFinalizacaoPicker"
-                           [matDatepickerFilter]="filterTimeFinalizacao"
-                           [min]="minimalDateFinalizacao"
+                           [matDatepickerFilter]="filterTime"
+                           [min]="minimalDate"
                            [readonly]="true"
-                           formControlName="dataFinalizacao"
+                           formControlName="dataHoraFim"
                            (click)="datePickerControler(this.dataFinalizacaoPicker)" />
                     <mat-datepicker-toggle matSuffix
                                            [for]="dataFinalizacaoPicker"></mat-datepicker-toggle>
+                    <mat-datepicker-toggle matSuffix
+                                           (click)="setFieldValueAsNull('dataHoraFim')">
+                        <mat-icon matDatepickerToggleIcon>clear</mat-icon>
+                    </mat-datepicker-toggle>
                     <mat-datepicker type="datetime"
                                     [twelveHour]="false"
                                     [touchUi]="this.screenSize < 599"
                                     [clockStep]="5"
                                     #dataFinalizacaoPicker></mat-datepicker>
-                    <mat-hint>Se a Data de Finalização for apagada e o registro salvo, a finalização será desfeita.
-                    </mat-hint>
-                    <mat-error *ngIf="mainForm.get('dataFinalizacao')?.invalid">
-                        {{getErrorMessage(mainForm.get('dataFinalizacao'))}}
+                    <mat-error *ngIf="mainForm.get('dataHoraFim')?.invalid">
+                        {{getErrorMessage(mainForm.get('dataHoraFim'))}}
                     </mat-error>
                 </mat-form-field>
             </div>

@@ -51,12 +51,19 @@
                 (click)="emitOpenDialogEvent()">
             {{dialogComponentButton}}
         </button>
+        <button *ngIf="showCustomButton"
+                class="dialogButton"
+                mat-raised-button
+                color="accent"
+                (click)="emitCustomEvent()">
+            {{customButtonLabel}}
+        </button>
         <a [routerLink]="[newButtonRoute]">
             <button *ngIf="showNewButton"
                     mat-raised-button
                     color="accent"
                     (click)="emitNewEvent()">
-                {{newButtonLabel}}
+                Novo
             </button>
         </a>
     </mat-toolbar-row>
