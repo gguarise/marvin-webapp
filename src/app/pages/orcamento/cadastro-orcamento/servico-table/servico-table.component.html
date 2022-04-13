@@ -16,13 +16,6 @@
                 matTooltip="Remover Linhas Selecionadas"
                 (click)="deleteSelectedRows()">delete</mat-icon>
     </div>
-    <a>
-      <button mat-raised-button
-              color="accent"
-              (click)="addServico()">
-        Editar Serviços
-      </button>
-    </a>
   </mat-toolbar>
 
   <div class="table-container"
@@ -47,22 +40,17 @@
       </ng-container>
 
       <ng-container matColumnDef="servicoId">
-        <mat-header-cell fxFlex="20"
+        <mat-header-cell fxFlex
                          fxLayoutAlign="center center"
                          *matHeaderCellDef>
           Serviço
         </mat-header-cell>
-        <mat-cell fxFlex="20"
+        <mat-cell fxFlex
                   *matCellDef="let element"
                   [formGroup]="element">
           <mat-form-field fxLayout="column">
-            <mat-select formControlName="servicoId"
-                        [compareWith]="compare">
-              <mat-option *ngFor="let servico of servicos$ | async"
-                          [value]="servico.id">
-                {{ servico?.nome }}
-              </mat-option>
-            </mat-select>
+            <input matInput
+                   formControlName="servicoId" />
             <mat-error *ngIf="element.get('servicoId').invalid">
               {{ getErrorMessage(element.get('servicoId')) }}
             </mat-error>

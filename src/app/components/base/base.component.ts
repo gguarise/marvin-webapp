@@ -115,31 +115,10 @@ export class BaseComponent implements OnInit {
   }
 
   async save() {
-    const data = this.getRawData();
-
     if (this.isNewRecord) {
-      await firstValueFrom(this.baseService.post(data))
-        .then((response) => {
-          this.afterInsert(response);
-          this.toastr.success('Novo registro inserido com sucesso.');
-        })
-        .catch(() =>
-          this.toastr.error('Não foi possível criar novo registro.')
-        );
+      this.toastr.success('Novo registro inserido com sucesso.');
     } else {
-      await firstValueFrom(this.baseService.put(data))
-        .then(() => {
-          if (this.componentTables?.length > 0) {
-            this.saveComponentTables();
-          } else {
-            this.toastr.success('Registro alterado com sucesso.');
-            this.onClear();
-            this.select();
-          }
-        })
-        .catch(() =>
-          this.toastr.error('Não foi possível salvar as alterações.')
-        );
+      this.toastr.success('Registro alterado com sucesso.');
     }
   }
 

@@ -95,11 +95,7 @@ export class CadastroOrcamentoComponent
   }
 
   ngAfterViewInit() {
-    this.componentTables = [
-      this.produtosTable,
-      this.servicosTable,
-      this.pecasTable,
-    ];
+    this.componentTables = [this.servicosTable, this.pecasTable];
   }
 
   override setMainFormData(item: any = this.originalData) {

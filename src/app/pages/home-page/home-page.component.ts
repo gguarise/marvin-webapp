@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
-import { CalendarOptions } from '@fullcalendar/angular';
+import { Component } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { AppInjectorService } from 'src/app/services/app-injector.service';
 
 @Component({
   selector: 'app-home-page',
@@ -7,20 +8,11 @@ import { CalendarOptions } from '@fullcalendar/angular';
   styleUrls: ['./home-page.component.scss'],
 })
 export class HomePageComponent {
-  constructor() {}
+  mainForm: FormGroup;
 
-  calendarOptions: CalendarOptions = {
-    initialView: 'dayGridMonth',
-    dateClick: this.handleDateClick.bind(this), // bind is important!
-    events: [
-      { title: 'event 1', date: '2022-04-27' },
-      { title: 'event 2', date: '2022-04-30' },
-    ],
-    themeSystem: 'united',
-    height: 'auto',
-  };
-
-  handleDateClick(arg: any) {
-    alert('date click! ' + arg.dateStr);
+  constructor(fb: FormBuilder) {
+    this.mainForm = fb.group({
+      descricao: ['Teste'],
+    });
   }
 }

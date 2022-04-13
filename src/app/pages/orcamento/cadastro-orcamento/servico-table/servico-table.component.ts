@@ -44,18 +44,15 @@ export class ServicoTableComponent extends ChildBaseTableComponent {
       id: [],
       servicoId: [
         null,
-        Validators.compose([
-          Validators.required,
-          duplicateTableValueValidator('servicoId', 'Serviço'),
-        ]),
+        Validators.compose([Validators.required, Validators.maxLength(50)]),
       ],
-      descricao: [],
+      descricao: [null, Validators.compose([Validators.maxLength(150)])],
       valor: [
         null,
         Validators.compose([
           Validators.required,
           Validators.min(0),
-          Validators.max(9999999999.99),
+          Validators.max(99999.99),
         ]),
       ],
       modified: [],

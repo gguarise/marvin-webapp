@@ -1,1 +1,20 @@
-<full-calendar [options]="calendarOptions"></full-calendar>
+<div [formGroup]="mainForm"
+     fxFlex>
+    <h1>Bem Vindo!</h1>
+    <h3>Sobre a loja</h3>
+    <div fxLayoutAlign="center">
+        <video width="900"
+               controls>
+            <source src="/src/assets/img/mov_bbb.mp4"
+                    type="video/mp4">
+            <source src="mov_bbb.ogg"
+                    type="video/ogg">
+            Your browser does not support HTML video.
+        </video>
+    </div>
+    <!-- 
+    <youtube-player videoId="1fueZCTYkpA"
+                    suggestedQuality="highres"
+                    [height]="250"
+                    [width]="500"></youtube-player> -->
+</div>

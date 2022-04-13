@@ -58,6 +58,7 @@ import { AgendamentoComponent } from './pages/agendamento/agendamento.component'
 import { CadastroAgendamentoComponent } from './pages/agendamento/cadastro-agendamento/cadastro-agendamento.component';
 import { DatetimeFieldComponent } from './components/datetime-field/datetime-field.component';
 FullCalendarModule.registerPlugins([dayGridPlugin, interactionPlugin]);
+import { YouTubePlayerModule } from '@angular/youtube-player';
 
 @NgModule({
   declarations: [
@@ -123,6 +124,7 @@ FullCalendarModule.registerPlugins([dayGridPlugin, interactionPlugin]);
     // MatMomentDatetimeModule,
     // MatDatetimepickerModule,
     MatNativeDateModule,
+    YouTubePlayerModule,
   ],
   providers: [{ provide: MAT_DATE_LOCALE, useValue: 'pt-BR' }],
   bootstrap: [AppComponent],

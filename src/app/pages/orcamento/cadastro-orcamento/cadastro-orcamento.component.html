@@ -47,7 +47,8 @@
                     </mat-form-field>
 
                     <div *ngIf="mainForm.enabled"
-                         fxFlex="20">
+                         fxFlex="20"
+                         fxLayoutAlign="center">
                         <button mat-raised-button
                                 class="new-button"
                                 color="accent"
@@ -91,7 +92,7 @@
                         </mat-error>
                     </mat-form-field>
 
-                    <mat-form-field fxFlex
+                    <!-- <mat-form-field fxFlex
                                     appearance="fill">
                         <mat-label>Estoque</mat-label>
                         <input matInput
@@ -101,7 +102,7 @@
                         <mat-error *ngIf="mainForm.get('dados.totalProdutos')?.invalid">
                             {{getErrorMessage(mainForm.get('dados.totalProdutos'))}}
                         </mat-error>
-                    </mat-form-field>
+                    </mat-form-field> -->
 
                     <mat-form-field fxFlex
                                     appearance="fill">
@@ -174,7 +175,8 @@
                 <div fxFlex
                      formGroupName="pagamento">
                     <mat-form-field fxFlex
-                                    appearance="fill">
+                                    appearance="fill"
+                                    class="valor">
                         <mat-label>Valor Total</mat-label>
                         <input matInput
                                formControlName="valorFinal"
@@ -194,7 +196,7 @@
                         </mat-checkbox>
                     </ng-container>
 
-                    <fieldset fxFlex="50"
+                    <!-- <fieldset fxFlex="50"
                               class="field-set"
                               formGroupName="modoPagamento">
                         <legend>Modo de Pagamento</legend>
@@ -218,7 +220,7 @@
                                       formControlName="pix">
                             Pix
                         </mat-checkbox>
-                    </fieldset>
+                    </fieldset> -->
                 </div>
 
                 <div fxFlex>
@@ -245,11 +247,11 @@
                                (calculateCustoServicos)="calculateCustoServicos()"></app-servico-table>
         </mat-tab>
 
-        <mat-tab label="Produtos em Estoque">
+        <!-- <mat-tab label="Produtos em Estoque">
             <app-produto-table formControlName="produtos"
                                [originalDataSource]="mainForm.get('produtos')?.value"
                                (calculateCustoProdutos)="calculateCustoProdutos()"></app-produto-table>
-        </mat-tab>
+        </mat-tab> -->
 
         <mat-tab label="Peças">
             <app-pecas-table formControlName="pecas"
