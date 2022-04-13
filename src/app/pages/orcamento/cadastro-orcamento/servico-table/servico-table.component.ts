@@ -69,7 +69,7 @@ export class ServicoTableComponent extends ChildBaseTableComponent {
   }
 
   // Salva no próprio orçamento
-  override async beforeSave() {}
+  override async save() {}
 
   emitCalculateCustoTotalEvent() {
     this.calculateCustoServicos.emit();

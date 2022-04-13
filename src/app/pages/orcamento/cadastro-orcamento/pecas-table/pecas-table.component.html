@@ -40,10 +40,10 @@
             </ng-container>
 
             <ng-container matColumnDef="nome">
-                <mat-header-cell fxFlex="20"
+                <mat-header-cell fxFlex
                                  fxLayoutAlign="center center"
                                  *matHeaderCellDef> Nome </mat-header-cell>
-                <mat-cell fxFlex="20"
+                <mat-cell fxFlex
                           *matCellDef="let element"
                           [formGroup]="element">
                     <mat-form-field fxLayout="column">
@@ -73,30 +73,109 @@
                 </mat-cell>
             </ng-container>
 
-            <ng-container matColumnDef="valorUnitario">
-                <mat-header-cell fxFlex="20"
+            <ng-container matColumnDef="codigoNCM">
+                <mat-header-cell fxFlex
                                  fxLayoutAlign="center center"
-                                 *matHeaderCellDef> Valor Unitário </mat-header-cell>
-                <mat-cell fxFlex="20"
+                                 *matHeaderCellDef
+                                 matTooltip="Nomenclatura Comum do Mercosul"> Código NCM </mat-header-cell>
+                <mat-cell fxFlex
                           *matCellDef="let element"
                           [formGroup]="element">
                     <mat-form-field fxLayout="column">
                         <input matInput
-                               formControlName="valorUnitario"
+                               formControlName="codigoNCM"
+                               [textMask]="formHelper.getTextMask('codigoNCM')" />
+                        <mat-error *ngIf="element.get('codigoNCM').invalid">
+                            {{getErrorMessage(element.get('codigoNCM'))}}
+                        </mat-error>
+                    </mat-form-field>
+                </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="valorUnitarioCompra">
+                <mat-header-cell fxFlex
+                                 fxLayoutAlign="center center"
+                                 *matHeaderCellDef> Valor de Compra </mat-header-cell>
+                <mat-cell fxFlex
+                          *matCellDef="let element"
+                          [formGroup]="element">
+                    <mat-form-field fxLayout="column">
+                        <input matInput
+                               formControlName="valorUnitarioCompra"
+                               currencyMask
+                               (keyup)="setValorUnitarioVenda(element)"
+                               [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', allowNegative: false, precision: 2 }" />
+                        <mat-error *ngIf="element.get('valorUnitarioCompra').invalid">
+                            {{getErrorMessage(element.get('valorUnitarioCompra'))}}
+                        </mat-error>
+                    </mat-form-field>
+                </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="percentual">
+                <mat-header-cell fxFlex
+                                 fxLayoutAlign="center center"
+                                 *matHeaderCellDef> Percentual de Lucro </mat-header-cell>
+                <mat-cell fxFlex
+                          *matCellDef="let element"
+                          [formGroup]="element">
+                    <mat-form-field fxLayout="column">
+                        <input matInput
+                               formControlName="percentual"
+                               currencyMask
+                               (keyup)="setValorUnitarioVenda(element)"
+                               [options]="{ prefix: '', thousands: '.', decimal: ',', allowNegative: false, precision: 2, suffix: '%' }" />
+                        <mat-error *ngIf="element.get('percentual').invalid">
+                            {{getErrorMessage(element.get('percentual'))}}
+                        </mat-error>
+                    </mat-form-field>
+                </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="valorUnitarioVenda">
+                <mat-header-cell fxFlex
+                                 fxLayoutAlign="center center"
+                                 *matHeaderCellDef> Valor de Venda </mat-header-cell>
+                <mat-cell fxFlex
+                          *matCellDef="let element"
+                          [formGroup]="element">
+                    <mat-form-field fxLayout="column">
+                        <input matInput
+                               formControlName="valorUnitarioVenda"
                                currencyMask
                                [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', allowNegative: false, precision: 2 }" />
-                        <mat-error *ngIf="element.get('valorUnitario').invalid">
-                            {{getErrorMessage(element.get('valorUnitario'))}}
+                        <mat-error *ngIf="element.get('valorUnitarioVenda').invalid">
+                            {{getErrorMessage(element.get('valorUnitarioVenda'))}}
+                        </mat-error>
+                    </mat-form-field>
+                </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="quantidade">
+                <mat-header-cell fxFlex
+                                 fxLayoutAlign="center center"
+                                 *matHeaderCellDef> Quantidade </mat-header-cell>
+                <mat-cell fxFlex
+                          *matCellDef="let element"
+                          [formGroup]="element">
+                    <mat-form-field fxLayout="column">
+                        <input matInput
+                               formControlName="quantidade"
+                               currencyMask
+                               (keyup)="calculateTotalPrice(element)"
+                               [options]="{ prefix: '', thousands: '', decimal: '', allowNegative: false, precision: 0 }" />
+                        <mat-error *ngIf="element.get('quantidade').invalid">
+                            {{getErrorMessage(element.get('quantidade'))}}
                         </mat-error>
                     </mat-form-field>
                 </mat-cell>
             </ng-container>
 
             <ng-container matColumnDef="valorCobrado">
-                <mat-header-cell fxFlex="20"
+                <mat-header-cell fxFlex
                                  fxLayoutAlign="center center"
-                                 *matHeaderCellDef> Valor Cobrado </mat-header-cell>
-                <mat-cell fxFlex="20"
+                                 *matHeaderCellDef> Valor Total </mat-header-cell>
+                <mat-cell fxFlex
                           *matCellDef="let element"
                           [formGroup]="element">
                     <mat-form-field fxLayout="column">

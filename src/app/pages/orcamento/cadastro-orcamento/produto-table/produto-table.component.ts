@@ -93,7 +93,7 @@ export class ProdutoTableComponent extends ChildBaseTableComponent {
   }
 
   // Salva no próprio orçamento
-  override async beforeSave() {}
+  override async save() {}
 
   addProduto() {
     const screenSize = window.innerWidth;

@@ -34,6 +34,7 @@ export class BaseComponent implements OnInit {
   formHelper = FormHelper;
   mainForm: FormGroup;
   isNewRecord: boolean = false;
+  saveTablesIndividually: boolean = true;
   componentTables: ChildBaseTableComponent[];
 
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
@@ -129,7 +130,7 @@ export class BaseComponent implements OnInit {
     } else {
       await firstValueFrom(this.baseService.put(data))
         .then(() => {
-          if (this.componentTables?.length > 0) {
+          if (this.componentTables?.length > 0 && this.saveTablesIndividually) {
             this.saveComponentTables();
           } else {
             this.toastr.success('Registro alterado com sucesso.');
@@ -155,7 +156,7 @@ export class BaseComponent implements OnInit {
       }
     });
     await Promise.all(promises);
-
+    
     if (!tableHasErrors) {
       this.toastr.success('Registros alterados com sucesso.');
       this.onClear();

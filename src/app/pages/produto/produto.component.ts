@@ -49,6 +49,10 @@ export class ProdutoComponent extends BaseTableComponent {
           Validators.max(9999999999.99),
         ]),
       ],
+      codigoNCM: [
+        null,
+        Validators.compose([Validators.required, Validators.maxLength(8)]),
+      ],
       fornecedor: [null, Validators.required],
       modified: [],
       new: [],
@@ -57,6 +61,7 @@ export class ProdutoComponent extends BaseTableComponent {
       'select',
       'nome',
       'tipo',
+      'codigoNCM',
       'descricao',
       'quantidadeEstoque',
       'valorUnitario',

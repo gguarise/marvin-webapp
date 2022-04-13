@@ -29,7 +29,7 @@ export class PecasTableComponent extends ChildBaseTableComponent {
 
   constructor(
     elementRef: ElementRef,
-    baseService: OrcamentoService // TODO MUDAR
+    baseService: OrcamentoService // Service de Peça não existe, usa o de orçamento só pra preencher
   ) {
     super(baseService, elementRef);
     this.formGroupConfig = {
@@ -40,7 +40,7 @@ export class PecasTableComponent extends ChildBaseTableComponent {
         Validators.compose([Validators.required, Validators.maxLength(50)]),
       ],
       descricao: [null, Validators.maxLength(150)],
-      valorUnitario: [
+      valorUnitarioCompra: [
         null,
         Validators.compose([
           Validators.required,
@@ -48,13 +48,40 @@ export class PecasTableComponent extends ChildBaseTableComponent {
           Validators.max(9999999999.99),
         ]),
       ],
-      valorCobrado: [
+      valorUnitarioVenda: [
+        { value: null, disabled: true },
+        Validators.compose([
+          Validators.required,
+          Validators.min(0),
+          Validators.max(9999999999.99),
+        ]),
+      ],
+      quantidade: [
+        1,
+        Validators.compose([
+          Validators.required,
+          Validators.min(1),
+          Validators.max(2147483647),
+        ]),
+      ],
+      percentual: [
         null,
         Validators.compose([
           Validators.required,
           Validators.min(0),
           Validators.max(9999999999.99),
-          minValueValidator('valorUnitario', 'Valor Unitário'),
+        ]),
+      ],
+      codigoNCM: [
+        null,
+        Validators.compose([Validators.required, Validators.maxLength(8)]),
+      ],
+      valorCobrado: [
+        { value: null, disabled: true },
+        Validators.compose([
+          Validators.required,
+          Validators.min(0),
+          Validators.max(9999999999.99),
         ]),
       ],
       modified: [],
@@ -64,15 +91,52 @@ export class PecasTableComponent extends ChildBaseTableComponent {
       'select',
       'nome',
       'descricao',
-      'valorUnitario',
+      'codigoNCM',
+      'valorUnitarioCompra',
+      'percentual',
+      'valorUnitarioVenda',
+      'quantidade',
       'valorCobrado',
     ];
   }
 
   // Salva no próprio orçamento
-  override async beforeSave() {}
+  override async save() {}
 
   emitCalculateCustoTotalEvent() {
     this.calculateCustoPecas.emit();
+  }
+
+  override afterFormEnable() {
+    // Pode ser usado pra desabilitar campos após formulário ser habilitado
+    this.formArray.controls.forEach((item) => {
+      item.get('valorUnitarioVenda')?.disable();
+      item.get('valorCobrado')?.disable();
+    });
+  }
+
+  setValorUnitarioVenda(element: any) {
+    const valorUnitarioCompra = element.get('valorUnitarioCompra')?.value;
+    if (!!valorUnitarioCompra) {
+      const percentual = element.get('percentual')?.value;
+      if (!!percentual) {
+        element
+          .get('valorUnitarioVenda')
+          .setValue(
+            valorUnitarioCompra * (percentual / 100) + valorUnitarioCompra
+          );
+      } else {
+        element.get('valorUnitarioVenda').setValue(valorUnitarioCompra);
+      }
+      this.calculateTotalPrice(element);
+    }
+  }
+
+  calculateTotalPrice(element: any) {
+    const quantidade = element.get('quantidade').value;
+    const valorUnitario = element.get('valorUnitarioVenda').value;
+
+    element.get('valorCobrado').setValue(valorUnitario * quantidade);
+    this.emitCalculateCustoTotalEvent();
   }
 }

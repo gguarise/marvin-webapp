@@ -89,6 +89,7 @@ export class CadastroOrcamentoComponent
 
   override async ngOnInit() {
     super.ngOnInit(this.idAgendamento);
+    this.saveTablesIndividually = false; // Rotas de orçamento que salvam as tabelas
     if (!!this.idAgendamento) {
       this.isDialogComponent = true;
     }
@@ -282,7 +283,7 @@ export class CadastroOrcamentoComponent
         }
       } else {
         const valor = this.mainForm.get('pagamento.desconto')?.value;
-        const porcentagem = Math.round((valor * 100) / subtotal);
+        const porcentagem = ((valor * 100) / subtotal).toFixed(2); // Math.round tirava casas decimais
         this.mainForm.get('pagamento.percentual')?.setValue(porcentagem);
       }
       this.calculateTotal();
