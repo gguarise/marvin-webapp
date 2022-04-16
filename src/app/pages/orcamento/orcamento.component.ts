@@ -37,7 +37,6 @@ export class OrcamentoComponent extends BaseTableComponent {
       dataCadastro: [],
     };
     this.displayedColumns = [
-      'status',
       'clienteId',
       'carroId',
       'valorFinal',

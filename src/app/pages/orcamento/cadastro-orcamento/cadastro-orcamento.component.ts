@@ -208,7 +208,7 @@ export class CadastroOrcamentoComponent
   }
 
   getClientes() {
-    this.clienteService.getAll().subscribe((c: Cliente[]) => {
+    this.clienteService.getAll({ Ativo: 'true' }).subscribe((c: Cliente[]) => {
       this.clientes = c;
       this.clientesFiltrados = c;
     });

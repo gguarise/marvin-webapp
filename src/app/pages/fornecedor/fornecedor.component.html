@@ -19,7 +19,8 @@
 
             <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
             <mat-row *matRowDef="let row; columns: displayedColumns; let i = index"
-                     [class.invalid-table-row]="row.invalid">
+                     [class.invalid-table-row]="row.invalid"
+                     (click)="click$.next({event: $event, element: row.controls})">
             </mat-row>
 
             <ng-container matColumnDef="select">

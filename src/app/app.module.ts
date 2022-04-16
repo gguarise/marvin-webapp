@@ -59,6 +59,8 @@ import { CadastroAgendamentoComponent } from './pages/agendamento/cadastro-agend
 import { DatetimeFieldComponent } from './components/datetime-field/datetime-field.component';
 FullCalendarModule.registerPlugins([dayGridPlugin, interactionPlugin]);
 import { YouTubePlayerModule } from '@angular/youtube-player';
+import { ListaProdutosComponent } from './pages/fornecedor/lista-produtos/lista-produtos.component';
+import { DesenvolvedoresComponent } from './pages/desenvolvedores/desenvolvedores.component';
 
 @NgModule({
   declarations: [
@@ -85,6 +87,8 @@ import { YouTubePlayerModule } from '@angular/youtube-player';
     AgendamentoComponent,
     CadastroAgendamentoComponent,
     DatetimeFieldComponent,
+    ListaProdutosComponent,
+    DesenvolvedoresComponent,
   ],
   imports: [
     BrowserModule,

@@ -1,0 +1,38 @@
+.linha {
+  width: 100% !important;
+}
+
+.video {
+  width: 750px;
+  height: 450px;
+}
+@media screen and (max-width: 790px) {
+  .video {
+    width: 650px;
+    height: 350px;
+  }
+}
+@media screen and (max-width: 680px) {
+  .video {
+    width: 550px;
+    height: 250px;
+  }
+}
+@media screen and (max-width: 580px) {
+  .video {
+    width: 450px;
+    height: 250px;
+  }
+}
+@media screen and (max-width: 480px) {
+  .video {
+    width: 350px;
+    height: 150px;
+  }
+}
+@media screen and (max-width: 380px) {
+  .video {
+    width: 298px;
+    height: 150px;
+  }
+}

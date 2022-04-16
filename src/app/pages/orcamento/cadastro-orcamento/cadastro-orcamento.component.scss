@@ -1,14 +1,5 @@
-.valor {
-  border: 1px solid var(--client-color-orange) !important;
-}
-
-::ng-deep.mat-form-field-disabled .mat-form-field-underline .valor {
-  background-image: linear-gradient(
-    to right,
-    rgba(0, 0, 0, 1) 0,
-    rgba(0, 0, 0, 0.42) 33%,
-    #c2c7cc 0
-  ) !important;
-  background-size: 1px 100% !important;
-  background-repeat: repeat-x !important;
+.resumo {
+  border-style: solid;
+  border-color: var(--client-color-orange);
+  color: var(--client-color-orange);
 }

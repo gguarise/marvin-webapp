@@ -5,6 +5,7 @@ import { FornecedorService } from 'src/app/services/fornecedor.service';
 import { duplicateTableValueValidator } from 'src/core/validators/duplicate-table-value-validator';
 import { FieldValidators } from 'src/core/validators/field-validators';
 import { BaseTableComponent } from '../../components/base/base-table/base-table.component';
+import { ListaProdutosComponent } from './lista-produtos/lista-produtos.component';
 
 @Component({
   selector: 'app-fornecedor',
@@ -34,7 +35,11 @@ export class FornecedorComponent extends BaseTableComponent {
       telefone: [],
       email: [
         null,
-        Validators.compose([Validators.email, Validators.maxLength(50)]),
+        Validators.compose([
+          Validators.required,
+          Validators.email,
+          Validators.maxLength(50),
+        ]),
       ],
       tipo: [null, Validators.maxLength(10)],
       endereco: [null, Validators.maxLength(150)],
@@ -65,5 +70,21 @@ export class FornecedorComponent extends BaseTableComponent {
       fornecedor.telefone = fornecedor.telefone?.replace(/\D/g, '');
     });
     return payload;
+  }
+
+  override handleDoubleClickEvent(data: any) {
+    const screenSize = window.innerWidth;
+    let fornecedor = new Fornecedor();
+    fornecedor.nome = data.element.nome?.value;
+    fornecedor.cnpj = data.element.cnpj?.value;
+    fornecedor.telefone = data.element.telefone?.value;
+    fornecedor.email = data.element.email?.value;
+
+    this.dialog.open(ListaProdutosComponent, {
+      data: fornecedor,
+      maxWidth: screenSize > 599 ? '70%' : '100vw !important', // PEGAR
+      maxHeight: '100%', // PEGAR
+      disableClose: false,
+    });
   }
 }

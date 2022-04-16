@@ -4,6 +4,7 @@ import { AgendamentoComponent } from './pages/agendamento/agendamento.component'
 import { CadastroAgendamentoComponent } from './pages/agendamento/cadastro-agendamento/cadastro-agendamento.component';
 import { CadastroClienteComponent } from './pages/cliente/cadastro-cliente/cadastro-cliente.component';
 import { ClienteComponent } from './pages/cliente/cliente.component';
+import { DesenvolvedoresComponent } from './pages/desenvolvedores/desenvolvedores.component';
 import { FornecedorComponent } from './pages/fornecedor/fornecedor.component';
 import { HomePageComponent } from './pages/home-page/home-page.component';
 import { CadastroOrcamentoComponent } from './pages/orcamento/cadastro-orcamento/cadastro-orcamento.component';
@@ -26,6 +27,7 @@ const routes: Routes = [
   { path: 'agendamento', component: AgendamentoComponent },
   { path: 'cadastro-agendamento/:id', component: CadastroAgendamentoComponent },
   { path: 'cadastro-agendamento', component: CadastroAgendamentoComponent },
+  { path: 'desenvolvedores', component: DesenvolvedoresComponent },
 ];
 
 @NgModule({

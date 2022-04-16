@@ -46,14 +46,14 @@
                         </mat-error>
                     </mat-form-field>
 
-                    <div *ngIf="mainForm.enabled"
+                    <!-- <div *ngIf="mainForm.enabled"
                          fxFlex="20"
                          fxLayoutAlign="center">
                         <button mat-raised-button
                                 class="new-button"
                                 color="accent"
                                 (click)="addCliente()">Novo</button>
-                    </div>
+                    </div> -->
                 </div>
 
                 <mat-form-field appearance="fill">
@@ -168,7 +168,7 @@
                 </div>
             </fieldset>
 
-            <fieldset class="field-set"
+            <fieldset class="field-set resumo"
                       fxFlex
                       fxLayout="column">
                 <legend>Resumo</legend>
@@ -223,7 +223,7 @@
                     </fieldset> -->
                 </div>
 
-                <div fxFlex>
+                <!-- <div fxFlex>
                     <mat-form-field fxFlex
                                     appearance="fill">
                         <mat-label>Descrição do Orçamento</mat-label>
@@ -237,7 +237,7 @@
                             {{getErrorMessage(mainForm.get('descricao'))}}
                         </mat-error>
                     </mat-form-field>
-                </div>
+                </div> -->
             </fieldset>
         </mat-tab>
         <!-- Passar parentId -->

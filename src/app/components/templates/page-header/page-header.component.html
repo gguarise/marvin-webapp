@@ -43,7 +43,13 @@
     <mat-toolbar-row fxLayoutAlign="center center">
         <h1 class="title">{{title}}</h1>
     </mat-toolbar-row>
+    <!-- PEGAR -->
     <mat-toolbar-row fxLayoutAlign="end center">
+        <button *ngIf="!!dialogCloseButton"
+                class="close"
+                color="warn"
+                mat-button
+                (click)="emitCloseDialogEvent()">X</button>
         <button *ngIf="!!dialogComponentButton"
                 class="dialogButton"
                 mat-raised-button

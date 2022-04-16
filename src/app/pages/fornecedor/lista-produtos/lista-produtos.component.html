@@ -1,0 +1,123 @@
+<app-page-header [title]="mainForm.get('nome')?.value"
+                 [dialogCloseButton]="true"
+                 (dialogCloseEvent)="fechaDialog()"
+                 [showReturnButton]="false"
+                 [showSaveButton]="false"
+                 [showEditButton]="false"
+                 [showUndoButton]="false"
+                 [showDeleteButton]="false"></app-page-header>
+
+<form [formGroup]="mainForm"
+      fxLayout="column">
+    <fieldset class="field-set"
+              fxFlex
+              fxLayout="column">
+        <legend class="field-set-legend">Informações</legend>
+        <div fxFlex
+             fxLayout="row"
+             fxLayout.xs="column">
+            <mat-form-field fxFlex
+                            fxLayout="column">
+                <mat-label>Telefone</mat-label>
+                <input matInput
+                       formControlName="telefone"
+                       [textMask]="formHelper.getTextMask('telefone9')" />
+            </mat-form-field>
+
+            <mat-form-field fxFlex
+                            fxLayout="column">
+                <mat-label>CNPJ</mat-label>
+                <input matInput
+                       formControlName="cnpj"
+                       [textMask]="formHelper.getTextMask('cnpj')" />
+            </mat-form-field>
+
+            <mat-form-field fxFlex
+                            fxLayout="column">
+                <mat-label>E-mail</mat-label>
+                <input matInput
+                       formControlName="email" />
+            </mat-form-field>
+        </div>
+
+        <div fxFlex
+             fxLayout="row"
+             fxLayout.xs="column">
+
+            <mat-form-field fxFlex="65">
+                <mat-label>Texto do E-mail</mat-label>
+                <textarea matInput
+                          formControlName="textoEmail"
+                          cdkTextareaAutosize
+                          #autosize="cdkTextareaAutosize"
+                          cdkAutosizeMinRows="1"
+                          cdkAutosizeMaxRows="5"></textarea>
+            </mat-form-field>
+
+            <div fxFlex
+                 fxLayoutAlign="center center">
+                <button mat-raised-button
+                        class="new-button"
+                        color="accent"
+                        (click)="contataFornecedor()">Mandar E-mail</button>
+            </div>
+        </div>
+
+    </fieldset>
+
+    <fieldset class="field-set"
+              fxFlex
+              fxLayout="column">
+        <legend class="field-set-legend">Produtos</legend>
+        <div class="container">
+            <ng-container *ngFor="let number of numbers">
+                <div fxFlex
+                     fxLayout="row"
+                     fxLayout.xs="column">
+                    <mat-card fxFlex="50"
+                              class="example-card">
+                        <mat-card-title-group>
+                            <mat-card-title>Lâmpada Automotiva</mat-card-title>
+                            <mat-card-subtitle>1141 12V 21W</mat-card-subtitle>
+                            <img mat-card-sm-image
+                                 src="https://images.tcdn.com.br/img/img_prod/489056/lampada_p21w_12v_1333_1_20170810124236.jpg">
+                        </mat-card-title-group>
+                    </mat-card>
+                    <mat-card fxFlex="50"
+                              class="example-card">
+                        <mat-card-title-group>
+                            <mat-card-title>Pneu Aro 15</mat-card-title>
+                            <mat-card-subtitle>Dunlop 195/60 RM15</mat-card-subtitle>
+                            <img mat-card-sm-image
+                                 src="https://8694.cdn.simplo7.net/static/8694/sku/pneu-pneu-carro-pneu-de-carro-195-60-r15-lm704-88v-sp-sport-dunlop--p-1539275795733.jpg">
+                        </mat-card-title-group>
+                    </mat-card>
+                </div>
+
+                <div fxFlex
+                     fxLayout="row"
+                     fxLayout.xs="column">
+                    <mat-card fxFlex="50"
+                              class="example-card">
+                        <mat-card-title-group>
+                            <mat-card-title>Filtro de Ar</mat-card-title>
+                            <mat-card-subtitle>Classe C GI</mat-card-subtitle>
+                            <img mat-card-sm-image
+                                 src="https://8694.cdn.simplo7.net/static/8694/sku/filtro-de-cabine-filtro-ar-condicionado-classe-c-gl-lm-4-0-5-5-akx3593-1622811766967.png">
+                        </mat-card-title-group>
+                    </mat-card>
+                    <mat-card fxFlex="50"
+                              class="example-card">
+                        <mat-card-title-group>
+                            <mat-card-title>Disco de Freio</mat-card-title>
+                            <mat-card-subtitle>Hilux 2.5 Dianteiro</mat-card-subtitle>
+                            <img mat-card-sm-image
+                                 src="https://autoz.vteximg.com.br/arquivos/ids/195287-800-800/disco-freio-dianteiro-ventilado-sem-cubo-297mm-6-furos-bd4211-fremax-94883.jpg">
+                        </mat-card-title-group>
+                    </mat-card>
+                </div>
+            </ng-container>
+        </div>
+    </fieldset>
+
+</form>

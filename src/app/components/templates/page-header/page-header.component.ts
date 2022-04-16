@@ -18,6 +18,7 @@ export class PageHeaderComponent {
   @Input() showNewButton = false;
   @Input() newButtonRoute = '/'; // TODO mudar pra error page
   @Input() dialogComponentButton: string;
+  @Input() dialogCloseButton = false;
 
   @Output() returnEvent = new EventEmitter();
   @Output() editEvent = new EventEmitter();
@@ -27,6 +28,7 @@ export class PageHeaderComponent {
   @Output() openDialogEvent = new EventEmitter();
   @Output() customEvent = new EventEmitter();
   @Output() newEvent = new EventEmitter();
+  @Output() dialogCloseEvent = new EventEmitter();
 
   constructor() {}
 
@@ -82,6 +84,13 @@ export class PageHeaderComponent {
   emitOpenDialogEvent() {
     if (!!this.dialogComponentButton) {
       this.openDialogEvent.emit();
+    }
+    return true;
+  }
+
+  emitCloseDialogEvent() {
+    if (!!this.dialogCloseButton) {
+      this.dialogCloseEvent.emit();
     }
     return true;
   }

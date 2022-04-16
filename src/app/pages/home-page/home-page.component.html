@@ -1,20 +1,18 @@
 <div [formGroup]="mainForm"
-     fxFlex>
-    <h1>Bem Vindo!</h1>
-    <h3>Sobre a loja</h3>
-    <div fxLayoutAlign="center">
-        <video width="900"
-               controls>
-            <source src="/src/assets/img/mov_bbb.mp4"
-                    type="video/mp4">
-            <source src="mov_bbb.ogg"
-                    type="video/ogg">
-            Your browser does not support HTML video.
-        </video>
-    </div>
-    <!-- 
-    <youtube-player videoId="1fueZCTYkpA"
-                    suggestedQuality="highres"
-                    [height]="250"
-                    [width]="500"></youtube-player> -->
+     fxFlex
+     fxLayout="column">
+        <h1>Bem Vindo!</h1>
+        <h3>O sistema apresentado neste trabalho é também o TCC da equipe, e serve para gerenciar centros automotivos de
+                pequeno porte.</h3>
+        <h3>Ele foi desenvolvido com base nas necessidades da empresa Automar, localizada em Curitiba/PR.</h3>
+        <hr class="linha">
+        <div fxFlex
+             fxLayout="column"
+             fxLayoutAlign="center center">
+                <h3><strong>Cadastro básico de cliente</strong></h3>
+                <iframe class="video"
+                        src="https://www.youtube.com/embed/LL2HmgpZI_U">
+                        <!-- pega apenas o id do video e adiciona no final -->
+                </iframe>
+        </div>
 </div>

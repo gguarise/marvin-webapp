@@ -1,0 +1,21 @@
+.new-button {
+  max-height: 3rem;
+  margin-right: 5%;
+}
+@media screen and (max-width: 550px) {
+  .new-button {
+    max-height: 100%;
+    margin-right: 5%;
+  }
+}
+
+.container {
+  overflow-y: auto;
+  display: block !important;
+  height: 15rem;
+}
+
+.example-card {
+  margin-right: 0.1rem;
+  margin-bottom: 0.5rem;
+}
