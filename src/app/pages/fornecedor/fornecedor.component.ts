@@ -82,8 +82,8 @@ export class FornecedorComponent extends BaseTableComponent {
 
     this.dialog.open(ListaProdutosComponent, {
       data: fornecedor,
-      maxWidth: screenSize > 599 ? '70%' : '100vw !important', // PEGAR
-      maxHeight: '100%', // PEGAR
+      maxWidth: screenSize > 599 ? '80% !important' : '100vw !important', // PEGAR
+      maxHeight: screenSize > 599 ? '80% !important' : '100% !important', // PEGAR
       disableClose: false,
     });
   }

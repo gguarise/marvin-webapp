@@ -17,7 +17,6 @@ import { ClienteService } from 'src/app/services/cliente.service';
 import { OrcamentoService } from 'src/app/services/orcamento.service';
 import { CadastroClienteComponent } from '../../cliente/cadastro-cliente/cadastro-cliente.component';
 import { PecasTableComponent } from './pecas-table/pecas-table.component';
-import { ProdutoTableComponent } from './produto-table/produto-table.component';
 import { ServicoTableComponent } from './servico-table/servico-table.component';
 
 @Component({
@@ -36,8 +35,6 @@ export class CadastroOrcamentoComponent
 
   sumReducer = (accumulator: any, current: any) => accumulator + current;
 
-  @ViewChild(ProdutoTableComponent, { static: false })
-  produtosTable: ProdutoTableComponent;
   @ViewChild(ServicoTableComponent, { static: false })
   servicosTable: ServicoTableComponent;
   @ViewChild(PecasTableComponent, { static: false })
@@ -49,10 +46,7 @@ export class CadastroOrcamentoComponent
     route: ActivatedRoute,
     orcamentoService: OrcamentoService,
     public clienteService: ClienteService,
-    public router: Router,
-    // Ambos abaixo para controlar o comportamento para Tela de Agendamento > Selecionar Orçamento
-    @Optional() public dialogRef: MatDialogRef<CadastroOrcamentoComponent>,
-    @Optional() @Inject(MAT_DIALOG_DATA) public idAgendamento: any = null
+    public router: Router
   ) {
     super(orcamentoService, elementRef, cdr, route);
     this.mainForm = this.fb.group({
@@ -88,10 +82,7 @@ export class CadastroOrcamentoComponent
   }
 
   override async ngOnInit() {
-    super.ngOnInit(this.idAgendamento);
-    if (!!this.idAgendamento) {
-      this.isDialogComponent = true;
-    }
+    super.ngOnInit();
   }
 
   ngAfterViewInit() {
@@ -105,7 +96,6 @@ export class CadastroOrcamentoComponent
     const clienteId = this.mainForm.get('clienteId')?.value;
     this.carros = this.clientes.find((c) => c.id === clienteId)?.carros ?? [];
 
-    this.calculateCustoProdutos(true);
     this.calculateCustoPecas(true);
     this.calculateCustoServicos();
   }
@@ -113,7 +103,6 @@ export class CadastroOrcamentoComponent
   override afterFormEnable() {
     const disabledFields = [
       'pagamento.valorFinal',
-      'totalProdutos',
       'totalPecas',
       'totalServicos',
       'subtotal',
@@ -123,18 +112,16 @@ export class CadastroOrcamentoComponent
   }
 
   override async beforeSave() {
-    const produtos = this.produtosTable.formArray.getRawValue();
     const pecas = this.pecasTable.formArray.getRawValue();
     const servicos = this.servicosTable.formArray.getRawValue();
 
     if (
-      (!produtos || produtos?.length === 0) &&
       (!pecas || pecas?.length === 0) &&
       (!servicos || servicos?.length === 0)
     ) {
       this.toastr.error('É preciso inserir itens em ao menos uma tabela.');
     } else if (this.calculateTotal()) {
-      super.beforeSave();
+      this.toastr.success('Orçamento salvo com sucesso.');
     }
   }
 
@@ -148,7 +135,6 @@ export class CadastroOrcamentoComponent
 
   override getRawData() {
     const form = super.getRawData();
-    form.produtos = this.produtosTable.formArray.getRawValue();
     form.pecas = this.pecasTable.formArray.getRawValue();
     form.servicos = this.servicosTable.formArray.getRawValue();
     return form;
@@ -214,22 +200,6 @@ export class CadastroOrcamentoComponent
     });
   }
 
-  // TODO Opcional - Colocar numa classe separada que nem field-validator
-  calculateCustoProdutos(onInit: boolean = false) {
-    const tabela = this.produtosTable.formArray.getRawValue();
-    if (!!tabela && tabela.length > 0) {
-      const total = tabela
-        .map((x: any) => x.valorTotal)
-        .reduce(this.sumReducer);
-      this.mainForm.get('totalProdutos')?.setValue(total);
-
-      // Só calcula caso não seja na abertura da tela
-      if (!onInit) {
-        this.calculateSubtotal();
-      }
-    }
-  }
-
   calculateCustoPecas(onInit: boolean = false) {
     const tabela = this.pecasTable.formArray.getRawValue();
     if (!!tabela && tabela.length > 0) {
@@ -256,7 +226,6 @@ export class CadastroOrcamentoComponent
 
   calculateSubtotal() {
     const total =
-      this.mainForm.get('totalProdutos')?.value +
       this.mainForm.get('totalPecas')?.value +
       this.mainForm.get('totalServicos')?.value;
     this.mainForm.get('subtotal')?.setValue(total.toFixed(2));

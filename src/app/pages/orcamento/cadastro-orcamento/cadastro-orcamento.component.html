@@ -20,7 +20,7 @@
 
                     <mat-form-field fxFlex
                                     appearance="fill">
-                        <mat-label>Cliente</mat-label>
+                        <mat-label>Cliente *</mat-label>
                         <input fxFlex
                                type="text"
                                matInput
@@ -57,7 +57,7 @@
                 </div>
 
                 <mat-form-field appearance="fill">
-                    <mat-label>Carro</mat-label>
+                    <mat-label>Carro *</mat-label>
                     <mat-select formControlName="carroId"
                                 [compareWith]="compareWith">
                         <ng-container *ngFor="let carro of carros">
@@ -78,6 +78,7 @@
                       fxFlex>
                 <legend class="field-set-legend">Total das Tabelas</legend>
                 <div fxLayout="row"
+                     fxLayout.xs="column"
                      fxLayoutAlign="space-between">
 
                     <mat-form-field fxFlex
@@ -137,6 +138,7 @@
                       formGroupName="pagamento">
                 <legend class="field-set-legend">Descontos</legend>
                 <div fxLayout="row"
+                     fxLayout.xs="column"
                      fxLayoutAlign="space-between">
 
                     <mat-form-field fxFlex="49"
@@ -173,6 +175,8 @@
                       fxLayout="column">
                 <legend>Resumo</legend>
                 <div fxFlex
+                     fxLayout="row"
+                     fxLayout.xs="column"
                      formGroupName="pagamento">
                     <mat-form-field fxFlex
                                     appearance="fill"
