@@ -2,7 +2,7 @@
                  [showReturnButton]="mainForm.disabled"
                  [showSaveButton]="mainForm.enabled"
                  [showEditButton]="mainForm.disabled"
-                 [showUndoButton]="mainForm.enabled"
+                 [showUndoButton]="mainForm.enabled && !isDialogComponent"
                  [showDeleteButton]="mainForm.disabled"
                  (returnEvent)="redirectPreviousRoute()"
                  (saveEvent)="beforeSave()"

@@ -1,0 +1,242 @@
+<app-page-header title="Agendamento"
+                 [showReturnButton]="mainForm.disabled"
+                 [showSaveButton]="mainForm.enabled"
+                 [showEditButton]="mainForm.disabled"
+                 [showUndoButton]="mainForm.enabled"
+                 [showDeleteButton]="mainForm.disabled"
+                 [showCustomButton]="!isNewRecord && mainForm.disabled"
+                 [customButtonLabel]="finalizeButtonLabel"
+                 (returnEvent)="redirectPreviousRoute()"
+                 (saveEvent)="beforeSave()"
+                 (editEvent)="edit()"
+                 (undoEvent)="beforeUndo()"
+                 (deleteEvent)="beforeDelete()"
+                 (customEvent)="buttonClickEvent()"></app-page-header>
+<form class="form-style"
+      [formGroup]="mainForm"
+      fxLayout="column">
+
+    <div fxFlex
+         fxLayout="column">
+        <div *ngIf="isNewRecord"
+             fxFlex
+             fxLayoutAlign="start"
+             fxLayoutAlign.xs="center">
+            <button mat-raised-button
+                    class="new-button"
+                    color="accent"
+                    (click)="selectOrcamento()">Selecionar Orçamento</button>
+        </div>
+
+        <fieldset class="field-set"
+                  fxFlex
+                  fxLayout="column">
+            <legend>Resumo do Orçamento Selecionado</legend>
+
+            <div fxFlex
+                 fxLayout="row"
+                 fxLayout.xs="column">
+                <div fxFlex="66.7">
+                    <mat-form-field fxFlex
+                                    appearance="fill">
+                        <mat-label>Cliente</mat-label>
+                        <mat-select formControlName="clienteId"
+                                    [compareWith]="compareWith">
+                            <ng-container *ngFor="let cliente of clientes">
+                                <mat-option [value]="cliente.id">
+                                    {{cliente?.nome}}
+                                </mat-option>
+                            </ng-container>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+
+                <div fxFlex>
+                    <mat-form-field fxFlex
+                                    appearance="fill">
+                        <mat-label>Carro</mat-label>
+                        <mat-select formControlName="carroId"
+                                    [compareWith]="compareWith">
+                            <ng-container *ngFor="let carro of carros">
+                                <mat-option [value]="carro.id">
+                                    {{carro?.placa}}
+                                </mat-option>
+                            </ng-container>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+            </div>
+
+            <div fxLayout="row"
+                 fxLayout.xs="column"
+                 fxLayoutAlign="space-between">
+
+                <mat-form-field fxFlex
+                                appearance="fill">
+                    <mat-label>Serviços</mat-label>
+                    <input matInput
+                           formControlName="totalServicos"
+                           currencyMask
+                           [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', allowNegative: false, precision: 2 }" />
+                </mat-form-field>
+
+                <mat-form-field fxFlex
+                                appearance="fill">
+                    <mat-label>Estoque</mat-label>
+                    <input matInput
+                           formControlName="totalProdutos"
+                           currencyMask
+                           [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', allowNegative: false, precision: 2 }" />
+                </mat-form-field>
+
+                <mat-form-field fxFlex
+                                appearance="fill">
+                    <mat-label>Peças</mat-label>
+                    <input matInput
+                           formControlName="totalPecas"
+                           currencyMask
+                           [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', allowNegative: false, precision: 2 }" />
+                </mat-form-field>
+
+            </div>
+
+            <div fxLayout="row"
+                 fxLayout.xs="column"
+                 fxLayoutAlign="space-between">
+                <mat-form-field fxFlex
+                                appearance="fill">
+                    <mat-label>Subtotal</mat-label>
+                    <input matInput
+                           formControlName="subtotal"
+                           currencyMask
+                           [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', allowNegative: false, precision: 2 }" />
+                </mat-form-field>
+
+                <ng-container formGroupName="pagamento">
+                    <mat-form-field fxFlex
+                                    appearance="fill">
+                        <mat-label>Desconto</mat-label>
+                        <input matInput
+                               formControlName="desconto"
+                               currencyMask
+                               [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', allowNegative: false, precision: 2 }" />
+                    </mat-form-field>
+                </ng-container>
+
+                <ng-container formGroupName="pagamento">
+                    <mat-form-field fxFlex
+                                    appearance="fill">
+                        <mat-label>Valor Total</mat-label>
+                        <input matInput
+                               formControlName="valorFinal"
+                               currencyMask
+                               [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', allowNegative: false, precision: 2 }" />
+                    </mat-form-field>
+                </ng-container>
+            </div>
+
+            <div fxFlex
+                 fxLayout="row"
+                 fxLayout.xs="column"
+                 fxLayoutAlign="space-between">
+
+                <div fxFlex>
+                    <mat-form-field fxFlex
+                                    fxLayout="column"
+                                    appearance="fill">
+                        <mat-label>Data do Cadastro</mat-label>
+                        <input matInput
+                               [matDatepicker]="pickerCadastro"
+                               formControlName="dataCadastro" />
+                        <mat-datepicker-toggle matSuffix
+                                               [for]="pickerCadastro"></mat-datepicker-toggle>
+                        <mat-datepicker type="datetime"
+                                        #pickerCadastro></mat-datepicker>
+                    </mat-form-field>
+                </div>
+
+                <div fxFlex>
+                    <ng-container formGroupName="pagamento">
+                        <mat-checkbox fxFlex
+                                      fxLayoutAlign="center center"
+                                      formControlName="pagamentoEfetuado">
+                            Pagamento Efetuado
+                        </mat-checkbox>
+                    </ng-container>
+                </div>
+
+                <div *ngIf="!!mainForm.get('id')?.value"
+                     fxFlex
+                     fxLayoutAlign="center center">
+                    <button mat-raised-button
+                            class="new-button"
+                            color="accent"
+                            (click)="visualizeOrcamento()">Visualizar</button>
+                </div>
+            </div>
+
+        </fieldset>
+
+        <fieldset class="field-set"
+                  fxFlex
+                  fxLayout="row"
+                  fxLayout.xs="column">
+            <legend>Agendamento</legend>
+
+            <div fxFlex>
+                <mat-form-field fxLayout="column">
+                    <mat-label>Data do Agendamento</mat-label>
+                    <input matInput
+                           [matDatepicker]="dataAgendamentoPicker"
+                           [matDatepickerFilter]="filterTime"
+                           formControlName="dataAgendamento"
+                           [min]="minimalDate"
+                           [readonly]="true"
+                           (click)="datePickerControler(this.dataAgendamentoPicker)" />
+                    <mat-datepicker-toggle matSuffix
+                                           [for]="dataAgendamentoPicker"></mat-datepicker-toggle>
+                    <mat-datepicker-toggle matSuffix
+                                           (click)="setFieldValueAsNull('dataAgendamento')">
+                        <mat-icon matDatepickerToggleIcon>clear</mat-icon>
+                    </mat-datepicker-toggle>
+                    <mat-datepicker type="datetime"
+                                    [twelveHour]="false"
+                                    [touchUi]="this.screenSize < 599"
+                                    [clockStep]="5"
+                                    #dataAgendamentoPicker></mat-datepicker>
+                    <mat-error *ngIf="mainForm.get('dataAgendamento')?.invalid">
+                        {{getErrorMessage(mainForm.get('dataAgendamento'))}}
+                    </mat-error>
+                </mat-form-field>
+            </div>
+
+            <div *ngIf="statusOrcamento === 'Finalizado'"
+                 fxFlex>
+                <mat-form-field fxLayout="column">
+                    <mat-label>Data da Finalização</mat-label>
+                    <input matInput
+                           [matDatepicker]="dataFinalizacaoPicker"
+                           [matDatepickerFilter]="filterTime"
+                           [min]="minimalDate"
+                           [readonly]="true"
+                           formControlName="dataHoraFim"
+                           (click)="datePickerControler(this.dataFinalizacaoPicker)" />
+                    <mat-datepicker-toggle matSuffix
+                                           [for]="dataFinalizacaoPicker"></mat-datepicker-toggle>
+                    <mat-datepicker-toggle matSuffix
+                                           (click)="setFieldValueAsNull('dataHoraFim')">
+                        <mat-icon matDatepickerToggleIcon>clear</mat-icon>
+                    </mat-datepicker-toggle>
+                    <mat-datepicker type="datetime"
+                                    [twelveHour]="false"
+                                    [touchUi]="this.screenSize < 599"
+                                    [clockStep]="5"
+                                    #dataFinalizacaoPicker></mat-datepicker>
+                    <mat-error *ngIf="mainForm.get('dataHoraFim')?.invalid">
+                        {{getErrorMessage(mainForm.get('dataHoraFim'))}}
+                    </mat-error>
+                </mat-form-field>
+            </div>
+        </fieldset>
+    </div>
+</form>

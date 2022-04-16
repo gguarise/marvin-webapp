@@ -10,11 +10,18 @@ import { BaseService } from './base.service';
   providedIn: 'root',
 })
 export class CarroService extends BaseService {
-  private carroUrl = `${environment.safeApiUrl.cliente}Carro`;
+  private carroUrl = `${environment.safeApiUrl.cliente}carro`;
   private tabelaFipeUrl = 'https://parallelum.com.br/fipe/api/v2/';
 
   constructor(private http: HttpClient) {
     super();
+  }
+
+  // searchParams: Placa | Modelo
+  override getAll(searchParams: any = null): Observable<Carro[]> {
+    return this.http
+      .get<Carro[]>(`${this.carroUrl}${this.getSearchString(searchParams)}`)
+      .pipe(catchError(this.handleServiceError<any>()));
   }
 
   searchByPlaca(placa: string): Observable<Carro[]> {

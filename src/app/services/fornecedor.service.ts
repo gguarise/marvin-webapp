@@ -15,6 +15,7 @@ export class FornecedorService extends BaseService {
     super();
   }
 
+  // searchParams: Nome
   override getAll(searchParams: any = null): Observable<Fornecedor[]> {
     return this.http
       .get<Fornecedor[]>(

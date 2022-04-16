@@ -56,7 +56,7 @@ export class CarrosTableComponent extends ChildBaseTableComponent {
       carregandoModelos: [false], // Controla o spinner do modelo de cada linha
       ano: [
         null,
-        Validators.compose([Validators.min(1850), Validators.max(2100)]),
+        Validators.compose([Validators.min(1886), Validators.max(2200)]),
       ],
       quilometragem: [],
       descricao: [null, Validators.maxLength(150)],

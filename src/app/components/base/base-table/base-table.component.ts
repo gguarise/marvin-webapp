@@ -222,7 +222,7 @@ export abstract class BaseTableComponent implements OnInit, OnDestroy {
     this.formEditing$.next(false);
     if (this.formArray.dirty) {
       const confirma = await DialogHelper.openDialog(
-        'Confirmar',
+        'Confirmação',
         'Deseja descartar alterações?'
       );
       if (confirma) {
@@ -318,7 +318,7 @@ export abstract class BaseTableComponent implements OnInit, OnDestroy {
 
   // #region Checkbox - Seleção
   clearSelections() {
-    this.dataSource?.data.forEach((t) => t.get('select').setValue(false));
+    this.dataSource?.data.forEach((t) => t.get('select')?.setValue(false));
   }
 
   deleteSelectedRows() {

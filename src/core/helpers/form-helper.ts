@@ -124,19 +124,23 @@ export class FormHelper {
             /\d/,
           ],
         };
-        case 'placa':
-          return {
-            mask: [
-              /[a-zA-Z]/,
-              /[a-zA-Z]/,
-              /[a-zA-Z]/,
-              '-',
-              /\d/,
-              /\w/,
-              /\d/,
-              /\d/,
-            ],
-          };
+      case 'placa':
+        return {
+          mask: [
+            /[a-zA-Z]/,
+            /[a-zA-Z]/,
+            /[a-zA-Z]/,
+            '-',
+            /\d/,
+            /\w/,
+            /\d/,
+            /\d/,
+          ],
+        };
+      case 'codigoNCM':
+        return {
+          mask: [/\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/, /\d/],
+        };
       default:
         return { mask: [] };
     }

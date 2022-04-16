@@ -13,7 +13,10 @@ export class PageHeaderComponent {
   @Input() showSaveButton = true;
   @Input() showUndoButton = true;
   @Input() showDeleteButton = false;
+  @Input() showCustomButton = false;
+  @Input() customButtonLabel = 'Novo';
   @Input() showNewButton = false;
+  @Input() newButtonRoute = '/'; // TODO mudar pra error page
   @Input() dialogComponentButton: string;
 
   @Output() returnEvent = new EventEmitter();
@@ -22,6 +25,7 @@ export class PageHeaderComponent {
   @Output() undoEvent = new EventEmitter();
   @Output() deleteEvent = new EventEmitter();
   @Output() openDialogEvent = new EventEmitter();
+  @Output() customEvent = new EventEmitter();
   @Output() newEvent = new EventEmitter();
 
   constructor() {}
@@ -61,16 +65,23 @@ export class PageHeaderComponent {
     return true;
   }
 
-  emitOpenDialogEvent() {
-    if (!!this.dialogComponentButton) {
-      this.openDialogEvent.emit();
+  emitCustomEvent() {
+    if (!!this.showCustomButton) {
+      this.customEvent.emit();
     }
     return true;
   }
 
   emitNewEvent() {
-    if (!!this.dialogComponentButton) {
+    if (!!this.showNewButton) {
       this.newEvent.emit();
+    }
+    return true;
+  }
+
+  emitOpenDialogEvent() {
+    if (!!this.dialogComponentButton) {
+      this.openDialogEvent.emit();
     }
     return true;
   }

@@ -17,6 +17,7 @@ export class ClienteService extends BaseService {
     super();
   }
 
+  // searchParams: Nome | Email | Cpf | Telefone | Ativo
   override getAll(searchParams: any = null): Observable<Cliente[]> {
     return this.http
       .get<Cliente[]>(`${this.clienteUrl}${this.getSearchString(searchParams)}`)

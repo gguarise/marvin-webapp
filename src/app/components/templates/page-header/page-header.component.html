@@ -12,6 +12,7 @@
                     mat-icon-button
                     matTooltip="Editar"
                     matTooltipPosition="left"
+                    color="accent"
                     (click)="emitEditEvent()">
                 <mat-icon class="icons">create</mat-icon>
             </button>
@@ -19,6 +20,7 @@
                     mat-icon-button
                     matTooltip="Salvar"
                     matTooltipPosition="left"
+                    color="accent"
                     (click)="emitSaveEvent()">
                 <mat-icon class="icons">save</mat-icon>
             </button>
@@ -45,17 +47,24 @@
         <button *ngIf="!!dialogComponentButton"
                 class="dialogButton"
                 mat-raised-button
-                color="primary"
+                color="accent"
                 (click)="emitOpenDialogEvent()">
             {{dialogComponentButton}}
         </button>
-        <a [routerLink]="['/cadastro-cliente']">
-        <button *ngIf="showNewButton"
+        <button *ngIf="showCustomButton"
+                class="dialogButton"
+                mat-raised-button
+                color="accent"
+                (click)="emitCustomEvent()">
+            {{customButtonLabel}}
+        </button>
+        <a [routerLink]="[newButtonRoute]">
+            <button *ngIf="showNewButton"
                     mat-raised-button
-                    color="primary"
-                    matTooltipPosition="left"
+                    color="accent"
                     (click)="emitNewEvent()">
                 Novo
-        </button></a>
+            </button>
+        </a>
     </mat-toolbar-row>
 </mat-toolbar>

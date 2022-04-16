@@ -39,6 +39,7 @@
                     <mat-form-field fxLayout="column">
                         <input matInput
                                formControlName="placa"
+                               style="text-transform:uppercase"
                                [textMask]="formHelper.getTextMask('placa')"
                                (blur)="searchPlaca(element)" />
                         <mat-error>{{getErrorMessage(element.get('placa'))}}</mat-error>

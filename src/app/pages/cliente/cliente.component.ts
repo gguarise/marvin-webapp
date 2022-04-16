@@ -18,7 +18,6 @@ export class ClienteComponent extends BaseTableComponent {
   ) {
     super(clienteService, elementRef);
     this.formGroupConfig = {
-      select: [false],
       id: [],
       nome: [
         null,
@@ -26,8 +25,6 @@ export class ClienteComponent extends BaseTableComponent {
       ],
       cpf: [],
       telefone: [],
-      modified: [],
-      new: [],
     };
     this.displayedColumns = ['nome', 'cpf', 'telefone'];
   }
@@ -37,7 +34,7 @@ export class ClienteComponent extends BaseTableComponent {
       a.nome > b.nome ? 1 : b.nome > a.nome ? -1 : 0;
 
     // Retorna apenas clientes ativos
-    const searchParams = [{ Ativo: 'true' }];
+    const searchParams = { Ativo: 'true' };
     super.select(null, sortItems, searchParams);
   }
 

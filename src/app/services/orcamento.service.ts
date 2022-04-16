@@ -2,27 +2,37 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { catchError, map, Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { Estoque } from '../models/estoque';
+import { Orcamento } from '../models/orcamento';
 import { BaseService } from './base.service';
 
 @Injectable({
   providedIn: 'root',
 })
-export class EstoqueService extends BaseService {
-  private estoqueUrl = `${environment.safeApiUrl.fornecedor}Produto`; // É o antigo produto, manteve a rota igual
+export class OrcamentoService extends BaseService {
+  private orcamentoUrl = `${environment.safeApiUrl.atendimento}orcamento`;
 
   constructor(private http: HttpClient) {
     super();
   }
 
-  override getAll(searchParams: any = null): Observable<Estoque[]> {
+  // searchParams: ClienteId | CarroId | Status | DiaCadastro | MesCadastro | AnoCadastro |
+  //               DiaAgendamento | MesAgendamento | AnoAgendamento
+  override getAll(searchParams: any = null): Observable<Orcamento[]> {
     return this.http
-      .get<Estoque[]>(`${this.estoqueUrl}${this.getSearchString(searchParams)}`)
+      .get<Orcamento[]>(
+        `${this.orcamentoUrl}${this.getSearchString(searchParams)}`
+      )
+      .pipe(catchError(this.handleServiceError<any>()));
+  }
+
+  override getById(id: any): Observable<Orcamento> {
+    return this.http
+      .get<Orcamento[]>(`${this.orcamentoUrl}/${id}`)
       .pipe(catchError(this.handleServiceError<any>()));
   }
 
   override post(payload: any): Observable<any> {
-    return this.http.post(`${this.estoqueUrl}`, payload).pipe(
+    return this.http.post(`${this.orcamentoUrl}`, payload).pipe(
       map((ent) => {
         if (ent) {
           return ent;
@@ -34,7 +44,7 @@ export class EstoqueService extends BaseService {
   }
 
   override put(payload: any): Observable<any> {
-    return this.http.put(`${this.estoqueUrl}`, payload).pipe(
+    return this.http.put(`${this.orcamentoUrl}`, payload).pipe(
       map((ent) => {
         if (ent) {
           return ent;
@@ -46,7 +56,7 @@ export class EstoqueService extends BaseService {
   }
 
   override delete(id: string): Observable<any> {
-    return this.http.delete(`${this.estoqueUrl}/${id}`).pipe(
+    return this.http.delete(`${this.orcamentoUrl}/${id}`).pipe(
       map((ent) => {
         if (ent) {
           return ent;

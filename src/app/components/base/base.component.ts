@@ -13,12 +13,9 @@ import {
 } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
-import { MatTableDataSource } from '@angular/material/table';
 import { ActivatedRoute } from '@angular/router';
-import { cloneDeep } from 'lodash';
 import { ToastrService } from 'ngx-toastr';
 import { firstValueFrom, Subject } from 'rxjs';
-import { ConfirmDialogComponent } from 'src/app/components/shared/dialogs/confirm-dialog/confirm-dialog.component';
 import { AppInjectorService } from 'src/app/services/app-injector.service';
 import { BaseService } from 'src/app/services/base.service';
 import { DialogHelper } from 'src/core/helpers/dialog-helper';
@@ -37,6 +34,7 @@ export class BaseComponent implements OnInit {
   formHelper = FormHelper;
   mainForm: FormGroup;
   isNewRecord: boolean = false;
+  saveTablesIndividually: boolean = true;
   componentTables: ChildBaseTableComponent[];
 
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
@@ -52,11 +50,13 @@ export class BaseComponent implements OnInit {
     protected cdr: ChangeDetectorRef,
     public route: ActivatedRoute
   ) {
-    this.toastr = AppInjectorService.injector.get(ToastrService);
+    this.dialog = AppInjectorService.injector.get(MatDialog);
     this.fb = AppInjectorService.injector.get(FormBuilder);
+    this.toastr = AppInjectorService.injector.get(ToastrService);
 
     this.formEditing$.subscribe((isEditing) => {
       isEditing ? this.mainForm.enable() : this.mainForm.disable();
+      isEditing ? this.afterFormEnable() : null;
       this.componentTables?.forEach((table) => {
         isEditing ? table.formArray.enable() : table.formArray.disable();
         isEditing ? table.afterFormEnable() : null;
@@ -64,9 +64,12 @@ export class BaseComponent implements OnInit {
     });
   }
 
-  async ngOnInit() {
+  async ngOnInit(id: any = null) {
     this.routeId = this.route.snapshot.paramMap.get('id');
-
+    if (!!id) {
+      // id existirá quando for para visualizar em um dialog
+      this.routeId = id;
+    }
     if (!this.routeId) {
       this.isNewRecord = true;
     } else {
@@ -93,6 +96,8 @@ export class BaseComponent implements OnInit {
   edit() {
     this.formEditing$.next(true);
   }
+
+  afterFormEnable() {}
 
   async beforeSave() {
     if (this.mainForm.dirty || this.isTable('dirty')) {
@@ -125,7 +130,7 @@ export class BaseComponent implements OnInit {
     } else {
       await firstValueFrom(this.baseService.put(data))
         .then(() => {
-          if (this.componentTables?.length > 0) {
+          if (this.componentTables?.length > 0 && this.saveTablesIndividually) {
             this.saveComponentTables();
           } else {
             this.toastr.success('Registro alterado com sucesso.');
@@ -151,7 +156,7 @@ export class BaseComponent implements OnInit {
       }
     });
     await Promise.all(promises);
-
+    
     if (!tableHasErrors) {
       this.toastr.success('Registros alterados com sucesso.');
       this.onClear();
@@ -201,7 +206,18 @@ export class BaseComponent implements OnInit {
         this.afterDelete();
         this.toastr.success('Registro excluído com sucesso.');
       })
-      .catch(() => this.toastr.error('Não foi possível excluir registro.'));
+      .catch((e) => this.throwErrorMessage(e));
+  }
+
+  throwErrorMessage(
+    e: any,
+    defaultMessage: string = 'Ocorreram erros ao realizar a operação.'
+  ) {
+    if (!!e?.error?.errors?.Id && e.error.errors.Id.length > 0) {
+      this.toastr.error(e.error.errors.Id[0]);
+    } else {
+      this.toastr.error(defaultMessage);
+    }
   }
 
   afterDelete() {
@@ -211,7 +227,7 @@ export class BaseComponent implements OnInit {
   async beforeUndo() {
     if (this.mainForm.dirty || this.isTable('dirty')) {
       const confirma = await DialogHelper.openDialog(
-        'Confirmar',
+        'Confirmação',
         'Deseja descartar alterações?'
       );
       if (confirma) {
@@ -251,5 +267,10 @@ export class BaseComponent implements OnInit {
 
   getRawData() {
     return this.mainForm.getRawValue();
+  }
+
+  setFieldValueAsNull(fieldName: string) {
+    this.mainForm.get(fieldName)?.setValue(null);
+    this.mainForm.get(fieldName)?.markAsDirty();
   }
 }

@@ -1,5 +1,5 @@
 export class BaseModel {
-  id: number;
+  id: string;
   select: boolean;
   modified: boolean;
   new: boolean;

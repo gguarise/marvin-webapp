@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { EstoqueComponent } from './estoque.component';
+import { PecasTableComponent } from './pecas-table.component';
 
-describe('EstoqueComponent', () => {
-  let component: EstoqueComponent;
-  let fixture: ComponentFixture<EstoqueComponent>;
+describe('PecasTableComponent', () => {
+  let component: PecasTableComponent;
+  let fixture: ComponentFixture<PecasTableComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ EstoqueComponent ]
+      declarations: [ PecasTableComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(EstoqueComponent);
+    fixture = TestBed.createComponent(PecasTableComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -9,15 +9,35 @@
   --client-color-lightgrey: #949494;
 }
 
-html,
-body {
-  height: 100%;
-  margin: 0;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+.field-set {
+  border-style: solid;
+  border-color: var(--client-color-grey);
+  color: var(--client-color-grey);
+}
+
+.mat-form-field {
+  color: black !important;
+}
+
+// Usado para permitir o scroll em dialog
+.cdk-global-overlay-wrapper {
+  display: flex;
+  position: absolute;
+  z-index: 1000;
+  overflow: auto;
 }
 
 .ng-container {
   margin-right: 50px !important;
+}
+
+* {
+  font-family: "Roboto", sans-serif;
+  font-weight: 550;
+}
+
+.mat-form-field {
+  margin: 0 0.5rem 0 0.5rem;
 }
 
 .mat-icon {
@@ -51,11 +71,6 @@ body {
     display: table;
     margin: 0px;
   }
-  .mat-header-cell {
-    max-height: 10px !important;
-    font-size: small;
-    font-weight: bolder;
-  }
   .mat-header-row {
     max-height: 40px !important;
   }
@@ -65,11 +80,22 @@ body {
   .mat-footer-cell {
     word-wrap: initial;
     display: table-cell;
-    padding: 0 0 0 8px;
+    padding: 0 0.3rem 0 0.3rem;
     line-break: unset;
     white-space: nowrap;
     overflow: hidden;
     vertical-align: middle;
+    text-align: center;
+  }
+  .mat-header-cell {
+    max-height: 10px !important;
+    font-size: small;
+    font-weight: bolder;
+    white-space: break-spaces;
+    text-align: center;
+  }
+  .mat-form-field {
+    margin: 0;
   }
 
   .input {
@@ -79,4 +105,12 @@ body {
   .ngx-toastr {
     width: 1000px !important;
   }
+}
+
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
 }

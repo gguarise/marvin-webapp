@@ -1,0 +1,125 @@
+<div class="container text-center">
+
+  <mat-toolbar *ngIf="this.formArray.disabled">
+    <mat-icon class="lightgrey-icon"
+              matTooltip="Adicionar Linha">add_circle</mat-icon>
+    <mat-icon class="lightgrey-icon"
+              matTooltip="Remover Linhas Selecionadas">delete</mat-icon>
+  </mat-toolbar>
+  <mat-toolbar *ngIf="this.formArray.enabled"
+               fxLayoutAlign="space-between center">
+    <div>
+      <mat-icon class="orange-icon"
+                matTooltip="Adicionar Linha"
+                (click)="addRow()">add_circle</mat-icon>
+      <mat-icon class="orange-icon"
+                matTooltip="Remover Linhas Selecionadas"
+                (click)="deleteSelectedRows()">delete</mat-icon>
+    </div>
+    <a>
+      <button mat-raised-button
+              color="accent"
+              (click)="addServico()">
+        Editar Serviços
+      </button>
+    </a>
+  </mat-toolbar>
+
+  <div class="table-container"
+       [class.mat-elevation-z4]="true">
+    <mat-table [dataSource]="dataSource">
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns; let i = index"
+               [class.invalid-table-row]="row.invalid">
+      </mat-row>
+
+      <ng-container matColumnDef="select">
+        <mat-header-cell fxFlex="50px"
+                         fxLayoutAlign="center center"
+                         *matHeaderCellDef>
+        </mat-header-cell>
+        <mat-cell fxFlex="50px"
+                  fxLayoutAlign="center center"
+                  *matCellDef="let element"
+                  [formGroup]="element">
+          <mat-checkbox formControlName="select"> </mat-checkbox>
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="servicoId">
+        <mat-header-cell fxFlex="20"
+                         fxLayoutAlign="center center"
+                         *matHeaderCellDef>
+          Serviço
+        </mat-header-cell>
+        <mat-cell fxFlex="20"
+                  *matCellDef="let element"
+                  [formGroup]="element">
+          <mat-form-field fxLayout="column">
+            <mat-select formControlName="servicoId"
+                        [compareWith]="compare">
+              <mat-option *ngFor="let servico of servicos$ | async"
+                          [value]="servico.id">
+                {{ servico?.nome }}
+              </mat-option>
+            </mat-select>
+            <mat-error *ngIf="element.get('servicoId').invalid">
+              {{ getErrorMessage(element.get('servicoId')) }}
+            </mat-error>
+          </mat-form-field>
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="descricao">
+        <mat-header-cell fxFlex
+                         fxLayoutAlign="center center"
+                         *matHeaderCellDef>
+          Descrição
+        </mat-header-cell>
+        <mat-cell fxFlex
+                  *matCellDef="let element"
+                  [formGroup]="element">
+          <mat-form-field fxLayout="column">
+            <input matInput
+                   formControlName="descricao" />
+            <mat-error *ngIf="element.get('descricao').invalid">
+              {{ getErrorMessage(element.get('descricao')) }}
+            </mat-error>
+          </mat-form-field>
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="valor">
+        <mat-header-cell fxFlex="20"
+                         fxLayoutAlign="center center"
+                         *matHeaderCellDef>
+          Honorário
+        </mat-header-cell>
+        <mat-cell fxFlex="20"
+                  *matCellDef="let element"
+                  [formGroup]="element">
+          <mat-form-field fxLayout="column">
+            <input matInput
+                   formControlName="valor"
+                   currencyMask
+                   (blur)="emitCalculateCustoTotalEvent()"
+                   [options]="{
+                prefix: 'R$ ',
+                thousands: '.',
+                decimal: ',',
+                allowNegative: false,
+                precision: 2
+              }" />
+            <mat-error *ngIf="element.get('valor').invalid">
+              {{ getErrorMessage(element.get('valor')) }}
+            </mat-error>
+          </mat-form-field>
+        </mat-cell>
+      </ng-container>
+    </mat-table>
+  </div>
+  <div [class.mat-elevation-z2]="true">
+    <mat-paginator [pageSize]="10"
+                   [pageSizeOptions]="[5, 10]"></mat-paginator>
+  </div>
+</div>

@@ -29,17 +29,35 @@ import { TextMaskModule } from 'angular2-text-mask';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSelectModule } from '@angular/material/select';
 import { CurrencyMaskModule } from 'ng2-currency-mask';
-import { ClienteComponent } from './pages/cliente/cliente.component';
+import { OrcamentoComponent } from './pages/orcamento/orcamento.component';
 import { MatTabsModule } from '@angular/material/tabs';
+import { MatCardModule } from '@angular/material/card';
+import { ProdutoTableComponent } from './pages/orcamento/cadastro-orcamento/produto-table/produto-table.component';
+import { PecasTableComponent } from './pages/orcamento/cadastro-orcamento/pecas-table/pecas-table.component';
+import { ClienteComponent } from './pages/cliente/cliente.component';
 import { TextFieldModule } from '@angular/cdk/text-field';
 import { AppInjectorService } from './services/app-injector.service';
 import { TableToolbarComponent } from './components/templates/table-toolbar/table-toolbar.component';
 import { CadastroClienteComponent } from './pages/cliente/cadastro-cliente/cadastro-cliente.component';
 import { CarrosTableComponent } from './pages/cliente/cadastro-cliente/carros-table/carros-table.component';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { EstoqueComponent } from './pages/estoque/estoque.component';
+import { ProdutoComponent } from './pages/produto/produto.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ServicoComponent } from './pages/servico/servico.component';
+import { ServicoTableComponent } from './pages/orcamento/cadastro-orcamento/servico-table/servico-table.component';
+import { CadastroOrcamentoComponent } from './pages/orcamento/cadastro-orcamento/cadastro-orcamento.component';
+import { HomePageComponent } from './pages/home-page/home-page.component';
+import { FullCalendarModule } from '@fullcalendar/angular';
+import dayGridPlugin from '@fullcalendar/daygrid';
+import interactionPlugin from '@fullcalendar/interaction';
+import { MatDatepickerModule } from '@matheo/datepicker';
+import { MatNativeDateModule } from '@matheo/datepicker/core';
+// import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MAT_DATE_LOCALE } from '@angular/material/core';
+import { AgendamentoComponent } from './pages/agendamento/agendamento.component';
+import { CadastroAgendamentoComponent } from './pages/agendamento/cadastro-agendamento/cadastro-agendamento.component';
+import { DatetimeFieldComponent } from './components/datetime-field/datetime-field.component';
+FullCalendarModule.registerPlugins([dayGridPlugin, interactionPlugin]);
 
 @NgModule({
   declarations: [
@@ -51,12 +69,21 @@ import { ServicoComponent } from './pages/servico/servico.component';
     PageHeaderComponent,
     BaseComponent,
     ConfirmDialogComponent,
+    OrcamentoComponent,
+    ProdutoTableComponent,
+    PecasTableComponent,
     ClienteComponent,
     TableToolbarComponent,
     CadastroClienteComponent,
     CarrosTableComponent,
-    EstoqueComponent,
+    ProdutoComponent,
     ServicoComponent,
+    ServicoTableComponent,
+    CadastroOrcamentoComponent,
+    HomePageComponent,
+    AgendamentoComponent,
+    CadastroAgendamentoComponent,
+    DatetimeFieldComponent,
   ],
   imports: [
     BrowserModule,
@@ -87,11 +114,17 @@ import { ServicoComponent } from './pages/servico/servico.component';
     MatSelectModule,
     CurrencyMaskModule,
     MatTabsModule,
+    MatCardModule,
     TextFieldModule,
     MatAutocompleteModule,
     MatProgressSpinnerModule,
+    FullCalendarModule,
+    MatDatepickerModule,
+    // MatMomentDatetimeModule,
+    // MatDatetimepickerModule,
+    MatNativeDateModule,
   ],
-  providers: [],
+  providers: [{ provide: MAT_DATE_LOCALE, useValue: 'pt-BR' }],
   bootstrap: [AppComponent],
 })
 export class AppModule {
