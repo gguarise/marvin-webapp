@@ -38,12 +38,24 @@
                     (click)="emitDeleteEvent()">
                 <mat-icon class="icons">delete</mat-icon>
             </button>
+            <button *ngIf="showPrintButton"
+                    mat-icon-button
+                    matTooltip="Imprimir"
+                    matTooltipPosition="left"
+                    (click)="emitPrintEvent()">
+                <mat-icon class="icons">print</mat-icon>
+            </button>
         </div>
     </mat-toolbar-row>
     <mat-toolbar-row fxLayoutAlign="center center">
         <h1 class="title">{{title}}</h1>
     </mat-toolbar-row>
     <mat-toolbar-row fxLayoutAlign="end center">
+        <button *ngIf="showDialogCloseButton"
+                class="close"
+                color="warn"
+                mat-button
+                (click)="emitCloseDialogEvent()">X</button>
         <button *ngIf="!!dialogComponentButton"
                 class="dialogButton"
                 mat-raised-button
