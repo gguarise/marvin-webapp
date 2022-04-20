@@ -4,14 +4,14 @@
             <button *ngIf="showReturnButton"
                     mat-icon-button
                     matTooltip="Voltar"
-                    matTooltipPosition="left"
+                    matTooltipPosition="above"
                     (click)="emitReturnEvent()">
                 <mat-icon class="icons">reply</mat-icon>
             </button>
             <button *ngIf="showEditButton"
                     mat-icon-button
                     matTooltip="Editar"
-                    matTooltipPosition="left"
+                    matTooltipPosition="above"
                     color="accent"
                     (click)="emitEditEvent()">
                 <mat-icon class="icons">create</mat-icon>
@@ -19,7 +19,7 @@
             <button *ngIf="showSaveButton"
                     mat-icon-button
                     matTooltip="Salvar"
-                    matTooltipPosition="left"
+                    matTooltipPosition="above"
                     color="accent"
                     (click)="emitSaveEvent()">
                 <mat-icon class="icons">save</mat-icon>
@@ -27,21 +27,21 @@
             <button *ngIf="showUndoButton"
                     mat-icon-button
                     matTooltip="Descartar"
-                    matTooltipPosition="left"
+                    matTooltipPosition="above"
                     (click)="emitUndoEvent()">
                 <mat-icon class="icons">cancel</mat-icon>
             </button>
             <button *ngIf="showDeleteButton"
                     mat-icon-button
                     matTooltip="Excluir"
-                    matTooltipPosition="left"
+                    matTooltipPosition="above"
                     (click)="emitDeleteEvent()">
                 <mat-icon class="icons">delete</mat-icon>
             </button>
             <button *ngIf="showPrintButton"
                     mat-icon-button
-                    matTooltip="Imprimir"
-                    matTooltipPosition="left"
+                    [matTooltip]="printButtonLabel"
+                    matTooltipPosition="above"
                     (click)="emitPrintEvent()">
                 <mat-icon class="icons">print</mat-icon>
             </button>

@@ -1,4 +1,5 @@
 import {
+  ChangeDetectorRef,
   Component,
   ElementRef,
   Inject,
@@ -7,11 +8,12 @@ import {
 } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Router } from '@angular/router';
-import jsPDF from 'jspdf';
-import autoTable from 'jspdf-autotable';
+import { firstValueFrom } from 'rxjs/internal/firstValueFrom';
 import { BaseTableComponent } from 'src/app/components/base/base-table/base-table.component';
 import { Carro } from 'src/app/models/carro';
 import { Cliente } from 'src/app/models/cliente';
+import { StatusOrcamento } from 'src/app/models/enum/status-orcamento';
+import { AtendimentoService } from 'src/app/services/atendimento.service';
 import { ClienteService } from 'src/app/services/cliente.service';
 import { OrcamentoService } from 'src/app/services/orcamento.service';
 import { DialogHelper } from 'src/core/helpers/dialog-helper';
@@ -25,13 +27,26 @@ export class AgendamentosDiaTableComponent extends BaseTableComponent {
   clientes: Cliente[] = [];
   carros: Carro[] = [];
   showTable = false;
+  showReport = false;
+  agendamentosRelatorio: any[] = [];
+  dataAgora: Date;
+  // Formatação relatório
+  // TODO ARRUMAR PRA PT-BR
+  numberFormat = {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+    style: 'currency',
+    currency: 'BRL',
+  };
 
-  @ViewChild('pdfTable') pdfTable: ElementRef;
+  @ViewChild('printable') printable: HTMLElement;
 
   constructor(
     public router: Router,
     public orcamentoService: OrcamentoService,
     public clienteService: ClienteService,
+    public atendimentoService: AtendimentoService,
+    public cdr: ChangeDetectorRef,
     elementRef: ElementRef,
     @Optional() public dialogRef: MatDialogRef<AgendamentosDiaTableComponent>,
     @Optional() @Inject(MAT_DIALOG_DATA) public data: Date
@@ -46,11 +61,26 @@ export class AgendamentosDiaTableComponent extends BaseTableComponent {
       dataAgendamento: [],
     };
     this.displayedColumns = [
+      'status',
       'clienteId',
       'carroId',
       'valorFinal',
-      'dataAgendamento', // TODO hora agendamento
+      'dataAgendamento',
+      'icone',
     ];
+  }
+
+  override ngOnInit() {
+    super.ngOnInit();
+
+    // Preenche lista de Clientes e Carros para select-fields
+    this.clienteService.getAll().subscribe((c: Cliente[]) => {
+      this.clientes = this.clientes.concat(c);
+
+      c.forEach((cliente: Cliente) => {
+        this.carros = this.carros.concat(cliente.carros);
+      });
+    });
   }
 
   override select() {
@@ -86,19 +116,6 @@ export class AgendamentosDiaTableComponent extends BaseTableComponent {
     return o1 === o2;
   }
 
-  override setItems(items: any[]) {
-    super.setItems(items);
-
-    // Preenche lista de Clientes e Carros para select-fields
-    this.clienteService.getAll().subscribe((c: Cliente[]) => {
-      this.clientes = this.clientes.concat(c);
-
-      c.forEach((cliente: Cliente) => {
-        this.carros = this.carros.concat(cliente.carros);
-      });
-    });
-  }
-
   override handleDoubleClickEvent(data: any) {
     // Ao clicar duas vezes na linha (selecionar Agendamento)
     const id = data.element?.id?.value;
@@ -113,53 +130,16 @@ export class AgendamentosDiaTableComponent extends BaseTableComponent {
     this.dialogRef.close();
   }
 
-  downloadPdf() {
-    const prepare: any = [];
-    this.formArray.controls.forEach((e) => {
-      const tempObj = [];
-      const data = new Date(e.get('dataAgendamento')?.value);
-
-      tempObj.push(this.returnNomeCliente(e.get('clienteId')?.value));
-      tempObj.push(this.returnCarro(e.get('carroId')?.value)?.placa);
-      tempObj.push(this.returnCarro(e.get('carroId')?.value)?.marca);
-      tempObj.push(this.returnCarro(e.get('carroId')?.value)?.modelo);
-      tempObj.push(`R$ ${e.get('valorFinal')?.value}`);
-      tempObj.push(
-        `${data.getHours().toString().padStart(2, '0')}:${data
-          .getMinutes()
-          .toString()
-          .padStart(2, '0')}`
-      );
-      prepare.push(tempObj);
-    });
-    const dataString = `${this.data.getDate().toString().padStart(2, '0')}/${(
-      this.data.getMonth() + 1
-    )
-      .toString()
-      .padStart(2, '0')}/${this.data.getFullYear()}`;
-
-    const doc = new jsPDF();
-    doc.text(`Data de Agendamento: ${dataString}`, 14, 10);
-    doc.addImage('assets/img/logo.png', 'png', 14, 10, 50, 15);
-
-    autoTable(doc, {
-      head: [
-        [
-          'Cliente',
-          'Placa',
-          'Marca',
-          'Modelo',
-          'Valor Final',
-          'Hora do Agendamento',
-        ],
-      ],
-      body: prepare,
-      headStyles: {
-        fillColor: [239, 75, 5],
-      },
-      alternateRowStyles: { fillColor: [255, 220, 205] },
-    });
-    doc.save(`Agendamentos ${dataString.replace('/', '-')}` + '.pdf');
+  async finalizeAgendamento(element: any) {
+    const id = element.get('id')?.value;
+    await firstValueFrom(this.atendimentoService.putFinalizar({ id }))
+      .then(() => {
+        this.toastr.success('Agendamento finalizado com sucesso.');
+        this.select();
+      })
+      .catch(() => {
+        this.toastr.error('Não foi possível finalizar o agendamento.');
+      });
   }
 
   returnNomeCliente(clienteId: any) {
@@ -170,32 +150,24 @@ export class AgendamentosDiaTableComponent extends BaseTableComponent {
     return this.carros.find((x) => x.id === carroId);
   }
 
-  // openPDF(): void {
-  //   let pdf = new jsPDF();
-  //   pdf.html(this.pdfTable.nativeElement, {
-  //     callback: (pdf) => {
-  //       pdf.save('sample.pdf');
-  //     },
-  //   });
-  // }
+  async imprimir() {
+    this.agendamentosRelatorio = this.formArray.getRawValue();
+    this.agendamentosRelatorio = this.agendamentosRelatorio.filter(
+      (x) => x.status === StatusOrcamento.Finalizado
+    );
+    if (this.agendamentosRelatorio.length > 0) {
+      this.dataAgora = new Date();
+      this.showTable = false;
+      this.showReport = true;
+      await this.cdr.detectChanges();
 
-  // teste() {
-  //   // PARA ABRIR PREVIEW
-  //   const printContents = document.getElementById('pdfTable')?.innerHTML;
-  //   console.log(printContents);
-  //   const popupWin = window.open(
-  //     '',
-  //     '_blank',
-  //     'top=0,left=0,height=auto,width=auto'
-  //   );
-  //   popupWin?.document.open();
-  //   popupWin?.document.write(`
-  //     <html>
-  //       <head>
-  //         <title>Print tab</title>
-  //       </head>
-  //   <body onload="window.print();window.close()"><table class="table table-bordered">${printContents}</table></body>
-  //     </html>`);
-  //   popupWin?.document.close();
-  // }
+      window.print();
+
+      this.showTable = true;
+      this.showReport = false;
+      await this.cdr.detectChanges();
+    } else {
+      this.toastr.error('Esta data não possui nenhum agendamento finalizado.');
+    }
+  }
 }

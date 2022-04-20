@@ -15,6 +15,7 @@ export class PageHeaderComponent {
   @Input() showDeleteButton = false;
   @Input() showCustomButton = false;
   @Input() showPrintButton = false;
+  @Input() printButtonLabel = 'Imprimir';
   @Input() customButtonLabel = 'Novo';
   @Input() showNewButton = false;
   @Input() newButtonRoute = '/';
