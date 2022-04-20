@@ -11,11 +11,13 @@ import { Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BaseComponent } from 'src/app/components/base/base.component';
+import { HeaderComponent } from 'src/app/components/header/header.component';
 import { Carro } from 'src/app/models/carro';
 import { Cliente } from 'src/app/models/cliente';
 import { ClienteService } from 'src/app/services/cliente.service';
 import { OrcamentoService } from 'src/app/services/orcamento.service';
 import { CadastroClienteComponent } from '../../cliente/cadastro-cliente/cadastro-cliente.component';
+import { RelatorioOrdemServicoComponent } from '../../relatorio-ordem-servico/relatorio-ordem-servico.component';
 import { PecasTableComponent } from './pecas-table/pecas-table.component';
 import { ProdutoTableComponent } from './produto-table/produto-table.component';
 import { ServicoTableComponent } from './servico-table/servico-table.component';
@@ -33,6 +35,16 @@ export class CadastroOrcamentoComponent
   clientesFiltrados: Cliente[];
   carros: Carro[];
   isDialogComponent: boolean = false;
+  showForm = true;
+  showReport = false;
+  dataAgora: Date;
+  dadosRelatorio: any;
+  numberFormat = {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+    style: 'currency',
+    currency: 'BRL',
+  };
 
   sumReducer = (accumulator: any, current: any) => accumulator + current;
 
@@ -42,6 +54,8 @@ export class CadastroOrcamentoComponent
   servicosTable: ServicoTableComponent;
   @ViewChild(PecasTableComponent, { static: false })
   pecasTable: PecasTableComponent;
+  @ViewChild('appHeader', { static: false })
+  appHeader: HeaderComponent;
 
   constructor(
     elementRef: ElementRef,
@@ -301,5 +315,14 @@ export class CadastroOrcamentoComponent
       this.toastr.error('Desconto informado superior ao total.');
       return false;
     }
+  }
+
+  imprimir() {
+    this.dialog.open(RelatorioOrdemServicoComponent, {
+      data: this.getRawData(),
+      width: 'auto',
+      height: 'auto',
+      disableClose: false,
+    });
   }
 }

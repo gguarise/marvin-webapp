@@ -1,0 +1,76 @@
+<div class="pdf"
+     style="overflow: hidden; background-color: white; height: 100%;"
+     id="printable"
+     #printable>
+
+    <p style="height: 20px;"></p>
+    <!-- HEADER COM LOGO -->
+    <!-- <div fxLayout="row"
+         style="border: 1px solid black; background-color: black;  height: 50px;">
+        <div fxFlex
+             fxLayout="row">
+            <img fxFlex="20"
+                 src="../../../../assets/img/logo.png"
+                 width="auto"
+                 height="auto"
+                 fxLayoutAlign="start center">
+            <h1 fxFlex="70"
+                fxLayoutAlign="end center"
+                style="color: white;">
+                <strong>{{data | date:'dd/MM/yyyy'}}</strong>
+            </h1>
+        </div>
+    </div> -->
+    <div style="border: 1px solid black; height: 50px;">
+        <h1 fxLayoutAlign="center center"
+            style="padding-top: 10px; align-self: middle;">
+            <strong>Relatório de Agendamentos Finalizados | {{orcamento.dataAgendamento | date:'dd/MM/yyyy'}}</strong>
+        </h1>
+    </div>
+    <!-- <div class="grid-container">
+        <h6 class="left">
+            <strong>Quantidade de Agendamentos: {{agendamentosRelatorio?.length}}</strong>
+        </h6>
+        <h6 class="center">
+            <strong>|</strong>
+        </h6>
+        <h6 class="right">
+            <strong>Gerado em: {{dataAgora | date:'dd/MM/yyyy HH:mm:ss'}}</strong>
+        </h6>
+    </div> -->
+    <div style="padding-top: 10px;">
+        <!-- <table id="agendamento">
+            <tr>
+                <th fxFlex="45">Cliente</th>
+                <th fxFlex>Carro</th>
+                <th fxFlex>Valor Final</th>
+                <th fxFlex>Hora Marcada</th>
+            </tr>
+            <tr *ngFor="let linha of agendamentosRelatorio">
+                <td fxFlex="45">
+                    <ng-container *ngFor="let cliente of clientes">
+                        <ng-container *ngIf="cliente.id === linha.clienteId">
+                            <span>{{cliente?.nome}}</span>
+                        </ng-container>
+                    </ng-container>
+                </td>
+                <td fxFlex
+                    fxLayoutAlign="center">
+                    <ng-container *ngFor="let carro of carros">
+                        <ng-container *ngIf="carro.id === linha.carroId">
+                            <span>{{carro?.placa}}</span>
+                        </ng-container>
+                    </ng-container>
+                </td>
+                <td fxFlex>
+                    <span>{{linha.valorFinal.toLocaleString('pt-BR',
+                        numberFormat)}}</span>
+                </td>
+                <td fxFlex
+                    fxLayoutAlign="center">
+                    <span>{{linha.dataAgendamento | date:'HH:mm'}}</span>
+                </td>
+            </tr>
+        </table> -->
+    </div>
+</div>

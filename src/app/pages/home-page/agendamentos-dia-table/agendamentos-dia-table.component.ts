@@ -4,7 +4,6 @@ import {
   ElementRef,
   Inject,
   Optional,
-  ViewChild,
 } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Router } from '@angular/router';
@@ -38,8 +37,6 @@ export class AgendamentosDiaTableComponent extends BaseTableComponent {
     style: 'currency',
     currency: 'BRL',
   };
-
-  @ViewChild('printable') printable: HTMLElement;
 
   constructor(
     public router: Router,
@@ -131,15 +128,21 @@ export class AgendamentosDiaTableComponent extends BaseTableComponent {
   }
 
   async finalizeAgendamento(element: any) {
-    const id = element.get('id')?.value;
-    await firstValueFrom(this.atendimentoService.putFinalizar({ id }))
-      .then(() => {
-        this.toastr.success('Agendamento finalizado com sucesso.');
-        this.select();
-      })
-      .catch(() => {
-        this.toastr.error('Não foi possível finalizar o agendamento.');
-      });
+    const confirma = await DialogHelper.openDialog(
+      'Confirmação',
+      'Deseja finalizar o agendamento?'
+    );
+    if (confirma) {
+      const id = element.get('id')?.value;
+      await firstValueFrom(this.atendimentoService.putFinalizar({ id }))
+        .then(() => {
+          this.toastr.success('Agendamento finalizado com sucesso.');
+          this.select();
+        })
+        .catch(() => {
+          this.toastr.error('Não foi possível finalizar o agendamento.');
+        });
+    }
   }
 
   returnNomeCliente(clienteId: any) {
