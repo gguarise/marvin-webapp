@@ -269,6 +269,24 @@ export class BaseComponent implements OnInit {
     return this.mainForm.getRawValue();
   }
 
+  convertDateValue(date: Date) {
+    if (!!date && typeof date !== 'string') {
+      return (
+        `${date.getFullYear()}-` +
+        `${this.convertAux(date.getMonth() + 1)}-` +
+        `${this.convertAux(date.getDate())}T` +
+        `${this.convertAux(date.getHours())}:` +
+        `${this.convertAux(date.getMinutes())}:` +
+        `${this.convertAux(date.getSeconds())}`
+      );
+    }
+    return date;
+  }
+
+  convertAux(n: number) {
+    return n?.toString().padStart(2, '0');
+  }
+
   setFieldValueAsNull(fieldName: string) {
     this.mainForm.get(fieldName)?.setValue(null);
     this.mainForm.get(fieldName)?.markAsDirty();

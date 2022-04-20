@@ -227,7 +227,8 @@ export class CadastroOrcamentoComponent
   }
 
   getClientes() {
-    this.clienteService.getAll().subscribe((c: Cliente[]) => {
+    const searchParams = { Ativo: 'true' };
+    this.clienteService.getAll(searchParams).subscribe((c: Cliente[]) => {
       this.clientes = c;
       this.clientesFiltrados = c;
     });
