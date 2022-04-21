@@ -1,11 +1,23 @@
 .title {
   font-size: xx-large;
 }
+// @media screen and (max-width: 550px) {
+//   .title {
+//     font-size: x-large;
+//   }
+// }
+// @media screen and (max-width: 360px) {
+//   .title {
+//     font-size: large;
+//   }
+// }
 
 .icons {
   transform: scale(1.35);
 }
 
-// .dialogButton {
-//   margin-left: 200px;
-// }
+.close {
+  padding: 0.3rem;
+  line-height: 1rem;
+  min-width: auto;
+}

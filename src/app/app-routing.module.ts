@@ -12,10 +12,11 @@ import { ProdutoComponent } from './pages/produto/produto.component';
 import { ServicoComponent } from './pages/servico/servico.component';
 
 const routes: Routes = [
+  // { path: '**', redirectTo: 'home' }, // Caminho desconhecido vai para home
   { path: 'home', component: HomePageComponent },
   // TODO PageNotFoundComponent
   { path: 'fornecedor', component: FornecedorComponent },
-  { path: 'produto', component: ProdutoComponent },
+  { path: 'estoque', component: ProdutoComponent },
   { path: 'cliente', component: ClienteComponent },
   { path: 'cadastro-cliente/:id', component: CadastroClienteComponent },
   { path: 'cadastro-cliente', component: CadastroClienteComponent },

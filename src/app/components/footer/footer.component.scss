@@ -7,8 +7,26 @@
 .footer .title {
   font-size: small;
 }
-
 .footer .subtitle {
   font-size: small;
   font-weight: 100;
+}
+
+@media screen and (max-width: 550px) {
+  .footer .title {
+    font-size: x-small;
+  }
+  .footer .subtitle {
+    font-size: x-small;
+    font-weight: 100;
+  }
+}
+@media screen and (max-width: 360px) {
+  .footer .title {
+    font-size: xx-small;
+  }
+  .footer .subtitle {
+    font-size: xx-small;
+    font-weight: 100;
+  }
 }

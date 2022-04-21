@@ -9,6 +9,28 @@
   --client-color-lightgrey: #949494;
 }
 
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  #printable,
+  #printable * {
+    visibility: visible;
+  }
+  #printable {
+    position: absolute;
+    left: 0;
+    top: 0;
+    -webkit-print-color-adjust: exact;
+  }
+  @page {
+    margin-left: 0.5in;
+    margin-right: 0.5in;
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+}
+
 .field-set {
   border-style: solid;
   border-color: var(--client-color-grey);
@@ -77,7 +99,8 @@
   .mat-row,
   .mat-cell,
   .mat-header-cell,
-  .mat-footer-cell {
+  .mat-footer-cell,
+  .h3 {
     word-wrap: initial;
     display: table-cell;
     padding: 0 0.3rem 0 0.3rem;

@@ -89,7 +89,10 @@ export class BaseComponent implements OnInit {
           this.setMainFormData(item);
         }
       },
-      error: () => this.toastr.error('Um erro ocorreu ao buscar itens.'),
+      error: (e) => {
+        this.throwErrorMessage(e);
+        this.redirectPreviousRoute(); // Se cair aqui é porque a pessoa colocou algo errado na rota
+      },
     });
   }
 
@@ -124,9 +127,7 @@ export class BaseComponent implements OnInit {
           this.afterInsert(response);
           this.toastr.success('Novo registro inserido com sucesso.');
         })
-        .catch(() =>
-          this.toastr.error('Não foi possível criar novo registro.')
-        );
+        .catch((e) => this.throwErrorMessage(e));
     } else {
       await firstValueFrom(this.baseService.put(data))
         .then(() => {
@@ -138,9 +139,7 @@ export class BaseComponent implements OnInit {
             this.select();
           }
         })
-        .catch(() =>
-          this.toastr.error('Não foi possível salvar as alterações.')
-        );
+        .catch((e) => this.throwErrorMessage(e)); // TODO TESTAR
     }
   }
 
@@ -156,17 +155,18 @@ export class BaseComponent implements OnInit {
       }
     });
     await Promise.all(promises);
-    
+
     if (!tableHasErrors) {
       this.toastr.success('Registros alterados com sucesso.');
       this.onClear();
       this.select();
     } else {
-      this.toastr.error(
-        `Erro ao salvar tabela(s) ${tablesWithErrors.map(
-          (x) => ` ${x}`
-        )}, os demais registros já foram salvos.`
-      );
+      // TODO TESTAR !!!!!!!!
+      // this.toastr.error(
+      //   `Erro ao salvar tabela(s) ${tablesWithErrors.map(
+      //     (x) => ` ${x}`
+      //   )}, os demais registros já foram salvos.`
+      // );
     }
   }
 

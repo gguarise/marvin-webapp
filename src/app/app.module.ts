@@ -57,6 +57,7 @@ import { MAT_DATE_LOCALE } from '@angular/material/core';
 import { AgendamentoComponent } from './pages/agendamento/agendamento.component';
 import { CadastroAgendamentoComponent } from './pages/agendamento/cadastro-agendamento/cadastro-agendamento.component';
 import { DatetimeFieldComponent } from './components/datetime-field/datetime-field.component';
+import { AgendamentosDiaTableComponent } from './pages/home-page/agendamentos-dia-table/agendamentos-dia-table.component';
 FullCalendarModule.registerPlugins([dayGridPlugin, interactionPlugin]);
 
 @NgModule({
@@ -84,6 +85,7 @@ FullCalendarModule.registerPlugins([dayGridPlugin, interactionPlugin]);
     AgendamentoComponent,
     CadastroAgendamentoComponent,
     DatetimeFieldComponent,
+    AgendamentosDiaTableComponent,
   ],
   imports: [
     BrowserModule,

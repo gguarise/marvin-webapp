@@ -77,56 +77,63 @@
                       fxFlex>
                 <legend class="field-set-legend">Total das Tabelas</legend>
                 <div fxLayout="row"
+                     fxLayout.lt-md="column"
                      fxLayoutAlign="space-between">
 
-                    <mat-form-field fxFlex
-                                    appearance="fill">
-                        <mat-label>Serviços</mat-label>
-                        <input matInput
-                               formControlName="totalServicos"
-                               currencyMask
-                               [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', allowNegative: false, precision: 2 }" />
-                        <mat-error *ngIf="mainForm.get('dados.totalServicos')?.invalid">
-                            {{getErrorMessage(mainForm.get('dados.totalServicos'))}}
-                        </mat-error>
-                    </mat-form-field>
+                    <div fxFlex
+                         fxLayout="row"
+                         fxLayout.xs="column">
+                        <mat-form-field fxFlex
+                                        appearance="fill">
+                            <mat-label>Serviços</mat-label>
+                            <input matInput
+                                   formControlName="totalServicos"
+                                   currencyMask
+                                   [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', allowNegative: false, precision: 2 }" />
+                            <mat-error *ngIf="mainForm.get('dados.totalServicos')?.invalid">
+                                {{getErrorMessage(mainForm.get('dados.totalServicos'))}}
+                            </mat-error>
+                        </mat-form-field>
 
-                    <mat-form-field fxFlex
-                                    appearance="fill">
-                        <mat-label>Estoque</mat-label>
-                        <input matInput
-                               formControlName="totalProdutos"
-                               currencyMask
-                               [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', allowNegative: false, precision: 2 }" />
-                        <mat-error *ngIf="mainForm.get('dados.totalProdutos')?.invalid">
-                            {{getErrorMessage(mainForm.get('dados.totalProdutos'))}}
-                        </mat-error>
-                    </mat-form-field>
+                        <mat-form-field fxFlex
+                                        appearance="fill">
+                            <mat-label>Estoque</mat-label>
+                            <input matInput
+                                   formControlName="totalProdutos"
+                                   currencyMask
+                                   [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', allowNegative: false, precision: 2 }" />
+                            <mat-error *ngIf="mainForm.get('dados.totalProdutos')?.invalid">
+                                {{getErrorMessage(mainForm.get('dados.totalProdutos'))}}
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+                    <div fxFlex
+                         fxLayout="row"
+                         fxLayout.xs="column">
+                        <mat-form-field fxFlex
+                                        appearance="fill">
+                            <mat-label>Peças</mat-label>
+                            <input matInput
+                                   formControlName="totalPecas"
+                                   currencyMask
+                                   [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', allowNegative: false, precision: 2 }" />
+                            <mat-error *ngIf="mainForm.get('dados.totalPecas')?.invalid">
+                                {{getErrorMessage(mainForm.get('dados.totalPecas'))}}
+                            </mat-error>
+                        </mat-form-field>
 
-                    <mat-form-field fxFlex
-                                    appearance="fill">
-                        <mat-label>Peças</mat-label>
-                        <input matInput
-                               formControlName="totalPecas"
-                               currencyMask
-                               [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', allowNegative: false, precision: 2 }" />
-                        <mat-error *ngIf="mainForm.get('dados.totalPecas')?.invalid">
-                            {{getErrorMessage(mainForm.get('dados.totalPecas'))}}
-                        </mat-error>
-                    </mat-form-field>
-
-                    <mat-form-field fxFlex
-                                    appearance="fill">
-                        <mat-label>Subtotal</mat-label>
-                        <input matInput
-                               formControlName="subtotal"
-                               currencyMask
-                               [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', allowNegative: false, precision: 2 }" />
-                        <mat-error *ngIf="mainForm.get('dados.subtotal')?.invalid">
-                            {{getErrorMessage(mainForm.get('dados.subtotal'))}}
-                        </mat-error>
-                    </mat-form-field>
-
+                        <mat-form-field fxFlex
+                                        appearance="fill">
+                            <mat-label>Subtotal</mat-label>
+                            <input matInput
+                                   formControlName="subtotal"
+                                   currencyMask
+                                   [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', allowNegative: false, precision: 2 }" />
+                            <mat-error *ngIf="mainForm.get('dados.subtotal')?.invalid">
+                                {{getErrorMessage(mainForm.get('dados.subtotal'))}}
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
                 </div>
             </fieldset>
 
@@ -136,6 +143,7 @@
                       formGroupName="pagamento">
                 <legend class="field-set-legend">Descontos</legend>
                 <div fxLayout="row"
+                     fxLayout.xs="column"
                      fxLayoutAlign="space-between">
 
                     <mat-form-field fxFlex="49"
@@ -172,6 +180,8 @@
                       fxLayout="column">
                 <legend>Resumo</legend>
                 <div fxFlex
+                     fxLayout="row"
+                     fxLayout.xs="column"
                      formGroupName="pagamento">
                     <mat-form-field fxFlex
                                     appearance="fill">
@@ -193,28 +203,38 @@
                             Pagamento Efetuado
                         </mat-checkbox>
                     </ng-container>
+                </div>
 
-                    <fieldset fxFlex="50"
+                <div fxFlex
+                     class="modo-pagamento"
+                     formGroupName="pagamento">
+                    <fieldset fxFlex
                               class="field-set"
+                              fxLayout="row"
+                              fxLayout.xs="column"
                               formGroupName="modoPagamento">
                         <legend>Modo de Pagamento</legend>
                         <mat-checkbox fxFlex
                                       fxLayoutAlign="center center"
+                                      fxLayoutAlign.xs="start center"
                                       formControlName="cartaoCredito">
                             Cartão de Crédito
                         </mat-checkbox>
                         <mat-checkbox fxFlex
                                       fxLayoutAlign="center center"
+                                      fxLayoutAlign.xs="start center"
                                       formControlName="cartaoDebito">
                             Cartão de Débito
                         </mat-checkbox>
                         <mat-checkbox fxFlex
                                       fxLayoutAlign="center center"
+                                      fxLayoutAlign.xs="start center"
                                       formControlName="dinheiro">
                             Dinheiro
                         </mat-checkbox>
                         <mat-checkbox fxFlex
                                       fxLayoutAlign="center center"
+                                      fxLayoutAlign.xs="start center"
                                       formControlName="pix">
                             Pix
                         </mat-checkbox>
