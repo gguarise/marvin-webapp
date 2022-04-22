@@ -14,6 +14,7 @@ import { BaseComponent } from 'src/app/components/base/base.component';
 import { HeaderComponent } from 'src/app/components/header/header.component';
 import { Carro } from 'src/app/models/carro';
 import { Cliente } from 'src/app/models/cliente';
+import { RelatorioOrcamento } from 'src/app/models/relatorio-orcamento';
 import { ClienteService } from 'src/app/services/cliente.service';
 import { OrcamentoService } from 'src/app/services/orcamento.service';
 import { CadastroClienteComponent } from '../../cliente/cadastro-cliente/cadastro-cliente.component';
@@ -320,10 +321,22 @@ export class CadastroOrcamentoComponent
 
   imprimir() {
     this.dialog.open(RelatorioOrdemServicoComponent, {
-      data: this.getRawData(),
-      width: 'auto',
-      height: 'auto',
+      data: this.getReportData(),
+      width: '100%',
+      height: '100%',
       disableClose: false,
     });
+    this.cdr.detectChanges();
+  }
+
+  getReportData() {
+    const orcamento = this.getRawData();
+    orcamento.subtotal = Number(this.mainForm.get('subtotal')?.value);
+    orcamento.pagamento.desconto = Number(orcamento.pagamento.desconto);
+    orcamento.cliente =
+      this.clientes.find((x) => x.id === orcamento.clienteId) ?? new Cliente();
+    orcamento.carro =
+      this.carros.find((x) => x.id === orcamento.carroId) ?? new Carro();
+    return orcamento;
   }
 }

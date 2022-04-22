@@ -7,6 +7,7 @@ export class Cliente extends BaseModel {
   cpf: string;
   telefone: string;
   endereco: string;
+  cep: string;
   ativo: boolean;
   carros: Carro[];
 }

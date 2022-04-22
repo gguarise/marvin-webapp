@@ -13,6 +13,10 @@
   body * {
     visibility: hidden;
   }
+  #menu {
+    visibility: visible;
+    display: none !important;
+  }
   #printable,
   #printable * {
     visibility: visible;
@@ -29,6 +33,13 @@
     margin-top: 0;
     margin-bottom: 0;
   }
+  // header {
+  //   position: fixed;
+  // }
+  // footer {
+  //   position: fixed;
+  //   bottom: 0;
+  // }
 }
 
 .field-set {

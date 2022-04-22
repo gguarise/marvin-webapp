@@ -12,9 +12,8 @@ import { ProdutoComponent } from './pages/produto/produto.component';
 import { ServicoComponent } from './pages/servico/servico.component';
 
 const routes: Routes = [
-  // { path: '**', redirectTo: 'home' }, // Caminho desconhecido vai para home
+  { path: '', pathMatch: 'full', redirectTo: 'home' }, // Caminho vazio vai para home
   { path: 'home', component: HomePageComponent },
-  // TODO PageNotFoundComponent
   { path: 'fornecedor', component: FornecedorComponent },
   { path: 'estoque', component: ProdutoComponent },
   { path: 'cliente', component: ClienteComponent },
@@ -27,6 +26,7 @@ const routes: Routes = [
   { path: 'agendamento', component: AgendamentoComponent },
   { path: 'cadastro-agendamento/:id', component: CadastroAgendamentoComponent },
   { path: 'cadastro-agendamento', component: CadastroAgendamentoComponent },
+  { path: '**', redirectTo: 'home' }, // Deve ficar por último, vai procurando na ordem
 ];
 
 @NgModule({

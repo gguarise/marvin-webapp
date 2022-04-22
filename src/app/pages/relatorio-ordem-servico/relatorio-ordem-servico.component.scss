@@ -3,19 +3,96 @@
   max-width: 100%;
   margin-bottom: 1em;
   margin: 0px;
-  display: flex !important;
+  position: relative;
 }
 
-// #agendamento {
-//   font-family: Arial, Helvetica, sans-serif;
-//   border-collapse: collapse;
-//   width: 100%;
-// }
+.page-footer {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background: yellow; /* for demo */
+}
 
-// #agendamento td,
-// #agendamento th {
-//   border: 0.5px solid black;
-//   padding: 8px;
+.page-total {
+  position: fixed;
+  width: 100%;
+  background: yellow; /* for demo */
+}
+
+.page-header {
+  position: fixed;
+  top: 0mm;
+  width: 100%;
+  border-bottom: 1px solid black; /* for demo */
+  background: yellow; /* for demo */
+}
+
+.page {
+  page-break-after: always;
+}
+
+.logo {
+  -webkit-filter: grayscale(100%);
+  filter: grayscale(100%);
+}
+
+.header-text-h2 {
+  margin-top: 0px !important;
+  margin-bottom: 0px !important;
+  height: 20px !important;
+}
+.header-text-h3 {
+  margin-top: 0px !important;
+  margin-bottom: 0px !important;
+  height: 17px !important;
+}
+
+.detail {
+  padding-top: 13px;
+}
+
+.obs {
+  padding-left: 5px;
+}
+
+#cliente {
+  margin-top: 5px;
+  border-collapse: collapse;
+  width: 100%;
+}
+#cliente td,
+#cliente th {
+  border: 1px solid black;
+  padding-left: 5px;
+}
+.cliente-table-title {
+  font-weight: 600;
+  width: 100px;
+}
+
+#orcamento {
+  margin-top: 5px;
+  border: 1px solid black;
+  border-collapse: collapse;
+  width: 100%;
+  // page-break-inside: always; // auto
+  // break-inside: always; // auto
+}
+#orcamento td {
+  // border: 1px solid black;
+  border-top: 1px solid black;
+  border-right: 1px solid black;
+  padding-left: 5px;
+}
+#orcamento th {
+  border: 1px solid black;
+  padding-left: 5px;
+  font-weight: 600;
+}
+// #orcamento tr {
+//   page-break-inside: always; // avoid
+//   break-inside: always; // avoid
+//   page-break-after: auto; // auto
 // }
 
 // /* #agendamento tr:nth-child(even) {
@@ -34,17 +111,4 @@
 //   font-weight: 550;
 //   color: black;
 //   /* border: 0.5px solid black !important; */
-// }
-
-// .grid-container {
-//   display: grid;
-//   grid-template-areas: "left center right";
-//   border: 1px solid black;
-//   border-top: 0px !important;
-//   height: 20px;
-//   padding-top: 3px;
-//   padding-bottom: 3px;
-//   text-align: center;
-//   grid-auto-columns: minmax(0, 1fr);
-//   grid-auto-flow: column;
 // }
