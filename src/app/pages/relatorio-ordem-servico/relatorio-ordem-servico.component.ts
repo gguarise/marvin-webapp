@@ -45,7 +45,7 @@ export class RelatorioOrdemServicoComponent implements AfterViewInit {
 
     window.print();
     setTimeout(() => {
-      // this.dialogRef.close();
+      this.dialogRef.close();
     }, 0);
   }
 

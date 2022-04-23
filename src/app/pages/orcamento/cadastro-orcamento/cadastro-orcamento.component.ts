@@ -10,6 +10,7 @@ import {
 import { Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
+import { firstValueFrom } from 'rxjs';
 import { BaseComponent } from 'src/app/components/base/base.component';
 import { HeaderComponent } from 'src/app/components/header/header.component';
 import { Carro } from 'src/app/models/carro';
@@ -99,7 +100,6 @@ export class CadastroOrcamentoComponent
       totalServicos: [{ value: 0, disabled: true }],
       subtotal: [{ value: 0, disabled: true }],
     });
-    this.getClientes();
   }
 
   override async ngOnInit() {
@@ -118,12 +118,9 @@ export class CadastroOrcamentoComponent
     ];
   }
 
-  override setMainFormData(item: any = this.originalData) {
-    super.setMainFormData(item);
-
+  override async afterSetMainFormData() {
     // Operações após tela estar com valores
-    const clienteId = this.mainForm.get('clienteId')?.value;
-    this.carros = this.clientes.find((c) => c.id === clienteId)?.carros ?? [];
+    this.getClientes();
 
     this.calculateCustoProdutos(true);
     this.calculateCustoPecas(true);
@@ -227,12 +224,32 @@ export class CadastroOrcamentoComponent
     });
   }
 
-  getClientes() {
+  async getClientes() {
     const searchParams = { Ativo: 'true' };
-    this.clienteService.getAll(searchParams).subscribe((c: Cliente[]) => {
-      this.clientes = c;
-      this.clientesFiltrados = c;
-    });
+    await this.clienteService
+      .getAll(searchParams)
+      .subscribe(async (c: Cliente[]) => {
+        this.clientes = c;
+        this.clientesFiltrados = c;
+
+        const clienteId = this.mainForm.get('clienteId')?.value;
+        // Caso esteja inativo irá mostrar
+        const ativo = this.clientes.find((x) => x.id === clienteId);
+        if (ativo === null || ativo === undefined) {
+          await firstValueFrom(this.clienteService.getById(clienteId)).then(
+            (c: Cliente) => {
+              this.clientes.push(c);
+            }
+          );
+        }
+
+        // Lista de carros
+        this.carros =
+          this.clientes.find((c) => c.id === clienteId)?.carros ?? [];
+
+        this.mainForm.get('clienteId')?.setValue(clienteId);
+        this.cdr.detectChanges();
+      });
   }
 
   // TODO Opcional - Colocar numa classe separada que nem field-validator

@@ -262,6 +262,12 @@ export class BaseComponent implements OnInit {
     for (let key of keys) {
       this.mainForm.get(key)?.setValue(item[key]);
     }
+
+    this.afterSetMainFormData();
+  }
+
+  afterSetMainFormData() {
+    // Operações após tela estar com valores
   }
 
   getErrorMessage(control: FormControl | AbstractControl | null) {

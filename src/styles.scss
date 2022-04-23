@@ -38,18 +38,19 @@
     margin-top: 0;
     margin-bottom: 0;
   }
-  .page {
-    page-break-after: always !important;
-    break-after: always !important;
-    break-before: always !important;
-    page-break-before: always !important;
-  }
-  thead {
-    display: table-header-group;
-  }
-  tfoot {
-    display: table-footer-group;
-  }
+  // .page {
+  //   page-break-after: always !important;
+  //   break-after: always !important;
+  //   break-before: always !important;
+  //   page-break-before: always !important;
+  //   width: 100% !important;
+  // }
+  // thead {
+  //   display: table-header-group;
+  // }
+  // tfoot {
+  //   display: table-footer-group;
+  // }
 }
 
 .field-set {

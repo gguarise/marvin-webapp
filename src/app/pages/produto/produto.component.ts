@@ -46,7 +46,7 @@ export class ProdutoComponent extends BaseTableComponent {
         Validators.compose([
           Validators.required,
           Validators.min(0.01),
-          Validators.max(9999999999.99),
+          Validators.max(99999.99),
         ]),
       ],
       codigoNCM: [
