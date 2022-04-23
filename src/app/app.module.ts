@@ -58,6 +58,7 @@ import { AgendamentoComponent } from './pages/agendamento/agendamento.component'
 import { CadastroAgendamentoComponent } from './pages/agendamento/cadastro-agendamento/cadastro-agendamento.component';
 import { DatetimeFieldComponent } from './components/datetime-field/datetime-field.component';
 import { AgendamentosDiaTableComponent } from './pages/home-page/agendamentos-dia-table/agendamentos-dia-table.component';
+import { RelatorioOrdemServicoComponent } from './pages/relatorio-ordem-servico/relatorio-ordem-servico.component';
 FullCalendarModule.registerPlugins([dayGridPlugin, interactionPlugin]);
 
 @NgModule({
@@ -86,6 +87,7 @@ FullCalendarModule.registerPlugins([dayGridPlugin, interactionPlugin]);
     CadastroAgendamentoComponent,
     DatetimeFieldComponent,
     AgendamentosDiaTableComponent,
+    RelatorioOrdemServicoComponent,
   ],
   imports: [
     BrowserModule,

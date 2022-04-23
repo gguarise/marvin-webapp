@@ -105,7 +105,7 @@
                                formControlName="percentual"
                                currencyMask
                                (keyup)="setValorUnitario(element)"
-                               [options]="{ prefix: '', thousands: '.', decimal: ',', allowNegative: false, precision: 2, suffix: '%' }" />
+                               [options]="{ prefix: '', thousands: '.', decimal: ',', allowNegative: false, precision: 0, suffix: '%' }" />
                         <mat-error *ngIf="element.get('percentual').invalid">
                             {{getErrorMessage(element.get('percentual'))}}
                         </mat-error>

@@ -4,6 +4,9 @@
                  [showEditButton]="mainForm.disabled && !isDialogComponent"
                  [showUndoButton]="mainForm.enabled"
                  [showDeleteButton]="mainForm.disabled && !isDialogComponent"
+                 [showPrintButton]="mainForm.disabled"
+                 printButtonLabel="Imprimir Ordem de Serviço"
+                 (printEvent)="imprimir()"
                  (returnEvent)="redirectPreviousRoute()"
                  (saveEvent)="beforeSave()"
                  (editEvent)="edit()"
@@ -37,8 +40,9 @@
                                           [displayWith]="displayFnCliente.bind(this)">
                             <mat-option *ngFor="let cliente of clientesFiltrados"
                                         [value]="cliente.id"
-                                        (click)="updateCarros()">
-                                {{cliente.nome}}
+                                        (click)="updateCarros()"
+                                        [style]="cliente.ativo ? 'color: black' : 'color: red'">
+                                {{cliente.nome}} {{cliente.ativo ? '' : '(Inativo)'}}
                             </mat-option>
                         </mat-autocomplete>
                         <mat-error *ngIf="mainForm.get('clienteId')?.invalid">
@@ -153,7 +157,7 @@
                                formControlName="percentual"
                                currencyMask
                                (keyup)="calculateDesconto(true)"
-                               [options]="{ prefix: '', thousands: '.', decimal: ',', allowNegative: false, precision: 2, suffix: '%' }" />
+                               [options]="{ prefix: '', thousands: '.', decimal: ',', allowNegative: false, precision: 0, suffix: '%' }" />
                         <mat-error *ngIf="mainForm.get('dados.percentual')?.invalid">
                             {{getErrorMessage(mainForm.get('dados.percentual'))}}
                         </mat-error>

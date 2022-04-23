@@ -264,6 +264,13 @@ export class CadastroAgendamentoComponent extends BaseComponent {
     }
   }
 
+  override getRawData() {
+    const dados = super.getRawData();
+    dados.dataAgendamento = this.convertDateValue(dados.dataAgendamento);
+    dados.dataHoraFim = this.convertDateValue(dados.dataHoraFim);
+    return dados;
+  }
+
   // Cancela o Agendamento
   override async delete() {
     await firstValueFrom(

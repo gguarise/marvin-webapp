@@ -51,30 +51,16 @@ export class ProdutoTableComponent extends ChildBaseTableComponent {
           Validators.max(2147483647),
         ]),
       ],
-      valorUnitario: [
-        { value: null, disabled: true },
-        Validators.compose([
-          Validators.required,
-          Validators.min(0),
-          Validators.max(9999999999.99),
-        ]),
-      ],
+      valorUnitario: [{ value: null, disabled: true }],
       percentual: [
         null,
         Validators.compose([
           Validators.required,
           Validators.min(0),
-          Validators.max(9999999999.99),
+          Validators.max(10000),
         ]),
       ],
-      valorTotal: [
-        { value: null, disabled: true },
-        Validators.compose([
-          Validators.required,
-          Validators.min(0),
-          Validators.max(9999999999.99),
-        ]),
-      ],
+      valorTotal: [{ value: null, disabled: true }],
       modified: [],
       new: [],
     };

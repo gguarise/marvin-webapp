@@ -213,8 +213,11 @@ export class BaseComponent implements OnInit {
     e: any,
     defaultMessage: string = 'Ocorreram erros ao realizar a operação.'
   ) {
-    if (!!e?.error?.errors?.Id && e.error.errors.Id.length > 0) {
-      this.toastr.error(e.error.errors.Id[0]);
+    if (!!e?.error?.errors) {
+      const erros = Object.values(e.error.errors) as Array<any>;
+      for (const value of erros) {
+        this.toastr.error(value[0]);
+      }
     } else {
       this.toastr.error(defaultMessage);
     }
@@ -259,6 +262,12 @@ export class BaseComponent implements OnInit {
     for (let key of keys) {
       this.mainForm.get(key)?.setValue(item[key]);
     }
+
+    this.afterSetMainFormData();
+  }
+
+  afterSetMainFormData() {
+    // Operações após tela estar com valores
   }
 
   getErrorMessage(control: FormControl | AbstractControl | null) {
@@ -267,6 +276,24 @@ export class BaseComponent implements OnInit {
 
   getRawData() {
     return this.mainForm.getRawValue();
+  }
+
+  convertDateValue(date: Date) {
+    if (!!date && typeof date !== 'string') {
+      return (
+        `${date.getFullYear()}-` +
+        `${this.convertAux(date.getMonth() + 1)}-` +
+        `${this.convertAux(date.getDate())}T` +
+        `${this.convertAux(date.getHours())}:` +
+        `${this.convertAux(date.getMinutes())}:` +
+        `${this.convertAux(date.getSeconds())}`
+      );
+    }
+    return date;
+  }
+
+  convertAux(n: number) {
+    return n?.toString().padStart(2, '0');
   }
 
   setFieldValueAsNull(fieldName: string) {

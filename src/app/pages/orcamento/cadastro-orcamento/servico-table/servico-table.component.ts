@@ -55,7 +55,7 @@ export class ServicoTableComponent extends ChildBaseTableComponent {
         Validators.compose([
           Validators.required,
           Validators.min(0),
-          Validators.max(9999999999.99),
+          Validators.max(99999.99),
         ]),
       ],
       modified: [],

@@ -10,12 +10,16 @@ import {
 import { Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
+import { firstValueFrom } from 'rxjs';
 import { BaseComponent } from 'src/app/components/base/base.component';
+import { HeaderComponent } from 'src/app/components/header/header.component';
 import { Carro } from 'src/app/models/carro';
 import { Cliente } from 'src/app/models/cliente';
+import { RelatorioOrcamento } from 'src/app/models/relatorio-orcamento';
 import { ClienteService } from 'src/app/services/cliente.service';
 import { OrcamentoService } from 'src/app/services/orcamento.service';
 import { CadastroClienteComponent } from '../../cliente/cadastro-cliente/cadastro-cliente.component';
+import { RelatorioOrdemServicoComponent } from '../../relatorio-ordem-servico/relatorio-ordem-servico.component';
 import { PecasTableComponent } from './pecas-table/pecas-table.component';
 import { ProdutoTableComponent } from './produto-table/produto-table.component';
 import { ServicoTableComponent } from './servico-table/servico-table.component';
@@ -33,6 +37,16 @@ export class CadastroOrcamentoComponent
   clientesFiltrados: Cliente[];
   carros: Carro[];
   isDialogComponent: boolean = false;
+  showForm = true;
+  showReport = false;
+  dataAgora: Date;
+  dadosRelatorio: any;
+  numberFormat = {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+    style: 'currency',
+    currency: 'BRL',
+  };
 
   sumReducer = (accumulator: any, current: any) => accumulator + current;
 
@@ -42,6 +56,8 @@ export class CadastroOrcamentoComponent
   servicosTable: ServicoTableComponent;
   @ViewChild(PecasTableComponent, { static: false })
   pecasTable: PecasTableComponent;
+  @ViewChild('appHeader', { static: false })
+  appHeader: HeaderComponent;
 
   constructor(
     elementRef: ElementRef,
@@ -84,7 +100,6 @@ export class CadastroOrcamentoComponent
       totalServicos: [{ value: 0, disabled: true }],
       subtotal: [{ value: 0, disabled: true }],
     });
-    this.getClientes();
   }
 
   override async ngOnInit() {
@@ -103,12 +118,9 @@ export class CadastroOrcamentoComponent
     ];
   }
 
-  override setMainFormData(item: any = this.originalData) {
-    super.setMainFormData(item);
-
+  override async afterSetMainFormData() {
     // Operações após tela estar com valores
-    const clienteId = this.mainForm.get('clienteId')?.value;
-    this.carros = this.clientes.find((c) => c.id === clienteId)?.carros ?? [];
+    this.getClientes();
 
     this.calculateCustoProdutos(true);
     this.calculateCustoPecas(true);
@@ -212,11 +224,32 @@ export class CadastroOrcamentoComponent
     });
   }
 
-  getClientes() {
-    this.clienteService.getAll().subscribe((c: Cliente[]) => {
-      this.clientes = c;
-      this.clientesFiltrados = c;
-    });
+  async getClientes() {
+    const searchParams = { Ativo: 'true' };
+    await this.clienteService
+      .getAll(searchParams)
+      .subscribe(async (c: Cliente[]) => {
+        this.clientes = c;
+        this.clientesFiltrados = c;
+
+        const clienteId = this.mainForm.get('clienteId')?.value;
+        // Caso esteja inativo irá mostrar
+        const ativo = this.clientes.find((x) => x.id === clienteId);
+        if (ativo === null || ativo === undefined) {
+          await firstValueFrom(this.clienteService.getById(clienteId)).then(
+            (c: Cliente) => {
+              this.clientes.push(c);
+            }
+          );
+        }
+
+        // Lista de carros
+        this.carros =
+          this.clientes.find((c) => c.id === clienteId)?.carros ?? [];
+
+        this.mainForm.get('clienteId')?.setValue(clienteId);
+        this.cdr.detectChanges();
+      });
   }
 
   // TODO Opcional - Colocar numa classe separada que nem field-validator
@@ -301,5 +334,26 @@ export class CadastroOrcamentoComponent
       this.toastr.error('Desconto informado superior ao total.');
       return false;
     }
+  }
+
+  imprimir() {
+    this.dialog.open(RelatorioOrdemServicoComponent, {
+      data: this.getReportData(),
+      width: '100%',
+      height: '100%',
+      disableClose: false,
+    });
+    this.cdr.detectChanges();
+  }
+
+  getReportData() {
+    const orcamento = this.getRawData();
+    orcamento.subtotal = Number(this.mainForm.get('subtotal')?.value);
+    orcamento.pagamento.desconto = Number(orcamento.pagamento.desconto);
+    orcamento.cliente =
+      this.clientes.find((x) => x.id === orcamento.clienteId) ?? new Cliente();
+    orcamento.carro =
+      this.carros.find((x) => x.id === orcamento.carroId) ?? new Carro();
+    return orcamento;
   }
 }

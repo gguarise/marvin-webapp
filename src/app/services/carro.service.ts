@@ -20,56 +20,65 @@ export class CarroService extends BaseService {
   // searchParams: Placa | Modelo
   override getAll(searchParams: any = null): Observable<Carro[]> {
     return this.http
-      .get<Carro[]>(`${this.carroUrl}${this.getSearchString(searchParams)}`)
+      .get<Carro[]>(
+        `${this.carroUrl}${this.getSearchString(searchParams)}`,
+        this.getAuthenticationHeaders()
+      )
       .pipe(catchError(this.handleServiceError<any>()));
   }
 
   searchByPlaca(placa: string): Observable<Carro[]> {
     return this.http
-      .get<Carro[]>(`${this.carroUrl}?Placa=${placa}`)
-      .pipe(catchError(this.handleServiceError<any>()));
-  }
-
-  searchByModelo(modelo: string): Observable<Carro[]> {
-    return this.http
-      .get<Carro[]>(`${this.carroUrl}?Modelo=${modelo}`)
+      .get<Carro[]>(
+        `${this.carroUrl}?Placa=${placa}`,
+        this.getAuthenticationHeaders()
+      )
       .pipe(catchError(this.handleServiceError<any>()));
   }
 
   override post(payload: any): Observable<any> {
-    return this.http.post(`${this.carroUrl}`, payload).pipe(
-      map((ent) => {
-        if (ent) {
-          return ent;
-        }
-        return;
-      }),
-      catchError(this.handleServiceError<any>())
-    );
+    return this.http
+      .post(`${this.carroUrl}`, payload, this.getAuthenticationHeaders())
+      .pipe(
+        map((ent) => {
+          if (ent) {
+            return ent;
+          }
+          return;
+        }),
+        catchError(this.handleServiceError<any>())
+      );
   }
 
   override put(payload: any): Observable<any> {
-    return this.http.put(`${this.carroUrl}`, payload).pipe(
-      map((ent) => {
-        if (ent) {
-          return ent;
-        }
-        return;
-      }),
-      catchError(this.handleServiceError<any>())
-    );
+    return this.http
+      .put(`${this.carroUrl}`, payload, this.getAuthenticationHeaders())
+      .pipe(
+        map((ent) => {
+          if (ent) {
+            return ent;
+          }
+          return;
+        }),
+        catchError(this.handleServiceError<any>())
+      );
   }
 
   deleteByIdCliente(id: string, idCliente: string): Observable<any> {
-    return this.http.delete(`${this.carroUrl}/${id}/${idCliente}`).pipe(
-      map((ent) => {
-        if (ent) {
-          return ent;
-        }
-        return;
-      }),
-      catchError(this.handleServiceError<any>())
-    );
+    return this.http
+      .delete(
+        `${this.carroUrl}/${id}/${idCliente}`,
+        this.getAuthenticationHeaders()
+      )
+      .pipe(
+        map((ent) => {
+          if (ent) {
+            return ent;
+          }
+          return;
+        }),
+        catchError(this.handleServiceError<any>())
+      );
   }
 
   getCarBrands(): Observable<TabelaFipe[]> {
