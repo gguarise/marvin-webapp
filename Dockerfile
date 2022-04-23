@@ -1,6 +1,6 @@
 # Stage 1
 FROM node:latest As builder
-# confiar na certificadora da MPS
+# confiar na certificadora
 WORKDIR /app
 # instalar os pacotes via NPM
 COPY package.json package-lock.json ./

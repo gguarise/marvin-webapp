@@ -18,43 +18,52 @@ export class ProdutoService extends BaseService {
   // searchParams: Nome
   override getAll(searchParams: any = null): Observable<Produto[]> {
     return this.http
-      .get<Produto[]>(`${this.produtoUrl}${this.getSearchString(searchParams)}`)
+      .get<Produto[]>(
+        `${this.produtoUrl}${this.getSearchString(searchParams)}`,
+        this.getAuthenticationHeaders()
+      )
       .pipe(catchError(this.handleServiceError<any>()));
   }
 
   override post(payload: any): Observable<any> {
-    return this.http.post(`${this.produtoUrl}`, payload).pipe(
-      map((ent) => {
-        if (ent) {
-          return ent;
-        }
-        return;
-      }),
-      catchError(this.handleServiceError<any>())
-    );
+    return this.http
+      .post(`${this.produtoUrl}`, payload, this.getAuthenticationHeaders())
+      .pipe(
+        map((ent) => {
+          if (ent) {
+            return ent;
+          }
+          return;
+        }),
+        catchError(this.handleServiceError<any>())
+      );
   }
 
   override put(payload: any): Observable<any> {
-    return this.http.put(`${this.produtoUrl}`, payload).pipe(
-      map((ent) => {
-        if (ent) {
-          return ent;
-        }
-        return;
-      }),
-      catchError(this.handleServiceError<any>())
-    );
+    return this.http
+      .put(`${this.produtoUrl}`, payload, this.getAuthenticationHeaders())
+      .pipe(
+        map((ent) => {
+          if (ent) {
+            return ent;
+          }
+          return;
+        }),
+        catchError(this.handleServiceError<any>())
+      );
   }
 
   override delete(id: string): Observable<any> {
-    return this.http.delete(`${this.produtoUrl}/${id}`).pipe(
-      map((ent) => {
-        if (ent) {
-          return ent;
-        }
-        return;
-      }),
-      catchError(this.handleServiceError<any>())
-    );
+    return this.http
+      .delete(`${this.produtoUrl}/${id}`, this.getAuthenticationHeaders())
+      .pipe(
+        map((ent) => {
+          if (ent) {
+            return ent;
+          }
+          return;
+        }),
+        catchError(this.handleServiceError<any>())
+      );
   }
 }
