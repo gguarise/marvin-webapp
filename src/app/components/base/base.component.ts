@@ -213,8 +213,11 @@ export class BaseComponent implements OnInit {
     e: any,
     defaultMessage: string = 'Ocorreram erros ao realizar a operação.'
   ) {
-    if (!!e?.error?.errors?.Id && e.error.errors.Id.length > 0) {
-      this.toastr.error(e.error.errors.Id[0]);
+    if (!!e?.error?.errors) {
+      const erros = Object.values(e.error.errors) as Array<any>;
+      for (const value of erros) {
+        this.toastr.error(value[0]);
+      }
     } else {
       this.toastr.error(defaultMessage);
     }
