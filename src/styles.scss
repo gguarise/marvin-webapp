@@ -9,9 +9,14 @@
   --client-color-lightgrey: #949494;
 }
 
+// @page {
+//   margin: 20mm
+// }
+
 @media print {
   body * {
     visibility: hidden;
+    margin: 0;
   }
   #menu {
     visibility: visible;
@@ -33,13 +38,18 @@
     margin-top: 0;
     margin-bottom: 0;
   }
-  // header {
-  //   position: fixed;
-  // }
-  // footer {
-  //   position: fixed;
-  //   bottom: 0;
-  // }
+  .page {
+    page-break-after: always !important;
+    break-after: always !important;
+    break-before: always !important;
+    page-break-before: always !important;
+  }
+  thead {
+    display: table-header-group;
+  }
+  tfoot {
+    display: table-footer-group;
+  }
 }
 
 .field-set {

@@ -6,29 +6,34 @@
   position: relative;
 }
 
+thead {
+  display: table-header-group;
+}
+tfoot {
+  display: table-footer-group;
+}
+body {
+  margin: 0;
+}
+.page-header,
+.page-header-space {
+  margin-top: 15px;
+  height: 75px;
+}
+.page-footer,
+.page-footer-space {
+  height: 75px;
+}
 .page-footer {
   position: fixed;
   bottom: 0;
   width: 100%;
-  background: yellow; /* for demo */
+  margin-bottom: 15px;
 }
-
-.page-total {
-  position: fixed;
-  width: 100%;
-  background: yellow; /* for demo */
-}
-
 .page-header {
   position: fixed;
   top: 0mm;
   width: 100%;
-  border-bottom: 1px solid black; /* for demo */
-  background: yellow; /* for demo */
-}
-
-.page {
-  page-break-after: always;
 }
 
 .logo {
@@ -50,7 +55,6 @@
 .detail {
   padding-top: 13px;
 }
-
 .obs {
   padding-left: 5px;
 }
@@ -75,8 +79,8 @@
   border: 1px solid black;
   border-collapse: collapse;
   width: 100%;
-  // page-break-inside: always; // auto
-  // break-inside: always; // auto
+  page-break-inside: always; // auto
+  break-inside: always; // auto
 }
 #orcamento td {
   // border: 1px solid black;
