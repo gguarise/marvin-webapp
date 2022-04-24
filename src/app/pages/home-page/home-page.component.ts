@@ -27,6 +27,7 @@ export class HomePageComponent implements OnInit, AfterViewInit {
   mesFinal: number;
   anoFinal: number;
 
+  // TODO OP quando chama o recolher menu ele chama calendar.getApi().updateSize()
   @ViewChild(FullCalendarComponent) calendar: FullCalendarComponent;
 
   constructor(
@@ -36,8 +37,11 @@ export class HomePageComponent implements OnInit, AfterViewInit {
   ) {}
 
   ngOnInit() {
+    const screenSize = window.innerWidth;
+    // Se menor que 768px muda height do calendário
+
     this.calendarOptions = {
-      initialView: 'dayGridWeek',
+      initialView: screenSize >= 475 ? 'dayGridWeek' : 'dayGridMonth',
       customButtons: {
         anterior: {
           icon: 'chevron-left',
@@ -51,14 +55,26 @@ export class HomePageComponent implements OnInit, AfterViewInit {
       headerToolbar: {
         left: 'anterior,proximo today',
         center: 'title',
-        right: 'dayGridMonth,dayGridWeek,dayGridDay',
+        right:
+          screenSize >= 475
+            ? 'dayGridMonth,dayGridWeek,dayGridDay'
+            : 'dayGridMonth',
       },
       locale: ptLocale,
       eventColor: '#ef4b05',
       dateClick: this.handleDateClick.bind(this), // bind is important!
       eventClick: this.handleEventClick.bind(this),
       themeSystem: 'united',
-      height: '40vw',
+      height:
+        screenSize > 700
+          ? '40vw'
+          : screenSize >= 600
+          ? '60vw'
+          : screenSize >= 475
+          ? '80vw'
+          : screenSize > 375
+          ? '100vw'
+          : '140vw',
       weekends: true,
       editable: false,
       selectable: true,
