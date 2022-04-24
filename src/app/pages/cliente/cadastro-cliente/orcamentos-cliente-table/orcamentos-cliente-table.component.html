@@ -1,0 +1,80 @@
+<div class="container text-center">
+    <div class="table-container"
+         [class.mat-elevation-z4]="true">
+        <mat-table [dataSource]="dataSource">
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns; let i = index"
+                     class="linha"
+                     (click)="click$.next({event: $event, element: row.controls})">
+            </mat-row>
+
+            <ng-container matColumnDef="status">
+                <mat-header-cell fxFlex
+                                 fxLayoutAlign="center center"
+                                 *matHeaderCellDef>
+                    Status
+                </mat-header-cell>
+                <mat-cell fxFlex
+                          *matCellDef="let element"
+                          fxLayoutAlign="center center"
+                          [formGroup]="element">
+                    <strong>{{element.get('status').value}}</strong>
+                </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="carroId">
+                <mat-header-cell fxFlex
+                                 fxLayoutAlign="center center"
+                                 *matHeaderCellDef>
+                    Carro
+                </mat-header-cell>
+                <mat-cell fxFlex
+                          fxLayoutAlign="center center"
+                          *matCellDef="let element"
+                          [formGroup]="element">
+                    <ng-container *ngFor="let carro of carros">
+                        <ng-container *ngIf="carro.id === element.get('carroId').value">
+                            <strong>{{carro?.placa}}</strong>
+                        </ng-container>
+                    </ng-container>
+                </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="valorFinal">
+                <mat-header-cell fxFlex
+                                 fxFlex.xs="115px"
+                                 fxLayoutAlign="center center"
+                                 *matHeaderCellDef>
+                    Valor Final
+                </mat-header-cell>
+                <mat-cell fxFlex
+                          fxFlex.xs="115px"
+                          fxLayoutAlign="center center"
+                          *matCellDef="let element"
+                          [formGroup]="element">
+                    <strong>{{element.get('valorFinal').value?.toLocaleString('pt-BR',
+                        numberFormat)}}</strong>
+                </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="dataCadastro">
+                <mat-header-cell fxFlex
+                                 fxLayoutAlign="center center"
+                                 *matHeaderCellDef>
+                    Data de Cadastro
+                </mat-header-cell>
+                <mat-cell fxFlex
+                          *matCellDef="let element"
+                          fxLayoutAlign="center center"
+                          [formGroup]="element">
+                    <strong>{{element.get('dataCadastro').value | date:'dd/MM/yyyy'}}</strong>
+                </mat-cell>
+            </ng-container>
+
+        </mat-table>
+    </div>
+    <div [class.mat-elevation-z2]="true">
+        <mat-paginator [pageSize]="10"
+                       [pageSizeOptions]="[5, 10]"></mat-paginator>
+    </div>
+</div>

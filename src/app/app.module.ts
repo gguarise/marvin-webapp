@@ -59,6 +59,12 @@ import { CadastroAgendamentoComponent } from './pages/agendamento/cadastro-agend
 import { DatetimeFieldComponent } from './components/datetime-field/datetime-field.component';
 import { AgendamentosDiaTableComponent } from './pages/home-page/agendamentos-dia-table/agendamentos-dia-table.component';
 import { RelatorioOrdemServicoComponent } from './pages/relatorio-ordem-servico/relatorio-ordem-servico.component';
+import { AtendimentosClienteTableComponent } from './pages/cliente/cadastro-cliente/atendimentos-cliente-table/atendimentos-cliente-table.component';
+import { OrcamentosClienteTableComponent } from './pages/cliente/cadastro-cliente/orcamentos-cliente-table/orcamentos-cliente-table.component';
+import {
+  BaseCanDeactivateGuard,
+  BaseTableCanDeactivateGuard,
+} from './components/shared/guards/can-deactivate.guard';
 FullCalendarModule.registerPlugins([dayGridPlugin, interactionPlugin]);
 
 @NgModule({
@@ -88,6 +94,8 @@ FullCalendarModule.registerPlugins([dayGridPlugin, interactionPlugin]);
     DatetimeFieldComponent,
     AgendamentosDiaTableComponent,
     RelatorioOrdemServicoComponent,
+    AtendimentosClienteTableComponent,
+    OrcamentosClienteTableComponent,
   ],
   imports: [
     BrowserModule,
@@ -124,11 +132,13 @@ FullCalendarModule.registerPlugins([dayGridPlugin, interactionPlugin]);
     MatProgressSpinnerModule,
     FullCalendarModule,
     MatDatepickerModule,
-    // MatMomentDatetimeModule,
-    // MatDatetimepickerModule,
     MatNativeDateModule,
   ],
-  providers: [{ provide: MAT_DATE_LOCALE, useValue: 'pt-BR' }],
+  providers: [
+    { provide: MAT_DATE_LOCALE, useValue: 'pt-BR' },
+    BaseCanDeactivateGuard,
+    BaseTableCanDeactivateGuard,
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {

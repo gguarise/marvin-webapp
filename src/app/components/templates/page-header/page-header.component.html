@@ -1,5 +1,10 @@
-<mat-toolbar fxLayout="row">
-    <mat-toolbar-row fxLayoutAlign="start center">
+<mat-toolbar class="teste"
+             fxLayout="row"
+             fxLayout.xs="column">
+    <mat-toolbar-row fxLayoutAlign="start center"
+                     fxLayoutAlign.xs="center center"
+                     fxShow="true"
+                     [fxShow.xs]="showReturnButton || showEditButton || showSaveButton || showUndoButton || showDeleteButton || showPrintButton">
         <div>
             <button *ngIf="showReturnButton"
                     mat-icon-button
@@ -50,12 +55,10 @@
     <mat-toolbar-row fxLayoutAlign="center center">
         <h1 class="title">{{title}}</h1>
     </mat-toolbar-row>
-    <mat-toolbar-row fxLayoutAlign="end center">
-        <button *ngIf="showDialogCloseButton"
-                class="close"
-                color="warn"
-                mat-button
-                (click)="emitCloseDialogEvent()">X</button>
+    <mat-toolbar-row fxShow="true"
+                     [fxShow.xs]="!!dialogComponentButton || showCustomButton || showNewButton || showDialogCloseButton"
+                     fxLayoutAlign="end center"
+                     fxLayoutAlign.xs="center center">
         <button *ngIf="!!dialogComponentButton"
                 class="dialogButton"
                 mat-raised-button
@@ -78,5 +81,13 @@
                 Novo
             </button>
         </a>
+        <button *ngIf="showDialogCloseButton"
+                color="warn"
+                mat-icon-button
+                matTooltip="Fechar"
+                matTooltipPosition="right"
+                (click)="emitCloseDialogEvent()">
+            <mat-icon class="icons">close</mat-icon>
+        </button>
     </mat-toolbar-row>
 </mat-toolbar>

@@ -8,7 +8,9 @@
                  (saveEvent)="beforeSave()"
                  (editEvent)="edit()"
                  (undoEvent)="beforeUndo()"
-                 (deleteEvent)="beforeDelete()"></app-page-header>
+                 (deleteEvent)="beforeDelete()"
+                 [showDialogCloseButton]="isDialogComponent"
+                 (dialogCloseEvent)="dialogClose()"></app-page-header>
 
 <form [formGroup]="mainForm">
   <mat-tab-group>
@@ -100,9 +102,13 @@
                         [originalDataSource]="mainForm.get('carros')?.value"
                         [parentId]="routeId"></app-carros-table>
     </mat-tab>
-    <!--  <mat-tab label="Orçamentos">
-        </mat-tab>
-        <mat-tab label="Atendimentos">
-        </mat-tab> -->
+    <mat-tab *ngIf="!isDialogComponent && !isNewRecord"
+             label="Orçamentos">
+      <app-orcamentos-cliente-table [parentId]="routeId"></app-orcamentos-cliente-table>
+    </mat-tab>
+    <mat-tab *ngIf="!isDialogComponent && !isNewRecord"
+             label="Atendimentos">
+      <app-atendimentos-cliente-table [parentId]="routeId"></app-atendimentos-cliente-table>
+    </mat-tab>
   </mat-tab-group>
 </form>

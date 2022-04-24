@@ -4,7 +4,9 @@
                      [showEditButton]="false"
                      [showUndoButton]="false"
                      [showNewButton]="!isDialogComponent"
-                     newButtonRoute="/cadastro-orcamento">
+                     newButtonRoute="/cadastro-orcamento"
+                     [showDialogCloseButton]="isDialogComponent"
+                     (dialogCloseEvent)="dialogRef.close()">
     </app-page-header>
 
     <div class="table-container"

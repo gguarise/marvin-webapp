@@ -1,19 +1,6 @@
-import {
-  AfterViewInit,
-  Component,
-  ElementRef,
-  forwardRef,
-  Input,
-  OnDestroy,
-  OnInit,
-} from '@angular/core';
-import {
-  ControlValueAccessor,
-  FormBuilder,
-  NG_VALUE_ACCESSOR,
-} from '@angular/forms';
+import { Component, ElementRef, Input } from '@angular/core';
+import { FormBuilder } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
-import { Subject } from 'rxjs';
 import { AppInjectorService } from 'src/app/services/app-injector.service';
 import { BaseService } from 'src/app/services/base.service';
 import { BaseTableComponent } from '../base-table/base-table.component';

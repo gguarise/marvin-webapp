@@ -17,10 +17,10 @@ export abstract class BaseService {
     throw new Error('Método GetAll não implementado.');
   }
   getByParent(parent: any, searchParams: any = null): Observable<any[]> {
-    throw new Error('Método GetAll não implementado.');
+    throw new Error('Método GetByParent não implementado.');
   }
   getById(id: any): Observable<any> {
-    throw new Error('Método GetAll não implementado.');
+    throw new Error('Método GetById não implementado.');
   }
   put(item: any): Observable<any> {
     throw new Error('Método Put não implementado.');
