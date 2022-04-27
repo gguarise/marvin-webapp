@@ -20,7 +20,7 @@
 
                     <mat-form-field fxFlex
                                     appearance="fill">
-                        <mat-label>Cliente *</mat-label>
+                        <mat-label>Cliente</mat-label>
                         <input fxFlex
                                type="text"
                                matInput
@@ -57,7 +57,7 @@
                 </div>
 
                 <mat-form-field appearance="fill">
-                    <mat-label>Carro *</mat-label>
+                    <mat-label>Carro</mat-label>
                     <mat-select formControlName="carroId"
                                 [compareWith]="compareWith">
                         <ng-container *ngFor="let carro of carros">

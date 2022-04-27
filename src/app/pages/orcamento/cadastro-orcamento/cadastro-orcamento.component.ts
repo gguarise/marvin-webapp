@@ -122,6 +122,7 @@ export class CadastroOrcamentoComponent
       this.toastr.error('É preciso inserir itens em ao menos uma tabela.');
     } else if (this.calculateTotal()) {
       this.toastr.success('Orçamento salvo com sucesso.');
+      this.afterInsert(null);
     }
   }
 
@@ -130,7 +131,10 @@ export class CadastroOrcamentoComponent
   }
 
   override afterInsert(response: any) {
-    this.router.navigate(['/cadastro-orcamento', response?.id]);
+    this.router.navigate([
+      '/cadastro-orcamento',
+      '6e6f0643-961a-40a0-b0cb-2f27b1c3ea87',
+    ]);
   }
 
   override getRawData() {
