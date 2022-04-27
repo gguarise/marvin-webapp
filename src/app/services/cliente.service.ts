@@ -20,56 +20,64 @@ export class ClienteService extends BaseService {
   // searchParams: Nome | Email | Cpf | Telefone | Ativo
   override getAll(searchParams: any = null): Observable<Cliente[]> {
     return this.http
-      .get<Cliente[]>(`${this.clienteUrl}${this.getSearchString(searchParams)}`)
+      .get<Cliente[]>(
+        `${this.clienteUrl}${this.getSearchString(searchParams)}`,
+        this.getAuthenticationHeaders()
+      )
       .pipe(catchError(this.handleServiceError<any>()));
   }
 
   override getById(id: any): Observable<Cliente> {
     return this.http
-      .get<Cliente[]>(`${this.clienteUrl}/${id}`)
-      .pipe(catchError(this.handleServiceError<any>()));
-  }
-
-  // TODO verificar site mais confiável
-  getEnderecoPorCEP(cep: string): Observable<ViaCEP> {
-    return this.http
-      .get<ViaCEP>(`${this.viaCEPUrl}${cep}/json`)
+      .get<Cliente>(`${this.clienteUrl}/${id}`, this.getAuthenticationHeaders())
       .pipe(catchError(this.handleServiceError<any>()));
   }
 
   override post(payload: any): Observable<any> {
-    return this.http.post(`${this.clienteUrl}`, payload).pipe(
-      map((ent) => {
-        if (ent) {
-          return ent;
-        }
-        return;
-      }),
-      catchError(this.handleServiceError<any>())
-    );
+    return this.http
+      .post(`${this.clienteUrl}`, payload, this.getAuthenticationHeaders())
+      .pipe(
+        map((ent) => {
+          if (ent) {
+            return ent;
+          }
+          return;
+        }),
+        catchError(this.handleServiceError<any>())
+      );
   }
 
   override put(payload: any): Observable<any> {
-    return this.http.put(`${this.clienteUrl}`, payload).pipe(
-      map((ent) => {
-        if (ent) {
-          return ent;
-        }
-        return;
-      }),
-      catchError(this.handleServiceError<any>())
-    );
+    return this.http
+      .put(`${this.clienteUrl}`, payload, this.getAuthenticationHeaders())
+      .pipe(
+        map((ent) => {
+          if (ent) {
+            return ent;
+          }
+          return;
+        }),
+        catchError(this.handleServiceError<any>())
+      );
   }
 
   override delete(id: string): Observable<any> {
-    return this.http.delete(`${this.clienteUrl}/${id}`).pipe(
-      map((ent) => {
-        if (ent) {
-          return ent;
-        }
-        return;
-      }),
-      catchError(this.handleServiceError<any>())
-    );
+    return this.http
+      .delete(`${this.clienteUrl}/${id}`, this.getAuthenticationHeaders())
+      .pipe(
+        map((ent) => {
+          if (ent) {
+            return ent;
+          }
+          return;
+        }),
+        catchError(this.handleServiceError<any>())
+      );
+  }
+
+  getEnderecoPorCEP(cep: string): Observable<ViaCEP> {
+    return this.http
+      .get<ViaCEP>(`${this.viaCEPUrl}${cep}/json`)
+      .pipe(catchError(this.handleServiceError<any>()));
   }
 }

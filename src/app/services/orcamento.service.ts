@@ -27,7 +27,7 @@ export class OrcamentoService extends BaseService {
 
   override getById(id: any): Observable<Orcamento> {
     return this.http
-      .get<Orcamento[]>(`${this.orcamentoUrl}/${id}`)
+      .get<Orcamento>(`${this.orcamentoUrl}/${id}`)
       .pipe(catchError(this.handleServiceError<any>()));
   }
 
