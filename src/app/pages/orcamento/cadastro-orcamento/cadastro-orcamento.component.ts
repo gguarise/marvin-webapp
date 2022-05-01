@@ -120,9 +120,25 @@ export class CadastroOrcamentoComponent
       (!servicos || servicos?.length === 0)
     ) {
       this.toastr.error('É preciso inserir itens em ao menos uma tabela.');
-    } else if (this.calculateTotal()) {
+    } else if (
+      this.calculateTotal() &&
+      this.mainForm.valid &&
+      this.pecasTable.formArray.valid &&
+      this.servicosTable.formArray.valid
+    ) {
       this.toastr.success('Orçamento salvo com sucesso.');
       this.afterInsert(null);
+    } else if (
+      this.mainForm.valid ||
+      this.pecasTable.formArray.valid ||
+      this.servicosTable.formArray.valid
+    ) {
+      this.toastr.error(
+        'Existem erros no formulário, por gentileza verificar.'
+      );
+      this.mainForm.markAllAsTouched();
+      this.pecasTable.formArray.markAllAsTouched();
+      this.servicosTable.formArray.markAllAsTouched();
     }
   }
 
