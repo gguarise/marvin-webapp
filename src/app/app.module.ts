@@ -5,7 +5,7 @@ import { AppComponent } from './app.component';
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HeaderComponent } from './components/header/header.component';
-import { FlexLayoutModule } from '@angular/flex-layout';
+import { FlexLayoutModule, MediaMarshaller } from '@angular/flex-layout';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { FooterComponent } from './components/footer/footer.component';
 import { MenuComponent } from './components/menu/menu.component';
@@ -142,7 +142,25 @@ FullCalendarModule.registerPlugins([dayGridPlugin, interactionPlugin]);
   bootstrap: [AppComponent],
 })
 export class AppModule {
-  constructor(injector: Injector) {
+  constructor(injector: Injector,
+              m: MediaMarshaller) {
     AppInjectorService.injector = injector;
+
+    // Para solucionar problema com flex ficando xs após print
+    // @ts-ignore
+    m.subject.subscribe((x) => {
+      // @ts-ignore
+      if (m.activatedBreakpoints.filter((b) => b.alias === 'print').length === 0) {
+        // @ts-ignore
+        this.lastValue = [...m.activatedBreakpoints];
+      } else {
+        // @ts-ignore
+        m.activatedBreakpoints = [...this.lastValue];
+        // @ts-ignore
+        m.hook.collectActivations = () => {};
+        // @ts-ignore
+        m.hook.deactivations = [...this.lastValue];
+      }
+    });
   }
 }
