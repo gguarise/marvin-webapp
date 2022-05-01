@@ -5,16 +5,13 @@ services:
     container_name: marvin
     restart: always
     ports:
-      - 4200:80  
+      - 80:80  
     build:
       context: .
       dockerfile: ./Dockerfile
-      args:
-        - configuration=production 
-    volumes:
-      - '.:/usr/src/app'
     networks: 
       - postgres-net
+      
 networks:
     postgres-net:
         driver: bridge
