@@ -81,7 +81,7 @@ export class ServicoTableComponent extends ChildBaseTableComponent {
       data: 'a',
       width: screenSize > 599 ? '70%' : '90%',
       height: 'auto',
-      disableClose: false,
+      disableClose: true,
     });
 
     dialogRef.afterClosed().subscribe(() => {

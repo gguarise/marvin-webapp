@@ -8,7 +8,9 @@
                      (saveEvent)="beforeSave()"
                      (editEvent)="edit()"
                      (undoEvent)="beforeUndo()"
-                     (openDialogEvent)="openFornecedorDialog()"></app-page-header>
+                     (openDialogEvent)="openFornecedorDialog()"
+                     [showDialogCloseButton]="!!dialogRef"
+                     (dialogCloseEvent)="dialogRef.close()"></app-page-header>
 
     <app-table-toolbar [isFormDisabled]="this.formArray.disabled"
                        (addRow)="addRow()"

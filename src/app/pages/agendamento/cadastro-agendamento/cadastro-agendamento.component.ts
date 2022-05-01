@@ -120,6 +120,7 @@ export class CadastroAgendamentoComponent extends BaseComponent {
   }
 
   override afterInsert(response: any) {
+    super.afterInsert();
     this.router.navigate(['/cadastro-agendamento', response?.id]);
   }
 
@@ -180,6 +181,7 @@ export class CadastroAgendamentoComponent extends BaseComponent {
         this.routeId = this.selectedOrcamentoId;
         this.select();
         this.mainForm.get('dataAgendamento')?.enable();
+        this.mainForm.markAsDirty();
       } else {
         if (this.mainForm.get('dataAgendamento')?.enabled) {
           this.mainForm.get('dataAgendamento')?.disable();
@@ -197,7 +199,6 @@ export class CadastroAgendamentoComponent extends BaseComponent {
     });
   }
 
-  // TODO trocar metodo chamado
   setStatusConfig(status: StatusOrcamento | null = null) {
     const statusAtual = status ?? this.mainForm.get('status')?.value;
     switch (statusAtual) {

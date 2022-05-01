@@ -97,11 +97,16 @@ export class CadastroClienteComponent
   }
 
   override afterInsert(response: any) {
+    super.afterInsert();
     if (!this.isDialogComponent) {
       this.router.navigate(['/cadastro-cliente', response?.id]);
     } else {
-      this.dialogRef.close();
+      this.dialogRef.close(true);
     }
+  }
+
+  dialogClose() {
+    this.dialogRef.close(false);
   }
 
   override getRawData() {

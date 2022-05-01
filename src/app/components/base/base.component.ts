@@ -36,6 +36,7 @@ export class BaseComponent implements OnInit {
   isNewRecord: boolean = false;
   saveTablesIndividually: boolean = true;
   componentTables: ChildBaseTableComponent[];
+  isUndoing: boolean = false;
 
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
 
@@ -57,6 +58,7 @@ export class BaseComponent implements OnInit {
     this.formEditing$.subscribe((isEditing) => {
       isEditing ? this.mainForm.enable() : this.mainForm.disable();
       isEditing ? this.afterFormEnable() : null;
+      this.isUndoing = false;
       this.componentTables?.forEach((table) => {
         isEditing ? table.formArray.enable() : table.formArray.disable();
         isEditing ? table.afterFormEnable() : null;
@@ -170,10 +172,9 @@ export class BaseComponent implements OnInit {
     }
   }
 
-  afterInsert(response: any) {
-    throw new Error(
-      'Método de redirecionamento após inserção não implementado.'
-    );
+  afterInsert(response: any = null) {
+    this.isNewRecord = false;
+    this.mainForm.markAsPristine();
   }
 
   isTable(option: string) {
@@ -192,7 +193,7 @@ export class BaseComponent implements OnInit {
 
   async beforeDelete() {
     const confirma = await DialogHelper.openDialog(
-      'Deletar',
+      'Exclusão',
       'Deseja excluir esse item?'
     );
     if (confirma) {
@@ -234,6 +235,7 @@ export class BaseComponent implements OnInit {
         'Deseja descartar alterações?'
       );
       if (confirma) {
+        this.isUndoing = true;
         this.isNewRecord ? this.redirectPreviousRoute() : this.undo();
       }
     } else {
@@ -299,5 +301,20 @@ export class BaseComponent implements OnInit {
   setFieldValueAsNull(fieldName: string) {
     this.mainForm.get(fieldName)?.setValue(null);
     this.mainForm.get(fieldName)?.markAsDirty();
+  }
+
+  async confirmRedirect() {
+    let descartar = true;
+
+    if (!this.isUndoing && this.mainForm.enabled && !this.mainForm.pristine) {
+      descartar = await DialogHelper.openDialog(
+        'Descarte',
+        'Deseja sair desta página e descartar as alterações?'
+      );
+    } else {
+      descartar = true;
+    }
+
+    return descartar;
   }
 }

@@ -341,5 +341,20 @@ export abstract class BaseTableComponent implements OnInit, OnDestroy {
       );
     }
   }
+
+  async confirmRedirect() {
+    let descartar = true;
+
+    if (this.formArray.enabled && !this.formArray.pristine) {
+      descartar = await DialogHelper.openDialog(
+        'Descarte',
+        'Deseja sair desta página e descartar as alterações?'
+      );
+    } else {
+      descartar = true;
+    }
+
+    return descartar;
+  }
   // #endregion
 }

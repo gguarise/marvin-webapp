@@ -15,18 +15,18 @@
          [class.mat-elevation-z4]="true">
         <mat-table [dataSource]="dataSource">
             <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-            <mat-row *matRowDef="let row; columns: displayedColumns; let i = index"
-                     [class.invalid-table-row]="row.invalid"
-                     (click)="click$.next({event: $event, element: row.controls})">
+            <mat-row *matRowDef="let row; columns: displayedColumns; let i = index">
             </mat-row>
 
             <ng-container matColumnDef="status">
                 <mat-header-cell fxFlex
+                                 fxFlex.xs="90px"
                                  fxLayoutAlign="center center"
                                  *matHeaderCellDef>
                     Status
                 </mat-header-cell>
                 <mat-cell fxFlex
+                          fxFlex.xs="90px"
                           *matCellDef="let element"
                           fxLayoutAlign="center center"
                           [formGroup]="element">
@@ -36,11 +36,13 @@
 
             <ng-container matColumnDef="clienteId">
                 <mat-header-cell fxFlex="35"
+                                 fxFlex.xs="160px"
                                  fxLayoutAlign="center center"
                                  *matHeaderCellDef>
                     Cliente
                 </mat-header-cell>
                 <mat-cell fxFlex="35"
+                          fxFlex.xs="160px"
                           fxLayoutAlign="start center"
                           *matCellDef="let element"
                           [formGroup]="element">
@@ -54,11 +56,13 @@
 
             <ng-container matColumnDef="carroId">
                 <mat-header-cell fxFlex
+                                 fxFlex.xs="90px"
                                  fxLayoutAlign="center center"
                                  *matHeaderCellDef>
                     Carro
                 </mat-header-cell>
                 <mat-cell fxFlex
+                          fxFlex.xs="90px"
                           fxLayoutAlign="center center"
                           *matCellDef="let element"
                           [formGroup]="element">
@@ -72,11 +76,13 @@
 
             <ng-container matColumnDef="valorFinal">
                 <mat-header-cell fxFlex
+                                 fxFlex.xs="115px"
                                  fxLayoutAlign="center center"
                                  *matHeaderCellDef>
                     Valor Final
                 </mat-header-cell>
                 <mat-cell fxFlex
+                          fxFlex.xs="115px"
                           fxLayoutAlign="start center"
                           *matCellDef="let element"
                           [formGroup]="element">
@@ -87,11 +93,13 @@
 
             <ng-container matColumnDef="dataAgendamento">
                 <mat-header-cell fxFlex
+                                 fxFlex.xs="80px"
                                  fxLayoutAlign="center center"
                                  *matHeaderCellDef>
                     Hora Marcada
                 </mat-header-cell>
                 <mat-cell fxFlex
+                          fxFlex.xs="80px"
                           *matCellDef="let element"
                           fxLayoutAlign="center center"
                           [formGroup]="element">
@@ -101,10 +109,12 @@
 
             <ng-container matColumnDef="icone">
                 <mat-header-cell fxFlex="5"
+                                 fxFlex.xs="60px"
                                  fxLayoutAlign="center center"
                                  *matHeaderCellDef>
                 </mat-header-cell>
                 <mat-cell fxFlex="5"
+                          fxFlex.xs="60px"
                           *matCellDef="let element"
                           fxLayoutAlign="center center"
                           [formGroup]="element"

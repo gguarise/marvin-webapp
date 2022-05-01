@@ -6,7 +6,9 @@
                      [showUndoButton]="this.formArray.enabled"
                      (saveEvent)="beforeSave()"
                      (editEvent)="edit()"
-                     (undoEvent)="beforeUndo()"></app-page-header>
+                     (undoEvent)="beforeUndo()"
+                     [showDialogCloseButton]="!!dialogRef"
+                     (dialogCloseEvent)="dialogRef.close()"></app-page-header>
 
     <app-table-toolbar [isFormDisabled]="this.formArray.disabled"
                        (addRow)="addRow()"

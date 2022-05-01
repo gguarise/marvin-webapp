@@ -1,5 +1,6 @@
-import { Component, ElementRef } from '@angular/core';
+import { Component, ElementRef, Optional } from '@angular/core';
 import { Validators } from '@angular/forms';
+import { MatDialogRef } from '@angular/material/dialog';
 import { Observable, of } from 'rxjs';
 import { Fornecedor } from 'src/app/models/fornecedor';
 import { FornecedorService } from 'src/app/services/fornecedor.service';
@@ -18,7 +19,8 @@ export class ProdutoComponent extends BaseTableComponent {
   constructor(
     public produtoService: ProdutoService,
     elementRef: ElementRef,
-    public fornecedorService: FornecedorService
+    public fornecedorService: FornecedorService,
+    @Optional() public dialogRef: MatDialogRef<ProdutoComponent>
   ) {
     super(produtoService, elementRef);
     this.formGroupConfig = {
@@ -92,7 +94,7 @@ export class ProdutoComponent extends BaseTableComponent {
     const dialogRef = this.dialog.open(FornecedorComponent, {
       width: screenSize > 599 ? '70%' : '90%',
       height: 'auto',
-      disableClose: false,
+      disableClose: true,
     });
 
     dialogRef.afterClosed().subscribe(() => {

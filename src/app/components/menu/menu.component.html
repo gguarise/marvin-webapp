@@ -1,10 +1,13 @@
 <app-header (toggleMenuEvent)="toggleMenu()"></app-header>
 
-<mat-sidenav-container>
+<mat-sidenav-container class="sidenav-container">
     <mat-sidenav class="sidenav"
                  mode="side"
                  [opened]="openedMenu"
                  fixedInViewport="true"
+                 [attr.role]="isHandset ? 'dialog' : 'navigation'"
+                 [mode]="isHandset ? 'over' : 'side'"
+                 [opened]="!isHandset"
                  fixedTopGap="56">
         <mat-nav-list class="nav-list">
             <a mat-list-item

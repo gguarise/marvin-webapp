@@ -1,5 +1,6 @@
-import { Component, ElementRef } from '@angular/core';
+import { Component, ElementRef, Optional } from '@angular/core';
 import { Validators } from '@angular/forms';
+import { MatDialogRef } from '@angular/material/dialog';
 import { Servico } from 'src/app/models/servico';
 import { ServicoService } from 'src/app/services/servico.service';
 import { BaseTableComponent } from '../../components/base/base-table/base-table.component';
@@ -10,7 +11,11 @@ import { BaseTableComponent } from '../../components/base/base-table/base-table.
   styleUrls: ['./servico.component.scss'],
 })
 export class ServicoComponent extends BaseTableComponent {
-  constructor(public servicoService: ServicoService, elementRef: ElementRef) {
+  constructor(
+    public servicoService: ServicoService,
+    elementRef: ElementRef,
+    @Optional() public dialogRef: MatDialogRef<ServicoComponent>
+  ) {
     super(servicoService, elementRef);
     this.formGroupConfig = {
       select: [false],

@@ -5,7 +5,7 @@ import { AppComponent } from './app.component';
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HeaderComponent } from './components/header/header.component';
-import { FlexLayoutModule } from '@angular/flex-layout';
+import { FlexLayoutModule, MediaMarshaller } from '@angular/flex-layout';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { FooterComponent } from './components/footer/footer.component';
 import { MenuComponent } from './components/menu/menu.component';
@@ -59,6 +59,12 @@ import { CadastroAgendamentoComponent } from './pages/agendamento/cadastro-agend
 import { DatetimeFieldComponent } from './components/datetime-field/datetime-field.component';
 import { AgendamentosDiaTableComponent } from './pages/home-page/agendamentos-dia-table/agendamentos-dia-table.component';
 import { RelatorioOrdemServicoComponent } from './pages/relatorio-ordem-servico/relatorio-ordem-servico.component';
+import { AtendimentosClienteTableComponent } from './pages/cliente/cadastro-cliente/atendimentos-cliente-table/atendimentos-cliente-table.component';
+import { OrcamentosClienteTableComponent } from './pages/cliente/cadastro-cliente/orcamentos-cliente-table/orcamentos-cliente-table.component';
+import {
+  BaseCanDeactivateGuard,
+  BaseTableCanDeactivateGuard,
+} from './components/shared/guards/can-deactivate.guard';
 FullCalendarModule.registerPlugins([dayGridPlugin, interactionPlugin]);
 
 @NgModule({
@@ -88,6 +94,8 @@ FullCalendarModule.registerPlugins([dayGridPlugin, interactionPlugin]);
     DatetimeFieldComponent,
     AgendamentosDiaTableComponent,
     RelatorioOrdemServicoComponent,
+    AtendimentosClienteTableComponent,
+    OrcamentosClienteTableComponent,
   ],
   imports: [
     BrowserModule,
@@ -124,15 +132,35 @@ FullCalendarModule.registerPlugins([dayGridPlugin, interactionPlugin]);
     MatProgressSpinnerModule,
     FullCalendarModule,
     MatDatepickerModule,
-    // MatMomentDatetimeModule,
-    // MatDatetimepickerModule,
     MatNativeDateModule,
   ],
-  providers: [{ provide: MAT_DATE_LOCALE, useValue: 'pt-BR' }],
+  providers: [
+    { provide: MAT_DATE_LOCALE, useValue: 'pt-BR' },
+    BaseCanDeactivateGuard,
+    BaseTableCanDeactivateGuard,
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {
-  constructor(injector: Injector) {
+  constructor(injector: Injector,
+              m: MediaMarshaller) {
     AppInjectorService.injector = injector;
+
+    // Para solucionar problema com flex ficando xs após print
+    // @ts-ignore
+    m.subject.subscribe((x) => {
+      // @ts-ignore
+      if (m.activatedBreakpoints.filter((b) => b.alias === 'print').length === 0) {
+        // @ts-ignore
+        this.lastValue = [...m.activatedBreakpoints];
+      } else {
+        // @ts-ignore
+        m.activatedBreakpoints = [...this.lastValue];
+        // @ts-ignore
+        m.hook.collectActivations = () => {};
+        // @ts-ignore
+        m.hook.deactivations = [...this.lastValue];
+      }
+    });
   }
 }
