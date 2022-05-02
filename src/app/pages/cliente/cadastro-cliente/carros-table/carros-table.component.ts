@@ -60,6 +60,7 @@ export class CarrosTableComponent extends ChildBaseTableComponent {
       ],
       quilometragem: [],
       descricao: [null, Validators.maxLength(150)],
+      ativo: [true],
       modified: [],
       new: [],
     };
@@ -86,7 +87,7 @@ export class CarrosTableComponent extends ChildBaseTableComponent {
   override getRawData() {
     const payload = this.formArray.getRawValue();
     payload.map((carro: Carro) => {
-      carro.placa = carro.placa?.replace('-', '').toUpperCase();
+      carro.placa = carro.placa.toUpperCase(); // ?.replace('-', '')
     });
     return payload;
   }
@@ -110,9 +111,9 @@ export class CarrosTableComponent extends ChildBaseTableComponent {
   async searchPlaca(element: any) {
     // Caso a placa esteja repetida ele não vai buscar (duplicateTableValueValidator)
     if (element.valid) {
-      const placa = element.get('placa')?.value?.replace('-', '');
+      const placa = element.get('placa')?.value; // ?.replace('-', '');
 
-      if (!!placa && placa.length === 7) {
+      if (placa?.length === 7) {
         const carros = await firstValueFrom(
           this.carroService.searchByPlaca(placa)
         )

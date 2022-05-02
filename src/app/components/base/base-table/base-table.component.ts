@@ -41,9 +41,10 @@ export abstract class BaseTableComponent implements OnInit, OnDestroy {
   displayedColumns: string[]; // Colunas a serem mostradas na tabela
   formHelper = FormHelper; // Funções auxiliares
 
-  // Mensagens de erro ao chamar save()
+  // Mensagens de erro ou sucesso ao chamar save()
   errosInserirAlterar = new Array();
   errosDeletar = new Array();
+  sucessoSalvar = false;
 
   // Para tratar do double click no mobile
   eventSubscription: Subscription;
@@ -150,23 +151,23 @@ export abstract class BaseTableComponent implements OnInit, OnDestroy {
   }
 
   async save(propertyNameErrorMessage: string = 'nome') {
+    this.sucessoSalvar = false;
     this.errosInserirAlterar = [];
     this.errosDeletar = [];
     const data = this.getRawData();
 
     const promises = data.map(async (item: any) => {
+      const index = data.findIndex((x: any) => x === item);
       if (item.new) {
         await firstValueFrom(this.tableService.post(item))
-          .then()
+          .then(() => (this.sucessoSalvar = true))
           .catch(() => {
-            const index = data.findIndex((x: any) => x === item);
             this.errosInserirAlterar.push(index);
           });
       } else if (item.modified) {
         await firstValueFrom(this.tableService.put(item))
-          .then()
+          .then(() => (this.sucessoSalvar = true))
           .catch(() => {
-            const index = data.findIndex((x: any) => x === item);
             this.errosInserirAlterar.push(index);
           });
       }
@@ -174,14 +175,28 @@ export abstract class BaseTableComponent implements OnInit, OnDestroy {
     if (this.deletedData.length > 0) {
       for (const id of this.deletedData) {
         await firstValueFrom(this.tableDeleteMethod(id))
-          .then()
+          .then(() => {
+            // TODO TESTAR
+            // Retira o que já foi deletado da lista para evitar que tente deletar novamente
+            this.deletedData = this.deletedData.filter(
+              (item) => item.id !== id
+            );
+            this.sucessoSalvar = true;
+          })
           .catch((e) => {
             this.originalDataSource.forEach((x: any) => {
-              // TODO ver caso não tenha ID
               if (x.id === id) {
+                let errorDetail = 'Erro no Servidor';
+                if (e.error?.errors) {
+                  // Garantir para caso erro seja 500
+                  const erros = Object.values(e.error?.errors) as Array<any>;
+                  for (const value of erros) {
+                    errorDetail = value[0];
+                  }
+                }
                 this.errosDeletar.push({
                   nome: x[propertyNameErrorMessage],
-                  erro: e.error.errors.Id[0],
+                  erro: errorDetail,
                 });
               }
             });
@@ -205,16 +220,22 @@ export abstract class BaseTableComponent implements OnInit, OnDestroy {
       if (this.errosDeletar.length > 0) {
         message += ` e ao deletar: ${this.errosDeletar.map((x) => ` ${x}`)}`;
       }
+      if (this.sucessoSalvar) {
+        message += '. As demais linhas foram salvas com sucesso.';
+      }
       this.toastr.error(message);
     } else if (this.errosDeletar.length > 0) {
-      this.toastr.error(
-        `Ocorreram erros ao deletar: ${this.errosDeletar.map(
-          (x) => ` ${x.nome} (${x.erro})`
-        )}`
-      );
+      let message = `Ocorreram erros ao deletar: ${this.errosDeletar.map(
+        (x) => ` ${x.nome} (${x.erro})`
+      )}`;
+      if (this.sucessoSalvar) {
+        message += '. As demais linhas foram salvas com sucesso.';
+      }
+      this.toastr.error(message);
     } else {
       this.toastr.success('Registros da tabela salvos com sucesso.');
       this.setInitialData();
+      this.select(); // Precisa para não ficar como new = true
     }
   }
 

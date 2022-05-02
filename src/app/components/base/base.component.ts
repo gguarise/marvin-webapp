@@ -163,12 +163,12 @@ export class BaseComponent implements OnInit {
       this.onClear();
       this.select();
     } else {
-      // TODO TESTAR !!!!!!!!
-      // this.toastr.error(
-      //   `Erro ao salvar tabela(s) ${tablesWithErrors.map(
-      //     (x) => ` ${x}`
-      //   )}, os demais registros já foram salvos.`
-      // );
+      // Quando é child table vai cair aqui
+      this.toastr.error(
+        `Erro ao salvar tabela(s) ${tablesWithErrors.map(
+          (x) => ` ${x}`
+        )}, os demais registros já foram salvos.`
+      );
     }
   }
 
