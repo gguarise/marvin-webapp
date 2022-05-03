@@ -10,7 +10,6 @@ export class MenuComponent implements OnInit {
   openedMenu = true;
   handsetMaxWidth = '(max-width: 959.99px)';
   isHandset: boolean;
-  cadastroOpenState: boolean = true;
 
   constructor(breakpointObserver: BreakpointObserver) {
     breakpointObserver.observe(this.handsetMaxWidth).subscribe((t) => {
