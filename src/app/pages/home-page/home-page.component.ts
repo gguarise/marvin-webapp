@@ -15,7 +15,6 @@ import { AgendamentosDiaTableComponent } from './agendamentos-dia-table/agendame
   styleUrls: ['./home-page.component.scss'],
 })
 export class HomePageComponent implements OnInit, AfterViewInit {
-  // TODO tratar como fica em mobile
   calendarOptions: CalendarOptions;
   eventos: any[] = [];
   agendamentos: Orcamento[] = [];
@@ -27,7 +26,6 @@ export class HomePageComponent implements OnInit, AfterViewInit {
   mesFinal: number;
   anoFinal: number;
 
-  // TODO OP quando chama o recolher menu ele chama calendar.getApi().updateSize()
   @ViewChild(FullCalendarComponent) calendar: FullCalendarComponent;
 
   constructor(

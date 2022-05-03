@@ -260,7 +260,6 @@ export class CadastroOrcamentoComponent
       });
   }
 
-  // TODO Opcional - Colocar numa classe separada que nem field-validator
   calculateCustoProdutos(onInit: boolean = false) {
     const tabela = this.produtosTable.formArray.getRawValue();
     if (!!tabela && tabela.length > 0) {

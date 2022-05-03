@@ -30,7 +30,6 @@ export class AgendamentosDiaTableComponent extends BaseTableComponent {
   agendamentosRelatorio: any[] = [];
   dataAgora: Date;
   // Formatação relatório
-  // TODO ARRUMAR PRA PT-BR
   numberFormat = {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
@@ -105,7 +104,7 @@ export class AgendamentosDiaTableComponent extends BaseTableComponent {
       'Não existem agendamentos para esta data. Deseja adicionar um novo agendamento?'
     );
     if (confirma) {
-      this.router.navigate(['/cadastro-agendamento']); // TODO mudar para conseguir mandar a data de agendamento
+      this.router.navigate(['/cadastro-agendamento']);
     }
   }
 
@@ -139,8 +138,15 @@ export class AgendamentosDiaTableComponent extends BaseTableComponent {
           this.toastr.success('Agendamento finalizado com sucesso.');
           this.select();
         })
-        .catch(() => {
-          this.toastr.error('Não foi possível finalizar o agendamento.');
+        .catch((e) => {
+          if (!!e?.error?.errors) {
+            const erros = Object.values(e.error.errors) as Array<any>;
+            for (const value of erros) {
+              this.toastr.error(value[0]);
+            }
+          } else {
+            this.toastr.error('Não foi possível finalizar o agendamento.');
+          }
         });
     }
   }
