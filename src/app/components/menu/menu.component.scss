@@ -10,6 +10,19 @@
   box-sizing: border-box;
 }
 
+.expansion-panel {
+  background-color: var(--client-color-black);
+  color: var(--client-color-lightgrey);
+  width: max-content;
+  font-size: inherit;
+}
+::ng-deep .mat-expansion-indicator:after {
+  color: var(--client-color-lightgrey);
+}
+.sidenav mat-expansion-panel-header:hover {
+  background-color: #2b2d30 !important;
+}
+
 .sidenav a {
   color: var(--client-color-lightgrey);
 }

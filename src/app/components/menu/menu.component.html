@@ -17,29 +17,12 @@
                 Início
             </a>
             <a mat-list-item
-               routerLink="/fornecedor"
-               [routerLinkActive]="['is-active']">
-                <mat-icon>groups</mat-icon>
-                Fornecedores
-            </a>
-            <a mat-list-item
-               routerLink="/estoque"
-               [routerLinkActive]="['is-active']">
-                <mat-icon>inventory</mat-icon>
-                Estoque
-            </a>
-            <a mat-list-item
                routerLink="/cliente"
                [routerLinkActive]="['is-active']">
                 <mat-icon>people_alt</mat-icon>
                 Clientes
             </a>
-            <a mat-list-item
-               routerLink="/servico"
-               [routerLinkActive]="['is-active']">
-                <mat-icon>home_repair_service</mat-icon>
-                Serviços
-            </a>
+
             <a mat-list-item
                routerLink="/orcamento"
                [routerLinkActive]="['is-active']">
@@ -52,6 +35,31 @@
                 <mat-icon>event_note</mat-icon>
                 Agendamentos
             </a>
+            <mat-expansion-panel class="expansion-panel"
+                                 (opened)="cadastroOpenState = true"
+                                 (closed)="cadastroOpenState = false">
+                <mat-expansion-panel-header>
+                    <mat-icon>source</mat-icon>Cadastros
+                </mat-expansion-panel-header>
+                <a mat-list-item
+                   routerLink="/estoque"
+                   [routerLinkActive]="['is-active']">
+                    <mat-icon>store</mat-icon>
+                    Estoque
+                </a>
+                <a mat-list-item
+                   routerLink="/fornecedor"
+                   [routerLinkActive]="['is-active']">
+                    <mat-icon>groups</mat-icon>
+                    Fornecedores
+                </a>
+                <a mat-list-item
+                   routerLink="/servico"
+                   [routerLinkActive]="['is-active']">
+                    <mat-icon>home_repair_service</mat-icon>
+                    Serviços
+                </a>
+            </mat-expansion-panel>
         </mat-nav-list>
     </mat-sidenav>
     <mat-sidenav-content class="content">
