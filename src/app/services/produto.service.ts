@@ -15,13 +15,19 @@ export class ProdutoService extends BaseService {
     super();
   }
 
-  // searchParams: Nome
+  // searchParams: Nome | Ativo
   override getAll(searchParams: any = null): Observable<Produto[]> {
     return this.http
       .get<Produto[]>(
         `${this.produtoUrl}${this.getSearchString(searchParams)}`,
         this.getAuthenticationHeaders()
       )
+      .pipe(catchError(this.handleServiceError<any>()));
+  }
+
+  override getById(id: any): Observable<Produto> {
+    return this.http
+      .get<Produto>(`${this.produtoUrl}/${id}`, this.getAuthenticationHeaders())
       .pipe(catchError(this.handleServiceError<any>()));
   }
 

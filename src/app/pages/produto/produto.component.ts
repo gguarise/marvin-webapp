@@ -56,6 +56,7 @@ export class ProdutoComponent extends BaseTableComponent {
         Validators.compose([Validators.required, Validators.maxLength(8)]),
       ],
       fornecedor: [null, Validators.required],
+      ativo: [true],
       modified: [],
       new: [],
     };
@@ -78,7 +79,8 @@ export class ProdutoComponent extends BaseTableComponent {
   override select() {
     const sortItems = (a: Fornecedor, b: Fornecedor) =>
       a.nome > b.nome ? 1 : b.nome > a.nome ? -1 : 0;
-    super.select(null, sortItems);
+    const searchParams = { Ativo: 'true' };
+    super.select(null, sortItems, searchParams);
   }
 
   compareFornecedor(o1: any, o2: any): boolean {
