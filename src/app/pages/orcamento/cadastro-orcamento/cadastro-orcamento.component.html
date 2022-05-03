@@ -69,7 +69,7 @@
                                 [compareWith]="compareWith">
                         <ng-container *ngFor="let carro of carros">
                             <mat-option [value]="carro.id">
-                                {{carro?.placa}}
+                                {{carro?.placa}} / {{carro?.modelo}}
                             </mat-option>
                         </ng-container>
                     </mat-select>
