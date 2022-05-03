@@ -7,6 +7,7 @@ import {
   Output,
 } from '@angular/core';
 import { NG_VALUE_ACCESSOR, Validators } from '@angular/forms';
+import { firstValueFrom } from 'rxjs';
 import { ChildBaseTableComponent } from 'src/app/components/base/child-base-table/child-base-table.component';
 import { Produto } from 'src/app/models/produto';
 import { ProdutoComponent } from 'src/app/pages/produto/produto.component';
@@ -87,7 +88,7 @@ export class ProdutoTableComponent extends ChildBaseTableComponent {
       data: 'a',
       width: screenSize > 599 ? '70%' : '90%',
       height: 'auto',
-      disableClose: false,
+      disableClose: true,
     });
 
     dialogRef.afterClosed().subscribe(() => {
@@ -108,8 +109,21 @@ export class ProdutoTableComponent extends ChildBaseTableComponent {
   }
 
   getProdutos() {
-    this.produtoService.getAll().subscribe((p: Produto[]) => {
-      this.produtos = p;
+    const searchParams = { Ativo: 'true' };
+    this.produtoService.getAll(searchParams).subscribe(async (c: Produto[]) => {
+      this.produtos = c;
+
+      this.formArray?.controls?.forEach((linha) => {
+        const produtoId = linha.get('produtoId')?.value;
+        const ativo = this.produtos.find((x) => x.id === produtoId);
+        if (!!produtoId && (ativo === null || ativo === undefined)) {
+          firstValueFrom(this.produtoService.getById(produtoId)).then(
+            (p: Produto) => {
+              this.produtos.push(p);
+            }
+          );
+        }
+      });
     });
   }
 

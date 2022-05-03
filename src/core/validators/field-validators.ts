@@ -9,45 +9,7 @@ export class FieldValidators {
     return FieldValidators.CPFValidator()(control);
   }
 
-  // TODO se não utilizar limpar
-  //   static duplicateTableValue(control: AbstractControl): any | null {
-  //     return FieldValidators.duplicateTableValueValidator()(control);
-  //   }
-
-  // Retorna o nome do FormControlName para utilizar na validação
-  private static getFormControlName(control: AbstractControl) {
-    if (!!control && control.value) {
-      const aux = Object.entries(control.parent?.value)
-        .filter((x) => {
-          if (x[1] === control.value) {
-            return x;
-          }
-          return null;
-        })
-        .map((x) => x[0]);
-      if (aux.length === 1) {
-        return aux[0];
-      }
-    }
-    return null;
-  }
-
   // Validações e mensagens de erro
-  private static duplicateTableValueValidator(fieldLabel: string = 'Valor') {
-    return (control: AbstractControl): ValidationErrors | null => {
-      const formControlName = FieldValidators.getFormControlName(control);
-
-      if (!!control && !!control.value && !!formControlName) {
-        if (FieldValidators.hasDuplicate(control, formControlName)) {
-          return {
-            custom: { message: `${fieldLabel} já utilizado em outra linha.` },
-          };
-        }
-      }
-      return null;
-    };
-  }
-
   private static CNPJValidator(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       if (
@@ -75,25 +37,6 @@ export class FieldValidators {
   }
 
   // Lógica das Validações
-  private static hasDuplicate(
-    control: AbstractControl,
-    formControlName: string
-  ) {
-    const formArrayTable = control.parent?.parent?.getRawValue();
-
-    const keyValuesArray = formArrayTable.map((item: any) => {
-      if (!!item[formControlName]) {
-        return item[formControlName].toString().trim().replace(/\D/g, '');
-      }
-    });
-
-    return (
-      keyValuesArray.filter(
-        (x: any) => x === control.value.toString().trim().replace(/\D/g, '')
-      ).length > 1
-    );
-  }
-
   private static isValidCNPJ(cnpj: string) {
     const multCNPJ1 = [6, 7, 8, 9, 2, 3, 4, 5, 6, 7, 8, 9];
     const multCNPJ2 = [5, 6, 7, 8, 9, 2, 3, 4, 5, 6, 7, 8];

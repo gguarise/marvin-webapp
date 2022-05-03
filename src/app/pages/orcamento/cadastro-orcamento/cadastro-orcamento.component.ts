@@ -116,15 +116,19 @@ export class CadastroOrcamentoComponent
       this.servicosTable,
       this.pecasTable,
     ];
+
+    if (this.isNewRecord) {
+      this.getClientes();
+    }
   }
 
   override async afterSetMainFormData() {
     // Operações após tela estar com valores
-    this.getClientes();
+    await this.getClientes();
 
     this.calculateCustoProdutos(true);
     this.calculateCustoPecas(true);
-    this.calculateCustoServicos();
+    this.calculateCustoServicos(true);
   }
 
   override afterFormEnable() {
@@ -160,6 +164,7 @@ export class CadastroOrcamentoComponent
   }
 
   override afterInsert(response: any) {
+    super.afterInsert();
     this.router.navigate(['/cadastro-orcamento', response?.id]);
   }
 
@@ -184,7 +189,7 @@ export class CadastroOrcamentoComponent
   filterClientes() {
     const filterValue =
       this.mainForm.get('clienteId')?.value.toLowerCase() ?? '';
-    this.clientesFiltrados = this.clientes.filter((cliente) =>
+    this.clientesFiltrados = this.clientes?.filter((cliente) =>
       cliente.nome.toLowerCase().includes(filterValue)
     );
   }
@@ -216,11 +221,14 @@ export class CadastroOrcamentoComponent
       data: true,
       width: screenSize > 599 ? '70%' : '90%',
       height: 'auto',
-      disableClose: false,
+      disableClose: true,
     });
 
-    dialogRef.afterClosed().subscribe(() => {
-      this.getClientes();
+    dialogRef.afterClosed().subscribe((response) => {
+      if (response) {
+        // true se cadastrou novo cliente
+        this.getClientes();
+      }
     });
   }
 
@@ -235,7 +243,7 @@ export class CadastroOrcamentoComponent
         const clienteId = this.mainForm.get('clienteId')?.value;
         // Caso esteja inativo irá mostrar
         const ativo = this.clientes.find((x) => x.id === clienteId);
-        if (ativo === null || ativo === undefined) {
+        if (!!clienteId && (ativo === null || ativo === undefined)) {
           await firstValueFrom(this.clienteService.getById(clienteId)).then(
             (c: Cliente) => {
               this.clientes.push(c);
@@ -252,7 +260,6 @@ export class CadastroOrcamentoComponent
       });
   }
 
-  // TODO Opcional - Colocar numa classe separada que nem field-validator
   calculateCustoProdutos(onInit: boolean = false) {
     const tabela = this.produtosTable.formArray.getRawValue();
     if (!!tabela && tabela.length > 0) {
@@ -283,22 +290,24 @@ export class CadastroOrcamentoComponent
     }
   }
 
-  calculateCustoServicos() {
+  calculateCustoServicos(onInit: boolean = false) {
     const tabela = this.servicosTable.formArray.getRawValue();
     if (!!tabela && tabela.length > 0) {
       const total = tabela.map((x: any) => x.valor).reduce(this.sumReducer);
       this.mainForm.get('totalServicos')?.setValue(total);
-      this.calculateSubtotal();
+      this.calculateSubtotal(onInit);
     }
   }
 
-  calculateSubtotal() {
+  calculateSubtotal(onInit: boolean = false) {
     const total =
       this.mainForm.get('totalProdutos')?.value +
       this.mainForm.get('totalPecas')?.value +
       this.mainForm.get('totalServicos')?.value;
     this.mainForm.get('subtotal')?.setValue(total.toFixed(2));
-    this.calculateDesconto(true);
+    if (!onInit) {
+      this.calculateDesconto(true);
+    }
   }
 
   calculateDesconto(isPercent = false) {

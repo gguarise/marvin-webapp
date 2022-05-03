@@ -13,6 +13,7 @@ import {
 } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
+import { MatTabGroup } from '@angular/material/tabs';
 import { ActivatedRoute } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { firstValueFrom, Subject } from 'rxjs';
@@ -36,8 +37,10 @@ export class BaseComponent implements OnInit {
   isNewRecord: boolean = false;
   saveTablesIndividually: boolean = true;
   componentTables: ChildBaseTableComponent[];
+  isUndoing: boolean = false;
 
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
+  @ViewChild(MatTabGroup, { static: false }) tabGroup: MatTabGroup;
 
   // Services
   dialog: MatDialog;
@@ -57,6 +60,7 @@ export class BaseComponent implements OnInit {
     this.formEditing$.subscribe((isEditing) => {
       isEditing ? this.mainForm.enable() : this.mainForm.disable();
       isEditing ? this.afterFormEnable() : null;
+      this.isUndoing = false;
       this.componentTables?.forEach((table) => {
         isEditing ? table.formArray.enable() : table.formArray.disable();
         isEditing ? table.afterFormEnable() : null;
@@ -126,11 +130,13 @@ export class BaseComponent implements OnInit {
         .then((response) => {
           this.afterInsert(response);
           this.toastr.success('Novo registro inserido com sucesso.');
+          this.tabGroup.selectedIndex = 0;
         })
         .catch((e) => this.throwErrorMessage(e));
     } else {
       await firstValueFrom(this.baseService.put(data))
         .then(() => {
+          this.tabGroup.selectedIndex = 0;
           if (this.componentTables?.length > 0 && this.saveTablesIndividually) {
             this.saveComponentTables();
           } else {
@@ -139,7 +145,7 @@ export class BaseComponent implements OnInit {
             this.select();
           }
         })
-        .catch((e) => this.throwErrorMessage(e)); // TODO TESTAR
+        .catch((e) => this.throwErrorMessage(e));
     }
   }
 
@@ -161,19 +167,18 @@ export class BaseComponent implements OnInit {
       this.onClear();
       this.select();
     } else {
-      // TODO TESTAR !!!!!!!!
-      // this.toastr.error(
-      //   `Erro ao salvar tabela(s) ${tablesWithErrors.map(
-      //     (x) => ` ${x}`
-      //   )}, os demais registros já foram salvos.`
-      // );
+      // Quando é child table vai cair aqui
+      this.toastr.error(
+        `Erro ao salvar tabela(s) ${tablesWithErrors.map(
+          (x) => ` ${x}`
+        )}, os demais registros já foram salvos.`
+      );
     }
   }
 
-  afterInsert(response: any) {
-    throw new Error(
-      'Método de redirecionamento após inserção não implementado.'
-    );
+  afterInsert(response: any = null) {
+    this.isNewRecord = false;
+    this.mainForm.markAsPristine();
   }
 
   isTable(option: string) {
@@ -192,7 +197,7 @@ export class BaseComponent implements OnInit {
 
   async beforeDelete() {
     const confirma = await DialogHelper.openDialog(
-      'Deletar',
+      'Exclusão',
       'Deseja excluir esse item?'
     );
     if (confirma) {
@@ -234,6 +239,7 @@ export class BaseComponent implements OnInit {
         'Deseja descartar alterações?'
       );
       if (confirma) {
+        this.isUndoing = true;
         this.isNewRecord ? this.redirectPreviousRoute() : this.undo();
       }
     } else {
@@ -253,6 +259,10 @@ export class BaseComponent implements OnInit {
   onClear() {
     this.formEditing$.next(false);
     this.mainForm.reset();
+
+    if (!!this.tabGroup) {
+      this.tabGroup.selectedIndex = 0;
+    }
   }
 
   setMainFormData(item: any = this.originalData) {
@@ -299,5 +309,20 @@ export class BaseComponent implements OnInit {
   setFieldValueAsNull(fieldName: string) {
     this.mainForm.get(fieldName)?.setValue(null);
     this.mainForm.get(fieldName)?.markAsDirty();
+  }
+
+  async confirmRedirect() {
+    let descartar = true;
+
+    if (!this.isUndoing && this.mainForm.enabled && !this.mainForm.pristine) {
+      descartar = await DialogHelper.openDialog(
+        'Descarte',
+        'Deseja sair desta página e descartar as alterações?'
+      );
+    } else {
+      descartar = true;
+    }
+
+    return descartar;
   }
 }

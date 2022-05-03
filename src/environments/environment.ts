@@ -1,5 +1,5 @@
 export const environment = {
-  production: false, // TODO mudar pra true dps ?
+  production: false,
   safeApiUrl: {
     fornecedor: 'https://localhost:5675/',
     cliente: 'https://localhost:5677/',

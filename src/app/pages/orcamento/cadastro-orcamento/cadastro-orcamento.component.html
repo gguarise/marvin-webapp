@@ -11,7 +11,9 @@
                  (saveEvent)="beforeSave()"
                  (editEvent)="edit()"
                  (undoEvent)="beforeUndo()"
-                 (deleteEvent)="beforeDelete()"></app-page-header>
+                 (deleteEvent)="beforeDelete()"
+                 [showDialogCloseButton]="isDialogComponent"
+                 (dialogCloseEvent)="dialogRef.close()"></app-page-header>
 <form [formGroup]="mainForm">
     <mat-tab-group>
         <mat-tab label="Dados">
@@ -51,7 +53,9 @@
                     </mat-form-field>
 
                     <div *ngIf="mainForm.enabled"
-                         fxFlex="20">
+                         fxFlex="20"
+                         fxLayoutAlign="center"
+                         class="novo-cliente">
                         <button mat-raised-button
                                 class="new-button"
                                 color="accent"
@@ -65,7 +69,7 @@
                                 [compareWith]="compareWith">
                         <ng-container *ngFor="let carro of carros">
                             <mat-option [value]="carro.id">
-                                {{carro?.placa}}
+                                {{carro?.placa}} / {{carro?.modelo}}
                             </mat-option>
                         </ng-container>
                     </mat-select>

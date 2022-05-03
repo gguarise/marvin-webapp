@@ -27,6 +27,12 @@ export class CarroService extends BaseService {
       .pipe(catchError(this.handleServiceError<any>()));
   }
 
+  override getById(id: any): Observable<Carro> {
+    return this.http
+      .get<Carro>(`${this.carroUrl}/${id}`, this.getAuthenticationHeaders())
+      .pipe(catchError(this.handleServiceError<any>()));
+  }
+
   searchByPlaca(placa: string): Observable<Carro[]> {
     return this.http
       .get<Carro[]>(

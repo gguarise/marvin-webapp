@@ -15,6 +15,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { CarrosTableComponent } from './carros-table/carros-table.component';
 import { FieldValidators } from 'src/core/validators/field-validators';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { Carro } from 'src/app/models/carro';
 
 @Component({
   selector: 'app-cadastro-cliente',
@@ -62,9 +63,20 @@ export class CadastroClienteComponent
     this.componentTables = [this.carrosTable];
   }
 
+  override afterSetMainFormData() {
+    // Operações após tela estar com valores
+
+    // Preenche id de cliente nos carros
+    const carros = this.mainForm.get('carros')?.value;
+    carros?.forEach((carro: Carro) => {
+      carro.clienteId = this.routeId;
+    });
+    this.mainForm.get('carros')?.setValue(carros);
+  }
+
   async searchEndereco() {
     const cep = this.mainForm.get('cep')?.value?.replace(/\D/g, '');
-    if (cep.length === 8) {
+    if (cep?.length === 8) {
       const endereco = await firstValueFrom(
         this.clienteService.getEnderecoPorCEP(cep)
       )
@@ -97,18 +109,30 @@ export class CadastroClienteComponent
   }
 
   override afterInsert(response: any) {
+    super.afterInsert();
     if (!this.isDialogComponent) {
       this.router.navigate(['/cadastro-cliente', response?.id]);
     } else {
-      this.dialogRef.close();
+      this.dialogRef.close(true);
     }
+  }
+
+  dialogClose() {
+    this.dialogRef.close(false);
   }
 
   override getRawData() {
     const form = super.getRawData();
 
+    form.telefone = form.telefone?.replace(/\D/g, '') ?? null;
+    form.cep = form.cep?.replace(/\D/g, '') ?? null;
+    form.cpf = form.cpf?.replace(/\D/g, '') ?? null;
+
     if (this.isNewRecord) {
       form.carros = this.carrosTable.formArray.getRawValue();
+      form.carros?.forEach((carro: Carro) => {
+        carro.placa = carro.placa.toUpperCase();
+      });
     }
     return form;
   }

@@ -1,3 +1,4 @@
+import { BreakpointObserver } from '@angular/cdk/layout';
 import { Component, OnInit } from '@angular/core';
 
 @Component({
@@ -7,8 +8,14 @@ import { Component, OnInit } from '@angular/core';
 })
 export class MenuComponent implements OnInit {
   openedMenu = true;
+  handsetMaxWidth = '(max-width: 959.99px)';
+  isHandset: boolean;
 
-  constructor() {}
+  constructor(breakpointObserver: BreakpointObserver) {
+    breakpointObserver.observe(this.handsetMaxWidth).subscribe((t) => {
+      this.isHandset = t.matches;
+    });
+  }
 
   ngOnInit(): void {}
 

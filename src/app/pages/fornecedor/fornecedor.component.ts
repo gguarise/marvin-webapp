@@ -1,5 +1,6 @@
-import { Component, ElementRef } from '@angular/core';
+import { Component, ElementRef, Optional } from '@angular/core';
 import { Validators } from '@angular/forms';
+import { MatDialogRef } from '@angular/material/dialog';
 import { Fornecedor } from 'src/app/models/fornecedor';
 import { FornecedorService } from 'src/app/services/fornecedor.service';
 import { duplicateTableValueValidator } from 'src/core/validators/duplicate-table-value-validator';
@@ -14,7 +15,8 @@ import { BaseTableComponent } from '../../components/base/base-table/base-table.
 export class FornecedorComponent extends BaseTableComponent {
   constructor(
     public fornecedorService: FornecedorService,
-    elementRef: ElementRef
+    elementRef: ElementRef,
+    @Optional() public dialogRef: MatDialogRef<FornecedorComponent>
   ) {
     super(fornecedorService, elementRef);
     this.formGroupConfig = {

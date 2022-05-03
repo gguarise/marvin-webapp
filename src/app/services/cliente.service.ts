@@ -29,10 +29,7 @@ export class ClienteService extends BaseService {
 
   override getById(id: any): Observable<Cliente> {
     return this.http
-      .get<Cliente[]>(
-        `${this.clienteUrl}/${id}`,
-        this.getAuthenticationHeaders()
-      )
+      .get<Cliente>(`${this.clienteUrl}/${id}`, this.getAuthenticationHeaders())
       .pipe(catchError(this.handleServiceError<any>()));
   }
 
