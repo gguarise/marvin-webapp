@@ -9,4 +9,5 @@ export class Produto extends BaseModel {
   quantidadeEstoque: number;
   valorUnitario: number;
   fornecedor: Fornecedor;
+  ativo: boolean;
 }

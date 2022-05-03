@@ -1,4 +1,5 @@
 import {
+  AfterViewInit,
   Component,
   ElementRef,
   OnDestroy,
@@ -30,7 +31,9 @@ import { DialogHelper } from 'src/core/helpers/dialog-helper';
   templateUrl: './base-table.component.html',
   styleUrls: ['./base-table.component.scss'],
 })
-export abstract class BaseTableComponent implements OnInit, OnDestroy {
+export abstract class BaseTableComponent
+  implements OnInit, OnDestroy, AfterViewInit
+{
   formEditing$ = new Subject<boolean>(); // Controla des/habilitação da tabela
   dataSource: MatTableDataSource<any>; // DataSource para o mat-table
   formArray = new FormArray([]); // FormArray do Angular Forms
@@ -41,9 +44,10 @@ export abstract class BaseTableComponent implements OnInit, OnDestroy {
   displayedColumns: string[]; // Colunas a serem mostradas na tabela
   formHelper = FormHelper; // Funções auxiliares
 
-  // Mensagens de erro ao chamar save()
+  // Mensagens de erro ou sucesso ao chamar save()
   errosInserirAlterar = new Array();
   errosDeletar = new Array();
+  sucessoSalvar = false;
 
   // Para tratar do double click no mobile
   eventSubscription: Subscription;
@@ -78,6 +82,12 @@ export abstract class BaseTableComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.select();
     this.formEditing$.next(false);
+  }
+
+  ngAfterViewInit() {
+    if (this.paginator?._intl) {
+      this.paginator._intl.itemsPerPageLabel = 'Itens por Página: ';
+    }
   }
 
   ngOnDestroy() {
@@ -136,7 +146,7 @@ export abstract class BaseTableComponent implements OnInit, OnDestroy {
   }
 
   async beforeSave(propertyNameErrorMessage: string = 'nome') {
-    if (this.formArray.dirty) {
+    if (this.formArray.dirty || this.deletedData?.length > 0) {
       if (this.formArray.invalid) {
         this.toastr.error('Existem campos inválidos na tabela.');
         this.formArray.markAllAsTouched(); // Para mostrar erros nas linhas
@@ -150,51 +160,88 @@ export abstract class BaseTableComponent implements OnInit, OnDestroy {
   }
 
   async save(propertyNameErrorMessage: string = 'nome') {
+    this.sucessoSalvar = false;
     this.errosInserirAlterar = [];
     this.errosDeletar = [];
+    const indexSucesso: number[] = [];
+    const indexSucessoDelete: number[] = [];
     const data = this.getRawData();
 
     const promises = data.map(async (item: any) => {
+      const index = data.findIndex((x: any) => x === item);
       if (item.new) {
         await firstValueFrom(this.tableService.post(item))
-          .then()
+          .then(() => {
+            this.sucessoSalvar = true;
+            indexSucesso.push(index);
+          })
           .catch(() => {
-            const index = data.findIndex((x: any) => x === item);
             this.errosInserirAlterar.push(index);
           });
       } else if (item.modified) {
         await firstValueFrom(this.tableService.put(item))
-          .then()
+          .then(() => {
+            this.sucessoSalvar = true;
+            indexSucesso.push(index);
+          })
           .catch(() => {
-            const index = data.findIndex((x: any) => x === item);
             this.errosInserirAlterar.push(index);
           });
       }
     });
     if (this.deletedData.length > 0) {
-      for (const id of this.deletedData) {
+      for (const [index, id] of this.deletedData.entries()) {
         await firstValueFrom(this.tableDeleteMethod(id))
-          .then()
+          .then(() => {
+            indexSucessoDelete.push(index);
+            this.sucessoSalvar = true;
+          })
           .catch((e) => {
             this.originalDataSource.forEach((x: any) => {
-              // TODO ver caso não tenha ID
               if (x.id === id) {
+                let errorDetail = 'Erro no Servidor';
+                if (e?.error?.errors) {
+                  // Garantir para caso erro seja 500
+                  const erros = Object.values(e.error?.errors) as Array<any>;
+                  for (const value of erros) {
+                    errorDetail = value[0];
+                  }
+                }
                 this.errosDeletar.push({
                   nome: x[propertyNameErrorMessage],
-                  erro: e.error.errors.Id[0],
+                  erro: errorDetail,
                 });
               }
             });
           });
       }
     }
-
     await Promise.all(promises);
+
+    this.changeControlState(indexSucesso, indexSucessoDelete);
     await this.afterSave();
   }
 
   tableDeleteMethod(id: string) {
     return this.tableService.delete(id);
+  }
+
+  changeControlState(indexSucesso: number[], indexSucessoDelete: number[]) {
+    // Para modificar estado dos campos = Evita repetir operações
+    if (this.errosInserirAlterar.length > 0 || this.errosDeletar.length > 0) {
+      if (indexSucesso.length > 0) {
+        indexSucesso.forEach((i) => {
+          this.formArray.controls[i].get('modified')?.setValue(false);
+          this.formArray.controls[i].get('new')?.setValue(false);
+          this.formArray.controls[i].markAsPristine();
+        });
+      }
+      if (indexSucessoDelete.length > 0) {
+        indexSucessoDelete.forEach((i) => {
+          this.deletedData = this.deletedData.filter((x, index) => index !== i);
+        });
+      }
+    }
   }
 
   afterSave() {
@@ -205,16 +252,22 @@ export abstract class BaseTableComponent implements OnInit, OnDestroy {
       if (this.errosDeletar.length > 0) {
         message += ` e ao deletar: ${this.errosDeletar.map((x) => ` ${x}`)}`;
       }
+      if (this.sucessoSalvar) {
+        message += '. As demais linhas foram salvas com sucesso.';
+      }
       this.toastr.error(message);
     } else if (this.errosDeletar.length > 0) {
-      this.toastr.error(
-        `Ocorreram erros ao deletar: ${this.errosDeletar.map(
-          (x) => ` ${x.nome} (${x.erro})`
-        )}`
-      );
+      let message = `Ocorreram erros ao deletar: ${this.errosDeletar.map(
+        (x) => ` ${x.nome} (${x.erro})`
+      )}`;
+      if (this.sucessoSalvar) {
+        message += '. As demais linhas foram salvas com sucesso.';
+      }
+      this.toastr.error(message);
     } else {
       this.toastr.success('Registros da tabela salvos com sucesso.');
       this.setInitialData();
+      this.select(); // Precisa para não ficar como new = true
     }
   }
 

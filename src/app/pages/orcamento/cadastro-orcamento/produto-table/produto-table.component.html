@@ -61,8 +61,9 @@
                                     [compareWith]="compare"
                                     (selectionChange)="setValorUnitario(element)">
                             <mat-option *ngFor="let produto of produtos"
-                                        [value]="produto.id">
-                                {{produto?.nome}}
+                                        [value]="produto.id"
+                                        [style]="produto.ativo ? 'color: black' : 'color: red'">
+                                {{produto?.nome}} {{produto.ativo ? '' : '(Inativo)'}}
                             </mat-option>
                         </mat-select>
                         <mat-error *ngIf="element.get('produtoId').invalid">

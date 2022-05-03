@@ -13,6 +13,7 @@ import {
 } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import { MatPaginator } from '@angular/material/paginator';
+import { MatTabGroup } from '@angular/material/tabs';
 import { ActivatedRoute } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { firstValueFrom, Subject } from 'rxjs';
@@ -39,6 +40,7 @@ export class BaseComponent implements OnInit {
   isUndoing: boolean = false;
 
   @ViewChild(MatPaginator, { static: false }) paginator: MatPaginator;
+  @ViewChild(MatTabGroup, { static: false }) tabGroup: MatTabGroup;
 
   // Services
   dialog: MatDialog;
@@ -128,11 +130,13 @@ export class BaseComponent implements OnInit {
         .then((response) => {
           this.afterInsert(response);
           this.toastr.success('Novo registro inserido com sucesso.');
+          this.tabGroup.selectedIndex = 0;
         })
         .catch((e) => this.throwErrorMessage(e));
     } else {
       await firstValueFrom(this.baseService.put(data))
         .then(() => {
+          this.tabGroup.selectedIndex = 0;
           if (this.componentTables?.length > 0 && this.saveTablesIndividually) {
             this.saveComponentTables();
           } else {
@@ -141,7 +145,7 @@ export class BaseComponent implements OnInit {
             this.select();
           }
         })
-        .catch((e) => this.throwErrorMessage(e)); // TODO TESTAR
+        .catch((e) => this.throwErrorMessage(e));
     }
   }
 
@@ -163,12 +167,12 @@ export class BaseComponent implements OnInit {
       this.onClear();
       this.select();
     } else {
-      // TODO TESTAR !!!!!!!!
-      // this.toastr.error(
-      //   `Erro ao salvar tabela(s) ${tablesWithErrors.map(
-      //     (x) => ` ${x}`
-      //   )}, os demais registros já foram salvos.`
-      // );
+      // Quando é child table vai cair aqui
+      this.toastr.error(
+        `Erro ao salvar tabela(s) ${tablesWithErrors.map(
+          (x) => ` ${x}`
+        )}, os demais registros já foram salvos.`
+      );
     }
   }
 
@@ -255,6 +259,10 @@ export class BaseComponent implements OnInit {
   onClear() {
     this.formEditing$.next(false);
     this.mainForm.reset();
+
+    if (!!this.tabGroup) {
+      this.tabGroup.selectedIndex = 0;
+    }
   }
 
   setMainFormData(item: any = this.originalData) {

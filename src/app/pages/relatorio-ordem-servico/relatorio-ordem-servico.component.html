@@ -21,7 +21,7 @@
                 <h2 class="header-text-h2">
                     <strong>AUTOMAR CENTRO AUTOMOTIVO</strong>
                 </h2>
-                <h3 class="header-text-h3">CNPJ: XX.XXX.XXX/000X-XX</h3>
+                <h3 class="header-text-h3">CNPJ: 77.638.245/0001-73</h3>
                 <h3 class="header-text-h3">Rua Anita Ribas, 39 - Curitiba, PR</h3>
                 <h3 class="header-text-h3">Contato: (41) 98904-7416
                     <span class="material-icons"
@@ -58,19 +58,19 @@
             <td class="cliente-table-title">Nome</td>
             <td style="max-width: 200px;">{{orcamento?.cliente?.nome}}</td>
             <td class="cliente-table-title">CPF</td>
-            <td>{{orcamento?.cliente?.cpf}}</td>
+            <td>{{orcamento?.cliente?.cpf | CPF}}</td>
         </tr>
         <tr>
             <td class="cliente-table-title">E-mail</td>
             <td style="max-width: 200px;">{{orcamento?.cliente?.email}}</td>
             <td class="cliente-table-title">Telefone</td>
-            <td>{{orcamento?.cliente?.telefone}}</td>
+            <td>{{orcamento?.cliente?.telefone | celular}}</td>
         </tr>
         <tr>
             <td class="cliente-table-title">Endereço</td>
             <td style="max-width: 200px;">{{orcamento?.cliente?.endereco}}</td>
             <td class="cliente-table-title">CEP</td>
-            <td>{{orcamento?.cliente?.cep}}</td>
+            <td>{{orcamento?.cliente?.cep | cep}}</td>
         </tr>
         <tr>
             <td class="cliente-table-title">Marca / Modelo</td>

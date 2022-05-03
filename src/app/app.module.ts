@@ -65,6 +65,9 @@ import {
   BaseCanDeactivateGuard,
   BaseTableCanDeactivateGuard,
 } from './components/shared/guards/can-deactivate.guard';
+import { CPFPipe } from './pages/relatorio-ordem-servico/cpf.pipe';
+import { CelularPipe } from './pages/relatorio-ordem-servico/celular.pipe';
+import { CepPipe } from './pages/relatorio-ordem-servico/cep.pipe';
 FullCalendarModule.registerPlugins([dayGridPlugin, interactionPlugin]);
 
 @NgModule({
@@ -96,6 +99,9 @@ FullCalendarModule.registerPlugins([dayGridPlugin, interactionPlugin]);
     RelatorioOrdemServicoComponent,
     AtendimentosClienteTableComponent,
     OrcamentosClienteTableComponent,
+    CPFPipe,
+    CelularPipe,
+    CepPipe,
   ],
   imports: [
     BrowserModule,

@@ -1,7 +1,8 @@
 .footer {
   position: fixed;
   bottom: 0;
-  max-height: fit-content;
+  max-height: min-content;
+  line-height: 2;
 }
 
 .footer .title {
@@ -10,9 +11,10 @@
 .footer .subtitle {
   font-size: small;
   font-weight: 100;
+  white-space: break-spaces;
 }
 
-@media screen and (max-width: 550px) {
+@media screen and (max-width: 735px) {
   .footer .title {
     font-size: x-small;
   }

@@ -128,7 +128,7 @@ export class CadastroOrcamentoComponent
 
     this.calculateCustoProdutos(true);
     this.calculateCustoPecas(true);
-    this.calculateCustoServicos();
+    this.calculateCustoServicos(true);
   }
 
   override afterFormEnable() {
@@ -260,7 +260,6 @@ export class CadastroOrcamentoComponent
       });
   }
 
-  // TODO Opcional - Colocar numa classe separada que nem field-validator
   calculateCustoProdutos(onInit: boolean = false) {
     const tabela = this.produtosTable.formArray.getRawValue();
     if (!!tabela && tabela.length > 0) {
@@ -291,22 +290,24 @@ export class CadastroOrcamentoComponent
     }
   }
 
-  calculateCustoServicos() {
+  calculateCustoServicos(onInit: boolean = false) {
     const tabela = this.servicosTable.formArray.getRawValue();
     if (!!tabela && tabela.length > 0) {
       const total = tabela.map((x: any) => x.valor).reduce(this.sumReducer);
       this.mainForm.get('totalServicos')?.setValue(total);
-      this.calculateSubtotal();
+      this.calculateSubtotal(onInit);
     }
   }
 
-  calculateSubtotal() {
+  calculateSubtotal(onInit: boolean = false) {
     const total =
       this.mainForm.get('totalProdutos')?.value +
       this.mainForm.get('totalPecas')?.value +
       this.mainForm.get('totalServicos')?.value;
     this.mainForm.get('subtotal')?.setValue(total.toFixed(2));
-    this.calculateDesconto(true);
+    if (!onInit) {
+      this.calculateDesconto(true);
+    }
   }
 
   calculateDesconto(isPercent = false) {
