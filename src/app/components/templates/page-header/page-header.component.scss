@@ -1,0 +1,12 @@
+.title {
+  font-size: xx-large;
+}
+@media screen and (max-width: 550px) {
+  .title {
+    font-size: x-large;
+  }
+}
+
+.icons {
+  transform: scale(1.35);
+}

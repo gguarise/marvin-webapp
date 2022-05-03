@@ -1,0 +1,164 @@
+<div class="container text-center">
+
+    <app-table-toolbar [isFormDisabled]="this.formArray.disabled"
+                       (addRow)="addRow()"
+                       (deleteSelectedRows)="deleteSelectedRows()"></app-table-toolbar>
+
+    <div class="table-container"
+         [class.mat-elevation-z4]="true">
+
+        <mat-table [dataSource]="dataSource">
+
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns; let i=
+                index"
+                     [class.invalid-table-row]="row.invalid">
+            </mat-row>
+
+            <ng-container matColumnDef="select">
+                <mat-header-cell fxFlex="50px"
+                                 fxLayoutAlign="center center"
+                                 *matHeaderCellDef>
+                </mat-header-cell>
+                <mat-cell fxFlex="50px"
+                          fxLayoutAlign="center center"
+                          *matCellDef="let element"
+                          [formGroup]="element">
+                    <mat-checkbox formControlName="select">
+                    </mat-checkbox>
+                </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="placa">
+                <mat-header-cell fxFlex="10"
+                                 fxLayoutAlign="center center"
+                                 *matHeaderCellDef> Placa </mat-header-cell>
+                <mat-cell fxFlex="10"
+                          *matCellDef="let element"
+                          [formGroup]="element">
+                    <mat-form-field fxLayout="column">
+                        <input matInput
+                               formControlName="placa"
+                               style="text-transform:uppercase"
+                               [textMask]="formHelper.getTextMask('placa')"
+                               (blur)="searchPlaca(element)" />
+                        <mat-error>{{getErrorMessage(element.get('placa'))}}</mat-error>
+                    </mat-form-field>
+                </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="marca">
+                <mat-header-cell fxFlex="15"
+                                 fxLayoutAlign="center center"
+                                 *matHeaderCellDef> Marca </mat-header-cell>
+                <mat-cell fxFlex="15"
+                          *matCellDef="let element"
+                          [formGroup]="element">
+                    <mat-form-field fxLayout="column">
+                        <input type="text"
+                               matInput
+                               formControlName="marca"
+                               [matAutocomplete]="auto"
+                               (keyup)="filterMarcas(element)"
+                               (blur)="getModelos(element)">
+                        <mat-autocomplete autoActiveFirstOption
+                                          #auto="matAutocomplete"
+                                          (optionSelected)="getModelos(element)">
+                            <mat-option *ngFor="let option of element.get('marcasFiltradas')?.value"
+                                        [value]="option.name">
+                                {{option.name}}
+                            </mat-option>
+                        </mat-autocomplete>
+                        <mat-error>{{getErrorMessage(element.get('marca'))}}</mat-error>
+                    </mat-form-field>
+                </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="modelo">
+                <mat-header-cell fxFlex="20"
+                                 fxLayoutAlign="center center"
+                                 *matHeaderCellDef> Modelo </mat-header-cell>
+                <mat-cell fxFlex="20"
+                          *matCellDef="let element"
+                          [formGroup]="element">
+                    <mat-form-field fxLayout="column">
+                        <div fxLayout="row">
+                            <input fxFlex
+                                   type="text"
+                                   matInput
+                                   formControlName="modelo"
+                                   [matAutocomplete]="auto"
+                                   (keyup)="filterModelos(element)">
+                            <mat-spinner *ngIf="element.get('carregandoModelos').value"
+                                         fxFlex="10"
+                                         diameter="16"></mat-spinner>
+                        </div>
+                        <mat-autocomplete autoActiveFirstOption
+                                          #auto="matAutocomplete">
+                            <mat-option *ngFor="let option of element.get('modelosFiltrados')?.value"
+                                        [value]="option.name">
+                                {{option.name}}
+                            </mat-option>
+                        </mat-autocomplete>
+                        <mat-error>{{getErrorMessage(element.get('modelo'))}}</mat-error>
+                    </mat-form-field>
+                </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="ano">
+                <mat-header-cell fxFlex="10"
+                                 fxLayoutAlign="center center"
+                                 *matHeaderCellDef> Ano </mat-header-cell>
+                <mat-cell fxFlex="10"
+                          *matCellDef="let element"
+                          [formGroup]="element">
+                    <mat-form-field fxLayout="column">
+                        <input matInput
+                               formControlName="ano"
+                               currencyMask
+                               [options]="formHelper.getNumericMask('integer')" />
+                        <mat-error>{{getErrorMessage(element.get('ano'))}}</mat-error>
+                    </mat-form-field>
+                </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="quilometragem">
+                <mat-header-cell fxFlex="13"
+                                 fxLayoutAlign="center center"
+                                 *matHeaderCellDef> KM </mat-header-cell>
+                <mat-cell fxFlex="13"
+                          *matCellDef="let element"
+                          [formGroup]="element">
+                    <mat-form-field fxLayout="column">
+                        <input matInput
+                               formControlName="quilometragem"
+                               currencyMask
+                               [options]="formHelper.getNumericMask('integer-thousands')" />
+                        <mat-error>{{getErrorMessage(element.get('quilometragem'))}}</mat-error>
+                    </mat-form-field>
+                </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="descricao">
+                <mat-header-cell fxFlex
+                                 fxLayoutAlign="center center"
+                                 *matHeaderCellDef> Descrição </mat-header-cell>
+                <mat-cell fxFlex
+                          *matCellDef="let element"
+                          [formGroup]="element">
+                    <mat-form-field fxLayout="column">
+                        <input matInput
+                               formControlName="descricao">
+                        <mat-error>{{getErrorMessage(element.get('descricao'))}}</mat-error>
+                    </mat-form-field>
+                </mat-cell>
+            </ng-container>
+
+        </mat-table>
+    </div>
+    <div [class.mat-elevation-z2]="true">
+        <mat-paginator [pageSize]="10"
+                       [pageSizeOptions]="[5, 10]"></mat-paginator>
+    </div>
+
+</div>

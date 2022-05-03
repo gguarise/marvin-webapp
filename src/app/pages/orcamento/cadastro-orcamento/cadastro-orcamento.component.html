@@ -1,0 +1,288 @@
+<app-page-header title="Orçamento"
+                 [showReturnButton]="mainForm.disabled && !isDialogComponent"
+                 [showSaveButton]="mainForm.enabled"
+                 [showEditButton]="mainForm.disabled && !isDialogComponent"
+                 [showUndoButton]="mainForm.enabled"
+                 [showDeleteButton]="mainForm.disabled && !isDialogComponent"
+                 [showPrintButton]="mainForm.disabled"
+                 printButtonLabel="Imprimir Ordem de Serviço"
+                 (printEvent)="imprimir()"
+                 (returnEvent)="redirectPreviousRoute()"
+                 (saveEvent)="beforeSave()"
+                 (editEvent)="edit()"
+                 (undoEvent)="beforeUndo()"
+                 (deleteEvent)="beforeDelete()"
+                 [showDialogCloseButton]="isDialogComponent"
+                 (dialogCloseEvent)="dialogRef.close()"></app-page-header>
+<form [formGroup]="mainForm">
+    <mat-tab-group>
+        <mat-tab label="Dados">
+            <div fxFlex
+                 fxLayout="column">
+                <div fxFlex
+                     fxLayout="row"
+                     fxLayoutAlign="space-between center">
+
+                    <mat-form-field fxFlex
+                                    appearance="fill">
+                        <mat-label>Cliente</mat-label>
+                        <input fxFlex
+                               type="text"
+                               matInput
+                               formControlName="clienteId"
+                               [matAutocomplete]="auto"
+                               (keyup)="filterClientes()"
+                               (blur)="isValidCliente()">
+                        <!-- <mat-spinner *ngIf="element.get('carregandoModelos').value"
+                                         fxFlex="10"
+                                         diameter="16"></mat-spinner>
+                        </div> -->
+                        <mat-autocomplete autoActiveFirstOption
+                                          #auto="matAutocomplete"
+                                          [displayWith]="displayFnCliente.bind(this)">
+                            <mat-option *ngFor="let cliente of clientesFiltrados"
+                                        [value]="cliente.id"
+                                        (click)="updateCarros()"
+                                        [style]="cliente.ativo ? 'color: black' : 'color: red'">
+                                {{cliente.nome}} {{cliente.ativo ? '' : '(Inativo)'}}
+                            </mat-option>
+                        </mat-autocomplete>
+                        <mat-error *ngIf="mainForm.get('clienteId')?.invalid">
+                            {{getErrorMessage(mainForm.get('clienteId'))}}
+                        </mat-error>
+                    </mat-form-field>
+
+                    <div *ngIf="mainForm.enabled"
+                         fxFlex="20"
+                         fxLayoutAlign="center"
+                         class="novo-cliente">
+                        <button mat-raised-button
+                                class="new-button"
+                                color="accent"
+                                (click)="addCliente()">Novo</button>
+                    </div>
+                </div>
+
+                <mat-form-field appearance="fill">
+                    <mat-label>Carro</mat-label>
+                    <mat-select formControlName="carroId"
+                                [compareWith]="compareWith">
+                        <ng-container *ngFor="let carro of carros">
+                            <mat-option [value]="carro.id">
+                                {{carro?.placa}} / {{carro?.modelo}}
+                            </mat-option>
+                        </ng-container>
+                    </mat-select>
+                    <mat-error *ngIf="mainForm.get('carroId')?.invalid">
+                        {{getErrorMessage(mainForm.get('carroId'))}}
+                    </mat-error>
+                </mat-form-field>
+
+            </div>
+
+            <!-- Total Tabelas -->
+            <fieldset class="field-set"
+                      fxFlex>
+                <legend class="field-set-legend">Total das Tabelas</legend>
+                <div fxLayout="row"
+                     fxLayout.lt-md="column"
+                     fxLayoutAlign="space-between">
+
+                    <div fxFlex
+                         fxLayout="row"
+                         fxLayout.xs="column">
+                        <mat-form-field fxFlex
+                                        appearance="fill">
+                            <mat-label>Serviços</mat-label>
+                            <input matInput
+                                   formControlName="totalServicos"
+                                   currencyMask
+                                   [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', allowNegative: false, precision: 2 }" />
+                            <mat-error *ngIf="mainForm.get('dados.totalServicos')?.invalid">
+                                {{getErrorMessage(mainForm.get('dados.totalServicos'))}}
+                            </mat-error>
+                        </mat-form-field>
+
+                        <mat-form-field fxFlex
+                                        appearance="fill">
+                            <mat-label>Estoque</mat-label>
+                            <input matInput
+                                   formControlName="totalProdutos"
+                                   currencyMask
+                                   [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', allowNegative: false, precision: 2 }" />
+                            <mat-error *ngIf="mainForm.get('dados.totalProdutos')?.invalid">
+                                {{getErrorMessage(mainForm.get('dados.totalProdutos'))}}
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+                    <div fxFlex
+                         fxLayout="row"
+                         fxLayout.xs="column">
+                        <mat-form-field fxFlex
+                                        appearance="fill">
+                            <mat-label>Peças</mat-label>
+                            <input matInput
+                                   formControlName="totalPecas"
+                                   currencyMask
+                                   [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', allowNegative: false, precision: 2 }" />
+                            <mat-error *ngIf="mainForm.get('dados.totalPecas')?.invalid">
+                                {{getErrorMessage(mainForm.get('dados.totalPecas'))}}
+                            </mat-error>
+                        </mat-form-field>
+
+                        <mat-form-field fxFlex
+                                        appearance="fill">
+                            <mat-label>Subtotal</mat-label>
+                            <input matInput
+                                   formControlName="subtotal"
+                                   currencyMask
+                                   [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', allowNegative: false, precision: 2 }" />
+                            <mat-error *ngIf="mainForm.get('dados.subtotal')?.invalid">
+                                {{getErrorMessage(mainForm.get('dados.subtotal'))}}
+                            </mat-error>
+                        </mat-form-field>
+                    </div>
+                </div>
+            </fieldset>
+
+            <!-- Descontos -->
+            <fieldset class="field-set"
+                      fxFlex
+                      formGroupName="pagamento">
+                <legend class="field-set-legend">Descontos</legend>
+                <div fxLayout="row"
+                     fxLayout.xs="column"
+                     fxLayoutAlign="space-between">
+
+                    <mat-form-field fxFlex="49"
+                                    appearance="fill">
+                        <mat-label>Porcentagem</mat-label>
+                        <input matInput
+                               formControlName="percentual"
+                               currencyMask
+                               (keyup)="calculateDesconto(true)"
+                               [options]="{ prefix: '', thousands: '.', decimal: ',', allowNegative: false, precision: 0, suffix: '%' }" />
+                        <mat-error *ngIf="mainForm.get('dados.percentual')?.invalid">
+                            {{getErrorMessage(mainForm.get('dados.percentual'))}}
+                        </mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field fxFlex="49"
+                                    appearance="fill">
+                        <mat-label>Valor</mat-label>
+                        <input matInput
+                               formControlName="desconto"
+                               currencyMask
+                               (keyup)="calculateDesconto()"
+                               [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', allowNegative: false, precision: 2 }" />
+                        <mat-error *ngIf="mainForm.get('dados.desconto')?.invalid">
+                            {{getErrorMessage(mainForm.get('dados.desconto'))}}
+                        </mat-error>
+                    </mat-form-field>
+
+                </div>
+            </fieldset>
+
+            <fieldset class="field-set"
+                      fxFlex
+                      fxLayout="column">
+                <legend>Resumo</legend>
+                <div fxFlex
+                     fxLayout="row"
+                     fxLayout.xs="column"
+                     formGroupName="pagamento">
+                    <mat-form-field fxFlex
+                                    appearance="fill">
+                        <mat-label>Valor Total</mat-label>
+                        <input matInput
+                               formControlName="valorFinal"
+                               currencyMask
+                               (keyup)="calculateDesconto()"
+                               [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', allowNegative: false, precision: 2 }" />
+                        <mat-error *ngIf="mainForm.get('dados.valorFinal')?.invalid">
+                            {{getErrorMessage(mainForm.get('dados.valorFinal'))}}
+                        </mat-error>
+                    </mat-form-field>
+
+                    <ng-container>
+                        <mat-checkbox fxFlex
+                                      fxLayoutAlign="center center"
+                                      formControlName="pagamentoEfetuado">
+                            Pagamento Efetuado
+                        </mat-checkbox>
+                    </ng-container>
+                </div>
+
+                <div fxFlex
+                     class="modo-pagamento"
+                     formGroupName="pagamento">
+                    <fieldset fxFlex
+                              class="field-set"
+                              fxLayout="row"
+                              fxLayout.xs="column"
+                              formGroupName="modoPagamento">
+                        <legend>Modo de Pagamento</legend>
+                        <mat-checkbox fxFlex
+                                      fxLayoutAlign="center center"
+                                      fxLayoutAlign.xs="start center"
+                                      formControlName="cartaoCredito">
+                            Cartão de Crédito
+                        </mat-checkbox>
+                        <mat-checkbox fxFlex
+                                      fxLayoutAlign="center center"
+                                      fxLayoutAlign.xs="start center"
+                                      formControlName="cartaoDebito">
+                            Cartão de Débito
+                        </mat-checkbox>
+                        <mat-checkbox fxFlex
+                                      fxLayoutAlign="center center"
+                                      fxLayoutAlign.xs="start center"
+                                      formControlName="dinheiro">
+                            Dinheiro
+                        </mat-checkbox>
+                        <mat-checkbox fxFlex
+                                      fxLayoutAlign="center center"
+                                      fxLayoutAlign.xs="start center"
+                                      formControlName="pix">
+                            Pix
+                        </mat-checkbox>
+                    </fieldset>
+                </div>
+
+                <div fxFlex>
+                    <mat-form-field fxFlex
+                                    appearance="fill">
+                        <mat-label>Descrição do Orçamento</mat-label>
+                        <textarea matInput
+                                  formControlName="descricao"
+                                  cdkTextareaAutosize
+                                  #autosize="cdkTextareaAutosize"
+                                  cdkAutosizeMinRows="1"
+                                  cdkAutosizeMaxRows="5"></textarea>
+                        <mat-error *ngIf="mainForm.get('descricao')?.invalid">
+                            {{getErrorMessage(mainForm.get('descricao'))}}
+                        </mat-error>
+                    </mat-form-field>
+                </div>
+            </fieldset>
+        </mat-tab>
+        <!-- Passar parentId -->
+        <mat-tab label="Serviços">
+            <app-servico-table formControlName="servicos"
+                               [originalDataSource]="mainForm.get('servicos')?.value"
+                               (calculateCustoServicos)="calculateCustoServicos()"></app-servico-table>
+        </mat-tab>
+
+        <mat-tab label="Produtos em Estoque">
+            <app-produto-table formControlName="produtos"
+                               [originalDataSource]="mainForm.get('produtos')?.value"
+                               (calculateCustoProdutos)="calculateCustoProdutos()"></app-produto-table>
+        </mat-tab>
+
+        <mat-tab label="Peças">
+            <app-pecas-table formControlName="pecas"
+                             [originalDataSource]="mainForm.get('pecas')?.value"
+                             (calculateCustoPecas)="calculateCustoPecas()"></app-pecas-table>
+        </mat-tab>
+    </mat-tab-group>
+</form>

@@ -1,0 +1,124 @@
+<div class="container text-center">
+    <app-page-header title="Orçamentos"
+                     [showSaveButton]="false"
+                     [showEditButton]="false"
+                     [showUndoButton]="false"
+                     [showNewButton]="!isDialogComponent"
+                     newButtonRoute="/cadastro-orcamento"
+                     [showDialogCloseButton]="isDialogComponent"
+                     (dialogCloseEvent)="dialogRef.close()">
+    </app-page-header>
+
+    <div class="table-container"
+         [class.mat-elevation-z4]="true">
+        <mat-table [dataSource]="dataSource"
+                   matTooltip="Clique duas vezes no orçamento para visualizar"
+                   matTooltipPosition="below">
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns; let i = index"
+                     [class.invalid-table-row]="row.invalid"
+                     (click)="click$.next({event: $event, element: row.controls})">
+            </mat-row>
+
+            <ng-container matColumnDef="status">
+                <mat-header-cell fxFlex
+                                 fxLayoutAlign="center center"
+                                 *matHeaderCellDef>
+                    Status
+                </mat-header-cell>
+                <mat-cell fxFlex
+                          *matCellDef="let element"
+                          [formGroup]="element">
+                    <mat-form-field fxLayout="column">
+                        <input matInput
+                               formControlName="status" />
+                    </mat-form-field>
+                </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="clienteId">
+                <mat-header-cell fxFlex="45"
+                                 fxLayoutAlign="center center"
+                                 *matHeaderCellDef>
+                    Cliente
+                </mat-header-cell>
+                <mat-cell fxFlex="45"
+                          *matCellDef="let element"
+                          [formGroup]="element">
+                    <mat-form-field fxLayout="column">
+                        <mat-select formControlName="clienteId"
+                                    [compareWith]="compare">
+                            <ng-container *ngFor="let cliente of clientes">
+                                <mat-option [value]="cliente.id">
+                                    {{cliente?.nome}}
+                                </mat-option>
+                            </ng-container>
+                        </mat-select>
+                    </mat-form-field>
+                </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="carroId">
+                <mat-header-cell fxFlex
+                                 fxLayoutAlign="center center"
+                                 *matHeaderCellDef>
+                    Carro
+                </mat-header-cell>
+                <mat-cell fxFlex
+                          *matCellDef="let element"
+                          [formGroup]="element">
+                    <mat-form-field fxLayout="column">
+                        <mat-select formControlName="carroId"
+                                    [compareWith]="compare">
+                            <ng-container *ngFor="let carro of carros">
+                                <mat-option [value]="carro.id">
+                                    {{carro?.placa}}
+                                </mat-option>
+                            </ng-container>
+                        </mat-select>
+                    </mat-form-field>
+                </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="valorFinal">
+                <mat-header-cell fxFlex
+                                 fxLayoutAlign="center center"
+                                 *matHeaderCellDef>
+                    Valor Final
+                </mat-header-cell>
+                <mat-cell fxFlex
+                          *matCellDef="let element"
+                          [formGroup]="element">
+                    <mat-form-field fxLayout="column">
+                        <input matInput
+                               formControlName="valorFinal"
+                               currencyMask
+                               [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',', allowNegative: false, precision: 2 }" />
+                    </mat-form-field>
+                </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="dataCadastro">
+                <mat-header-cell fxFlex
+                                 fxLayoutAlign="center center"
+                                 *matHeaderCellDef>
+                    Data de Cadastro
+                </mat-header-cell>
+                <mat-cell *matCellDef="let element"
+                          [formGroup]="element">
+                    <mat-form-field fxLayout="column">
+                        <input matInput
+                               [matDatepicker]="picker"
+                               formControlName="dataCadastro">
+                        <mat-datepicker #picker></mat-datepicker>
+                    </mat-form-field>
+                </mat-cell>
+            </ng-container>
+
+        </mat-table>
+    </div>
+    <div [class.mat-elevation-z2]="true">
+        <mat-paginator [pageSize]="10"
+                       [pageSizeOptions]="[5, 10]"></mat-paginator>
+    </div>
+</div>

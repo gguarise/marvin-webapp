@@ -1,0 +1,63 @@
+<div class="container text-center">
+
+    <app-page-header title="Serviços"
+                     [showSaveButton]="this.formArray.enabled"
+                     [showEditButton]="this.formArray.disabled"
+                     [showUndoButton]="this.formArray.enabled"
+                     (saveEvent)="beforeSave()"
+                     (editEvent)="edit()"
+                     (undoEvent)="beforeUndo()"
+                     [showDialogCloseButton]="!!dialogRef"
+                     (dialogCloseEvent)="dialogRef.close()"></app-page-header>
+
+    <app-table-toolbar [isFormDisabled]="this.formArray.disabled"
+                       (addRow)="addRow()"
+                       (deleteSelectedRows)="deleteSelectedRows()"></app-table-toolbar>
+
+    <div class="table-container"
+         [class.mat-elevation-z4]="true">
+
+        <mat-table [dataSource]="dataSource">
+
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns; let i = index"
+                     [class.invalid-table-row]="row.invalid">
+            </mat-row>
+
+            <ng-container matColumnDef="select">
+                <mat-header-cell fxFlex="50px"
+                                 fxLayoutAlign="center center"
+                                 *matHeaderCellDef>
+                </mat-header-cell>
+                <mat-cell fxFlex="50px"
+                          fxLayoutAlign="center center"
+                          *matCellDef="let element"
+                          [formGroup]="element">
+                    <mat-checkbox formControlName="select">
+                    </mat-checkbox>
+                </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="nome">
+                <mat-header-cell fxFlex
+                                 fxLayoutAlign="center center"
+                                 *matHeaderCellDef> Nome </mat-header-cell>
+                <mat-cell fxFlex
+                          *matCellDef="let element"
+                          [formGroup]="element">
+                    <mat-form-field fxLayout="column">
+                        <input matInput
+                               formControlName="nome" />
+                        <mat-error>{{getErrorMessage(element.get('nome'))}}</mat-error>
+                    </mat-form-field>
+                </mat-cell>
+            </ng-container>
+
+        </mat-table>
+    </div>
+    <div [class.mat-elevation-z2]="true">
+        <mat-paginator [pageSize]="10"
+                       [pageSizeOptions]="[5, 10]"></mat-paginator>
+    </div>
+
+</div>

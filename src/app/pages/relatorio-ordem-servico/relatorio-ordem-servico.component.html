@@ -1,0 +1,215 @@
+<div class="pdf"
+     id="printable"
+     #printable>
+
+    <p style="height: 20px;"></p>
+
+    <!-- HEADER COM LOGO -->
+    <div fxLayout="row"
+         style="border: 1px solid black; height: 80px">
+        <div fxFlex
+             fxLayout="row">
+            <img fxFlex
+                 class="logo"
+                 src="../../../../assets/img/logo.png"
+                 width="auto"
+                 height="60px"
+                 fxLayoutAlign="start center">
+            <div fxFlex="70"
+                 fxLayout="column"
+                 fxLayoutAlign="start center">
+                <h2 class="header-text-h2">
+                    <strong>AUTOMAR CENTRO AUTOMOTIVO</strong>
+                </h2>
+                <h3 class="header-text-h3">CNPJ: 77.638.245/0001-73</h3>
+                <h3 class="header-text-h3">Rua Anita Ribas, 39 - Curitiba, PR</h3>
+                <h3 class="header-text-h3">Contato: (41) 98904-7416
+                    <span class="material-icons"
+                          style="font-size: 17px; align-self: center;">
+                        whatsapp
+                    </span>
+                </h3>
+            </div>
+        </div>
+    </div>
+
+    <!-- Detalhes -->
+    <div fxLayout="row"
+         fxLayoutAlign="space-around center"
+         style="border: 1px solid black; height: 30px; margin-top: 5px;">
+        <h3 class="detail">
+            Identificador: {{orcamento?.id?.substring(0, 8)}}
+        </h3>
+        <h3 class="detail">
+            Emitido em: {{dataAgora | date:'dd/MM/yyyy'}}
+        </h3>
+        <h3 class="detail">
+            <strong>Válido até: ___/___/_____</strong>
+        </h3>
+    </div>
+
+    <!-- Cliente -->
+    <table id="cliente">
+        <tr>
+            <th colspan="4"
+                style="font-weight: 600;">CLIENTE / CARRO</th>
+        </tr>
+        <tr>
+            <td class="cliente-table-title">Nome</td>
+            <td style="max-width: 200px;">{{orcamento?.cliente?.nome}}</td>
+            <td class="cliente-table-title">CPF</td>
+            <td>{{orcamento?.cliente?.cpf | CPF}}</td>
+        </tr>
+        <tr>
+            <td class="cliente-table-title">E-mail</td>
+            <td style="max-width: 200px;">{{orcamento?.cliente?.email}}</td>
+            <td class="cliente-table-title">Telefone</td>
+            <td>{{orcamento?.cliente?.telefone | celular}}</td>
+        </tr>
+        <tr>
+            <td class="cliente-table-title">Endereço</td>
+            <td style="max-width: 200px;">{{orcamento?.cliente?.endereco}}</td>
+            <td class="cliente-table-title">CEP</td>
+            <td>{{orcamento?.cliente?.cep | cep}}</td>
+        </tr>
+        <tr>
+            <td class="cliente-table-title">Marca / Modelo</td>
+            <td style="max-width: 200px;">{{orcamento?.carro?.marca}} {{orcamento?.carro?.modelo}}</td>
+            <td class="cliente-table-title">Placa</td>
+            <td>{{orcamento?.carro?.placa}}</td>
+        </tr>
+    </table>
+
+    <!-- Itens do Orçamento -->
+    <table class="page"
+           id="orcamento">
+        <colgroup span="1"></colgroup>
+        <tr>
+            <th scope="colgroup"
+                fxFlex
+                style="font-weight: 600;">ORÇAMENTO</th>
+        </tr>
+        <tr>
+            <th scope="col"
+                fxFlex="50">Produto / Serviço</th>
+            <th scope="col"
+                fxFlex>Valor Unitário</th>
+            <th scope="col"
+                fxFlex>Quantidade</th>
+            <th scope="col"
+                fxFlex>Total</th>
+        </tr>
+        <tr *ngFor="let servico of orcamento?.servicos">
+            <td fxFlex="50">
+                <ng-container *ngFor="let item of listaServicos">
+                    <ng-container *ngIf="servico.servicoId === item.id">
+                        <span>{{item?.nome}}</span>
+                    </ng-container>
+                </ng-container>
+            </td>
+            <td fxFlex
+                fxLayoutAlign="end">
+                <span>{{servico.valor.toLocaleString('pt-BR', numberFormat)}}</span>
+            </td>
+            <td fxFlex
+                fxLayoutAlign="center">1</td>
+            <td fxFlex
+                fxLayoutAlign="end">
+                <span>{{servico.valor.toLocaleString('pt-BR', numberFormat)}}</span>
+            </td>
+        </tr>
+        <tr *ngFor="let produto of orcamento?.produtos">
+            <td fxFlex="50">
+                <ng-container *ngFor="let item of listaProdutos">
+                    <ng-container *ngIf="produto.produtoId === item.id">
+                        <span>{{item?.nome}}</span>
+                    </ng-container>
+                </ng-container>
+            </td>
+            <td fxFlex
+                fxLayoutAlign="end">
+                <span>{{produto.valorUnitario.toLocaleString('pt-BR', numberFormat)}}</span>
+            </td>
+            <td fxFlex
+                fxLayoutAlign="center">
+                <span>{{produto.quantidade}}</span>
+            </td>
+            <td fxFlex
+                fxLayoutAlign="end">
+                <span>{{produto.valorTotal.toLocaleString('pt-BR', numberFormat)}}</span>
+            </td>
+        </tr>
+        <tr *ngFor="let peca of orcamento?.pecas">
+            <td fxFlex="50">
+                <span>{{peca.nome}}</span>
+            </td>
+            <td fxFlex
+                fxLayoutAlign="end">
+                <span>{{peca.valorUnitarioVenda.toLocaleString('pt-BR', numberFormat)}}</span>
+            </td>
+            <td fxFlex
+                fxLayoutAlign="center">
+                <span>{{peca.quantidade}}</span>
+            </td>
+            <td fxFlex
+                fxLayoutAlign="end">
+                <span>{{peca.valorCobrado.toLocaleString('pt-BR', numberFormat)}}</span>
+            </td>
+        </tr>
+    </table>
+
+    <!-- Totais -->
+
+    <div class="page-total"
+         fxLayout="row"
+         fxLayoutAlign="space-around center"
+         style="border: 1px solid black; height: 30px; margin-top: 5px;">
+        <h3 class="detail">
+            Subtotal: {{orcamento?.subtotal?.toLocaleString('pt-BR', numberFormat)}}
+        </h3>
+        <h3 *ngIf="!!orcamento?.pagamento?.desconto && orcamento.pagamento.desconto > 0"
+            class="detail">
+            Desconto: {{orcamento?.pagamento?.desconto?.toLocaleString('pt-BR', numberFormat)}}
+        </h3>
+        <h3 class="detail">
+            <strong>Total: {{orcamento?.pagamento?.valorFinal?.toLocaleString('pt-BR', numberFormat)}}</strong>
+        </h3>
+    </div>
+
+    <!-- Observações -->
+    <div class="page-obs box">
+        <div fxLayoutAlign="center center">
+            <span style="font-weight: 600;">OBSERVAÇÕES</span>
+        </div>
+    </div>
+    <div class="obs-box box">
+        <div class="obs"
+             fxLayoutAlign="start center">
+            <span>{{getFormaPagamento()}}</span>
+        </div>
+        <div class="obs"
+             fxLayoutAlign="start center">
+            <span>Pagamento efetuado: {{orcamento.pagamento?.pagamentoEfetuado ? 'Sim' : 'Não'}}</span>
+        </div>
+        <div class="obs"
+             fxLayoutAlign="start center">
+            <span>{{'Descrição: ' + orcamento.descricao}}</span>
+        </div>
+    </div>
+
+    <!-- Assinaturas -->
+    <div class="page-footer"
+         fxLayout="row"
+         fxLayoutAlign="space-around center">
+        <div fxLayout="column">
+            <span>______________________________________</span>
+            <span fxLayoutAlign="center center">___________________________</span>
+        </div>
+        <div fxLayout="column">
+            <span>______________________________________</span>
+            <span fxLayoutAlign="center center">{{orcamento.cliente.nome}}</span>
+        </div>
+    </div>
+
+
+</div>

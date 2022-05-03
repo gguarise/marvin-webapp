@@ -9,51 +9,67 @@ import { BaseService } from './base.service';
   providedIn: 'root',
 })
 export class ProdutoService extends BaseService {
-  private produtoUrl = `${environment.apiUrl.estoque}Produto`;
+  private produtoUrl = `${environment.safeApiUrl.fornecedor}produto`;
 
   constructor(private http: HttpClient) {
     super();
   }
 
-  getAll(): Observable<Produto[]> {
+  // searchParams: Nome | Ativo
+  override getAll(searchParams: any = null): Observable<Produto[]> {
     return this.http
-      .get<Produto[]>(`${this.produtoUrl}`)
+      .get<Produto[]>(
+        `${this.produtoUrl}${this.getSearchString(searchParams)}`,
+        this.getAuthenticationHeaders()
+      )
       .pipe(catchError(this.handleServiceError<any>()));
   }
 
-  postProduto(payload: any): Observable<any> {
-    return this.http.post(`${this.produtoUrl}`, payload).pipe(
-      map((ent) => {
-        if (ent) {
-          return ent;
-        }
-        return;
-      }),
-      catchError(this.handleServiceError<any>())
-    );
+  override getById(id: any): Observable<Produto> {
+    return this.http
+      .get<Produto>(`${this.produtoUrl}/${id}`, this.getAuthenticationHeaders())
+      .pipe(catchError(this.handleServiceError<any>()));
   }
 
-  putProduto(payload: any): Observable<any> {
-    return this.http.put(`${this.produtoUrl}`, payload).pipe(
-      map((ent) => {
-        if (ent) {
-          return ent;
-        }
-        return;
-      }),
-      catchError(this.handleServiceError<any>())
-    );
+  override post(payload: any): Observable<any> {
+    return this.http
+      .post(`${this.produtoUrl}`, payload, this.getAuthenticationHeaders())
+      .pipe(
+        map((ent) => {
+          if (ent) {
+            return ent;
+          }
+          return;
+        }),
+        catchError(this.handleServiceError<any>())
+      );
   }
 
-  deleteProduto(id: string): Observable<any> {
-    return this.http.delete(`${this.produtoUrl}/${id}`).pipe(
-      map((ent) => {
-        if (ent) {
-          return ent;
-        }
-        return;
-      }),
-      catchError(this.handleServiceError<any>())
-    );
+  override put(payload: any): Observable<any> {
+    return this.http
+      .put(`${this.produtoUrl}`, payload, this.getAuthenticationHeaders())
+      .pipe(
+        map((ent) => {
+          if (ent) {
+            return ent;
+          }
+          return;
+        }),
+        catchError(this.handleServiceError<any>())
+      );
+  }
+
+  override delete(id: string): Observable<any> {
+    return this.http
+      .delete(`${this.produtoUrl}/${id}`, this.getAuthenticationHeaders())
+      .pipe(
+        map((ent) => {
+          if (ent) {
+            return ent;
+          }
+          return;
+        }),
+        catchError(this.handleServiceError<any>())
+      );
   }
 }

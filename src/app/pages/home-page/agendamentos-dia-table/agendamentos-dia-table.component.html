@@ -1,0 +1,218 @@
+<div *ngIf="showTable"
+     class="container text-center">
+    <app-page-header title="Agendamentos"
+                     [showSaveButton]="false"
+                     [showEditButton]="false"
+                     [showUndoButton]="false"
+                     [showPrintButton]="true"
+                     printButtonLabel="Imprimir Agendamentos Finalizados"
+                     (printEvent)="imprimir()"
+                     [showDialogCloseButton]="true"
+                     (dialogCloseEvent)="closeDialog()">
+    </app-page-header>
+
+    <div class="table-container"
+         [class.mat-elevation-z4]="true">
+        <mat-table [dataSource]="dataSource"
+                   matTooltip="Clique duas vezes no agendamento para visualizar"
+                   matTooltipPosition="below">
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns; let i = index"
+                     (click)="click$.next({event: $event, element: row.controls})">
+            </mat-row>
+
+            <ng-container matColumnDef="status">
+                <mat-header-cell fxFlex
+                                 fxFlex.xs="90px"
+                                 fxLayoutAlign="center center"
+                                 *matHeaderCellDef>
+                    Status
+                </mat-header-cell>
+                <mat-cell fxFlex
+                          fxFlex.xs="90px"
+                          *matCellDef="let element"
+                          fxLayoutAlign="center center"
+                          [formGroup]="element">
+                    <strong>{{element.get('status').value}}</strong>
+                </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="clienteId">
+                <mat-header-cell fxFlex="35"
+                                 fxFlex.xs="160px"
+                                 fxLayoutAlign="center center"
+                                 *matHeaderCellDef>
+                    Cliente
+                </mat-header-cell>
+                <mat-cell fxFlex="35"
+                          fxFlex.xs="160px"
+                          fxLayoutAlign="start center"
+                          *matCellDef="let element"
+                          [formGroup]="element">
+                    <ng-container *ngFor="let cliente of clientes">
+                        <ng-container *ngIf="cliente.id === element.get('clienteId').value">
+                            <strong>{{cliente?.nome}}</strong>
+                        </ng-container>
+                    </ng-container>
+                </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="carroId">
+                <mat-header-cell fxFlex
+                                 fxFlex.xs="90px"
+                                 fxLayoutAlign="center center"
+                                 *matHeaderCellDef>
+                    Carro
+                </mat-header-cell>
+                <mat-cell fxFlex
+                          fxFlex.xs="90px"
+                          fxLayoutAlign="center center"
+                          *matCellDef="let element"
+                          [formGroup]="element">
+                    <ng-container *ngFor="let carro of carros">
+                        <ng-container *ngIf="carro.id === element.get('carroId').value">
+                            <strong>{{carro?.placa}}</strong>
+                        </ng-container>
+                    </ng-container>
+                </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="valorFinal">
+                <mat-header-cell fxFlex
+                                 fxFlex.xs="115px"
+                                 fxLayoutAlign="center center"
+                                 *matHeaderCellDef>
+                    Valor Final
+                </mat-header-cell>
+                <mat-cell fxFlex
+                          fxFlex.xs="115px"
+                          fxLayoutAlign="start center"
+                          *matCellDef="let element"
+                          [formGroup]="element">
+                    <strong>{{element.get('valorFinal').value?.toLocaleString('pt-BR',
+                        numberFormat)}}</strong>
+                </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="dataAgendamento">
+                <mat-header-cell fxFlex
+                                 fxFlex.xs="80px"
+                                 fxLayoutAlign="center center"
+                                 *matHeaderCellDef>
+                    Hora Marcada
+                </mat-header-cell>
+                <mat-cell fxFlex
+                          fxFlex.xs="80px"
+                          *matCellDef="let element"
+                          fxLayoutAlign="center center"
+                          [formGroup]="element">
+                    <strong>{{element.get('dataAgendamento').value | date:'HH:mm'}}</strong>
+                </mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="icone">
+                <mat-header-cell fxFlex="5"
+                                 fxFlex.xs="60px"
+                                 fxLayoutAlign="center center"
+                                 *matHeaderCellDef>
+                </mat-header-cell>
+                <mat-cell fxFlex="5"
+                          fxFlex.xs="60px"
+                          *matCellDef="let element"
+                          fxLayoutAlign="center center"
+                          [formGroup]="element"
+                          (click)="finalizeAgendamento(element)">
+                    <button *ngIf="element.get('status')?.value != 'Finalizado'"
+                            mat-icon-button
+                            matTooltip="Finalizar Agendamento"
+                            matTooltipPosition="right">
+                        <mat-icon class="icons">check_circle_outline</mat-icon>
+                    </button>
+                </mat-cell>
+            </ng-container>
+
+        </mat-table>
+    </div>
+    <div [class.mat-elevation-z2]="true">
+        <mat-paginator [pageSize]="10"
+                       [pageSizeOptions]="[5, 10]"></mat-paginator>
+    </div>
+</div>
+
+<div *ngIf="showReport"
+     class="pdf"
+     style="overflow: hidden; background-color: white; height: 100%;"
+     id="printable"
+     #printable>
+
+    <p style="height: 20px;"></p>
+    <!-- HEADER COM LOGO -->
+    <!-- <div fxLayout="row"
+         style="border: 1px solid black; background-color: black;  height: 50px;">
+        <div fxFlex
+             fxLayout="row">
+            <img fxFlex="20"
+                 src="../../../../assets/img/logo.png"
+                 width="auto"
+                 height="auto"
+                 fxLayoutAlign="start center">
+            <h1 fxFlex="70"
+                fxLayoutAlign="end center"
+                style="color: white;">
+                <strong>{{data | date:'dd/MM/yyyy'}}</strong>
+            </h1>
+        </div>
+    </div> -->
+    <div style="border: 1px solid black; height: auto;">
+        <h1 fxLayoutAlign="center center"
+            style="padding-top: 10px; align-self: middle;">
+            <strong>Relatório de Agendamentos Finalizados | {{data | date:'dd/MM/yyyy'}}</strong>
+        </h1>
+    </div>
+    <div class="grid-container">
+        <h6 class="left">
+            <strong>Quantidade de Agendamentos: {{agendamentosRelatorio?.length}}</strong>
+        </h6>
+        <h6 class="center">
+            <strong>|</strong>
+        </h6>
+        <h6 class="right">
+            <strong>Emitido em: {{dataAgora | date:'dd/MM/yyyy HH:mm:ss'}}</strong>
+        </h6>
+    </div>
+    <div style="padding-top: 10px;">
+        <table id="agendamento">
+            <tr>
+                <th fxFlex="45">Cliente</th>
+                <th fxFlex>Carro</th>
+                <th fxFlex>Valor Final</th>
+                <th fxFlex>Hora Marcada</th>
+            </tr>
+            <tr *ngFor="let linha of agendamentosRelatorio">
+                <td fxFlex="45">
+                    <ng-container *ngFor="let cliente of clientes">
+                        <ng-container *ngIf="cliente.id === linha.clienteId">
+                            <span>{{cliente?.nome}}</span>
+                        </ng-container>
+                    </ng-container>
+                </td>
+                <td fxFlex
+                    fxLayoutAlign="center">
+                    <ng-container *ngFor="let carro of carros">
+                        <ng-container *ngIf="carro.id === linha.carroId">
+                            <span>{{carro?.placa}}</span>
+                        </ng-container>
+                    </ng-container>
+                </td>
+                <td fxFlex>
+                    <span>{{linha.valorFinal.toLocaleString('pt-BR',
+                        numberFormat)}}</span>
+                </td>
+                <td fxFlex
+                    fxLayoutAlign="center">
+                    <span>{{linha.dataAgendamento | date:'HH:mm'}}</span>
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>

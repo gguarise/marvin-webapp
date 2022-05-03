@@ -1,5 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
 @import "~ngx-toastr/toastr.css";
+@import "~@ng-select/ng-select/themes/material.theme.css";
 
 :root {
   --client-color-orange: #ef4b05;
@@ -8,15 +9,79 @@
   --client-color-lightgrey: #949494;
 }
 
-html,
-body {
-  height: 100%;
-  margin: 0;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+// @page {
+//   margin: 20mm
+// }
+
+@media print {
+  body * {
+    visibility: hidden;
+    margin: 0;
+  }
+  #menu {
+    visibility: visible;
+    display: none !important;
+  }
+  #printable,
+  #printable * {
+    visibility: visible;
+  }
+  #printable {
+    position: absolute;
+    left: 0;
+    top: 0;
+    -webkit-print-color-adjust: exact;
+  }
+  @page {
+    margin-left: 0.5in;
+    margin-right: 0.5in;
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+  // .page {
+  //   page-break-after: always !important;
+  //   break-after: always !important;
+  //   break-before: always !important;
+  //   page-break-before: always !important;
+  //   width: 100% !important;
+  // }
+  // thead {
+  //   display: table-header-group;
+  // }
+  // tfoot {
+  //   display: table-footer-group;
+  // }
+}
+
+.field-set {
+  border-style: solid;
+  border-color: var(--client-color-grey);
+  color: var(--client-color-grey);
+}
+
+.mat-form-field {
+  color: black !important;
+}
+
+// Usado para permitir o scroll em dialog
+.cdk-global-overlay-wrapper {
+  display: flex;
+  position: absolute;
+  z-index: 1000;
+  overflow: auto;
 }
 
 .ng-container {
   margin-right: 50px !important;
+}
+
+* {
+  font-family: "Roboto", sans-serif;
+  font-weight: 550;
+}
+
+.mat-form-field {
+  margin: 0 0.5rem 0 0.5rem;
 }
 
 .mat-icon {
@@ -50,25 +115,32 @@ body {
     display: table;
     margin: 0px;
   }
-  .mat-header-cell {
-    max-height: 10px !important;
-    font-size: small;
-    font-weight: bolder;
-  }
   .mat-header-row {
     max-height: 40px !important;
   }
   .mat-row,
   .mat-cell,
   .mat-header-cell,
-  .mat-footer-cell {
+  .mat-footer-cell,
+  .h3 {
     word-wrap: initial;
     display: table-cell;
-    padding: 0 0 0 8px;
+    padding: 0 0.3rem 0 0.3rem;
     line-break: unset;
     white-space: nowrap;
     overflow: hidden;
     vertical-align: middle;
+    text-align: center;
+  }
+  .mat-header-cell {
+    max-height: 10px !important;
+    font-size: small;
+    font-weight: bolder;
+    white-space: break-spaces;
+    text-align: center;
+  }
+  .mat-form-field {
+    margin: 0;
   }
 
   .input {
@@ -78,4 +150,12 @@ body {
   .ngx-toastr {
     width: 1000px !important;
   }
+}
+
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
 }

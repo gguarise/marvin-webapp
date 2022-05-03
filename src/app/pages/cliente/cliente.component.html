@@ -1,0 +1,85 @@
+<div class="container text-center">
+  <app-page-header title="Clientes"
+                   [showSaveButton]="false"
+                   [showEditButton]="false"
+                   [showUndoButton]="false"
+                   [showNewButton]="true"
+                   newButtonRoute="/cadastro-cliente">
+  </app-page-header>
+
+  <div class="table-container"
+       [class.mat-elevation-z4]="true">
+    <mat-table [dataSource]="dataSource"
+               matTooltip="Clique duas vezes no cliente para visualizar"
+               matTooltipPosition="below">
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns; let i = index"
+               [class.invalid-table-row]="row.invalid"
+               (click)="click$.next({event: $event, element: row.controls})">
+      </mat-row>
+
+      <ng-container matColumnDef="nome">
+        <mat-header-cell fxFlex="50"
+                         fxLayoutAlign="center center"
+                         *matHeaderCellDef>
+          Nome
+        </mat-header-cell>
+        <mat-cell fxFlex="50"
+                  *matCellDef="let element"
+                  [formGroup]="element">
+          <mat-form-field fxLayout="column">
+            <input matInput
+                   formControlName="nome" />
+            <mat-error>
+              {{ getErrorMessage(element.get("nome")) }}
+            </mat-error>
+          </mat-form-field>
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="cpf">
+        <mat-header-cell fxFlex
+                         fxLayoutAlign="center center"
+                         *matHeaderCellDef>
+          CPF
+        </mat-header-cell>
+        <mat-cell fxFlex
+                  *matCellDef="let element"
+                  [formGroup]="element">
+          <mat-form-field fxLayout="column">
+            <input matInput
+                   formControlName="cpf"
+                   [textMask]="formHelper.getTextMask('cpf')" />
+            <mat-error>
+              {{ getErrorMessage(element.get("cpf")) }}
+            </mat-error>
+          </mat-form-field>
+        </mat-cell>
+      </ng-container>
+
+      <ng-container matColumnDef="telefone">
+        <mat-header-cell fxFlex
+                         fxLayoutAlign="center center"
+                         *matHeaderCellDef>
+          Telefone
+        </mat-header-cell>
+        <mat-cell fxFlex
+                  *matCellDef="let element"
+                  [formGroup]="element">
+          <mat-form-field fxLayout="column">
+            <input matInput
+                   formControlName="telefone"
+                   [textMask]="formHelper.getTextMask('telefone9')" />
+            <mat-error>
+              {{ getErrorMessage(element.get("telefone")) }}
+            </mat-error>
+          </mat-form-field>
+        </mat-cell>
+      </ng-container>
+    </mat-table>
+  </div>
+  <div [class.mat-elevation-z2]="true">
+    <mat-paginator [pageSize]="10"
+                   [pageSizeOptions]="[5, 10]"></mat-paginator>
+  </div>
+</div>

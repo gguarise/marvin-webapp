@@ -1,0 +1,93 @@
+<mat-toolbar class="teste"
+             fxLayout="row"
+             fxLayout.xs="column">
+    <mat-toolbar-row fxLayoutAlign="start center"
+                     fxLayoutAlign.xs="center center"
+                     fxShow="true"
+                     [fxShow.xs]="showReturnButton || showEditButton || showSaveButton || showUndoButton || showDeleteButton || showPrintButton">
+        <div>
+            <button *ngIf="showReturnButton"
+                    mat-icon-button
+                    matTooltip="Voltar"
+                    matTooltipPosition="above"
+                    (click)="emitReturnEvent()">
+                <mat-icon class="icons">reply</mat-icon>
+            </button>
+            <button *ngIf="showEditButton"
+                    mat-icon-button
+                    matTooltip="Editar"
+                    matTooltipPosition="above"
+                    color="accent"
+                    (click)="emitEditEvent()">
+                <mat-icon class="icons">create</mat-icon>
+            </button>
+            <button *ngIf="showSaveButton"
+                    mat-icon-button
+                    matTooltip="Salvar"
+                    matTooltipPosition="above"
+                    color="accent"
+                    (click)="emitSaveEvent()">
+                <mat-icon class="icons">save</mat-icon>
+            </button>
+            <button *ngIf="showUndoButton"
+                    mat-icon-button
+                    matTooltip="Descartar"
+                    matTooltipPosition="above"
+                    (click)="emitUndoEvent()">
+                <mat-icon class="icons">cancel</mat-icon>
+            </button>
+            <button *ngIf="showDeleteButton"
+                    mat-icon-button
+                    matTooltip="Excluir"
+                    matTooltipPosition="above"
+                    (click)="emitDeleteEvent()">
+                <mat-icon class="icons">delete</mat-icon>
+            </button>
+            <button *ngIf="showPrintButton"
+                    mat-icon-button
+                    [matTooltip]="printButtonLabel"
+                    matTooltipPosition="above"
+                    (click)="emitPrintEvent()">
+                <mat-icon class="icons">print</mat-icon>
+            </button>
+        </div>
+    </mat-toolbar-row>
+    <mat-toolbar-row fxLayoutAlign="center center">
+        <h1 class="title">{{title}}</h1>
+    </mat-toolbar-row>
+    <mat-toolbar-row fxShow="true"
+                     [fxShow.xs]="!!dialogComponentButton || showCustomButton || showNewButton || showDialogCloseButton"
+                     fxLayoutAlign="end center"
+                     fxLayoutAlign.xs="center center">
+        <button *ngIf="!!dialogComponentButton"
+                class="dialogButton"
+                mat-raised-button
+                color="accent"
+                (click)="emitOpenDialogEvent()">
+            {{dialogComponentButton}}
+        </button>
+        <button *ngIf="showCustomButton"
+                class="dialogButton"
+                mat-raised-button
+                color="accent"
+                (click)="emitCustomEvent()">
+            {{customButtonLabel}}
+        </button>
+        <a [routerLink]="[newButtonRoute]">
+            <button *ngIf="showNewButton"
+                    mat-raised-button
+                    color="accent"
+                    (click)="emitNewEvent()">
+                Novo
+            </button>
+        </a>
+        <button *ngIf="showDialogCloseButton"
+                color="warn"
+                mat-icon-button
+                matTooltip="Fechar"
+                matTooltipPosition="right"
+                (click)="emitCloseDialogEvent()">
+            <mat-icon class="icons">close</mat-icon>
+        </button>
+    </mat-toolbar-row>
+</mat-toolbar>
