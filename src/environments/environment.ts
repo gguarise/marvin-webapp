@@ -10,6 +10,7 @@ export const environment = {
     fornecedor: 'http://localhost:5674/',
     cliente: 'http://localhost:5676/',
     atendimento: 'http://localhost:5678/',
+    autenticacao: 'http://localhost:5680/',
   },
   autenticacao: {
     login: 'automar',

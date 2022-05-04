@@ -61,6 +61,7 @@ import { AgendamentosDiaTableComponent } from './pages/home-page/agendamentos-di
 import { RelatorioOrdemServicoComponent } from './pages/relatorio-ordem-servico/relatorio-ordem-servico.component';
 import { AtendimentosClienteTableComponent } from './pages/cliente/cadastro-cliente/atendimentos-cliente-table/atendimentos-cliente-table.component';
 import { OrcamentosClienteTableComponent } from './pages/cliente/cadastro-cliente/orcamentos-cliente-table/orcamentos-cliente-table.component';
+import { MatExpansionModule } from '@angular/material/expansion';
 import {
   BaseCanDeactivateGuard,
   BaseTableCanDeactivateGuard,
@@ -139,6 +140,7 @@ FullCalendarModule.registerPlugins([dayGridPlugin, interactionPlugin]);
     FullCalendarModule,
     MatDatepickerModule,
     MatNativeDateModule,
+    MatExpansionModule,
   ],
   providers: [
     { provide: MAT_DATE_LOCALE, useValue: 'pt-BR' },
@@ -148,8 +150,7 @@ FullCalendarModule.registerPlugins([dayGridPlugin, interactionPlugin]);
   bootstrap: [AppComponent],
 })
 export class AppModule {
-  constructor(injector: Injector,
-              m: MediaMarshaller) {
+  constructor(injector: Injector, m: MediaMarshaller) {
     AppInjectorService.injector = injector;
 
     // Para solucionar problema com flex ficando xs após print

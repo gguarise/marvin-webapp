@@ -15,7 +15,7 @@ import { BaseComponent } from 'src/app/components/base/base.component';
 import { HeaderComponent } from 'src/app/components/header/header.component';
 import { Carro } from 'src/app/models/carro';
 import { Cliente } from 'src/app/models/cliente';
-import { RelatorioOrcamento } from 'src/app/models/relatorio-orcamento';
+import { OrcamentoPeca } from 'src/app/models/orcamento-peca';
 import { ClienteService } from 'src/app/services/cliente.service';
 import { OrcamentoService } from 'src/app/services/orcamento.service';
 import { CadastroClienteComponent } from '../../cliente/cadastro-cliente/cadastro-cliente.component';
@@ -172,6 +172,9 @@ export class CadastroOrcamentoComponent
     const form = super.getRawData();
     form.produtos = this.produtosTable.formArray.getRawValue();
     form.pecas = this.pecasTable.formArray.getRawValue();
+    form.pecas?.forEach((peca: OrcamentoPeca) => {
+      peca.codigoNCM = peca.codigoNCM.replace(/\D/g, '');
+    });
     form.servicos = this.servicosTable.formArray.getRawValue();
     return form;
   }

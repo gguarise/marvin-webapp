@@ -37,7 +37,7 @@ export class FormHelper {
     }
   }
 
-  public static getTextMask(mask: string) {
+  public static getTextMask(mask: string, text: string = '') {
     switch (mask) {
       case 'cnpj':
         return {
@@ -85,26 +85,29 @@ export class FormHelper {
         return {
           mask: [/\d/, /\d/, '.', /\d/, /\d/, /\d/, '-', /\d/, /\d/, /\d/],
         };
-      case 'telefone8':
-        return {
-          mask: [
-            '(',
-            /[1-9]/,
-            /[1-9]/,
-            ')',
-            ' ',
-            /\d/,
-            /\d/,
-            /\d/,
-            /\d/,
-            '-',
-            /\d/,
-            /\d/,
-            /\d/,
-            /\d/,
-          ],
-        };
-      case 'telefone9':
+      case 'telefone':
+        const numero = text?.replace(/\D/g, '');
+        // Verifica se o primeiro digito é de telefone fixo
+        if (!!numero && !!numero[2] && Number(numero[2]) >= 2 && Number(numero[2]) <= 5) {
+          return {
+            mask: [
+              '(',
+              /[1-9]/,
+              /[1-9]/,
+              ')',
+              ' ',
+              /\d/,
+              /\d/,
+              /\d/,
+              /\d/,
+              '-',
+              /\d/,
+              /\d/,
+              /\d/,
+              /\d/,
+            ],
+          };
+        }
         return {
           mask: [
             '(',

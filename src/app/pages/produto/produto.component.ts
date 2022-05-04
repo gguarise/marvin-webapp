@@ -3,6 +3,7 @@ import { Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import { Observable, of } from 'rxjs';
 import { Fornecedor } from 'src/app/models/fornecedor';
+import { Produto } from 'src/app/models/produto';
 import { FornecedorService } from 'src/app/services/fornecedor.service';
 import { ProdutoService } from 'src/app/services/produto.service';
 import { BaseTableComponent } from '../../components/base/base-table/base-table.component';
@@ -100,5 +101,13 @@ export class ProdutoComponent extends BaseTableComponent {
         this.fornecedores$ = of(t);
       });
     });
+  }
+
+  override getRawData() {
+    const form = this.formArray.getRawValue();
+    form?.forEach((produto: Produto) => {
+      produto.codigoNCM = produto.codigoNCM.replace(/\D/g, '');
+    });
+    return form;
   }
 }

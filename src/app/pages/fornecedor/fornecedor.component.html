@@ -63,7 +63,7 @@
                     <mat-form-field fxLayout="column">
                         <input matInput
                                formControlName="telefone"
-                               [textMask]="formHelper.getTextMask('telefone9')" />
+                               [textMask]="formHelper.getTextMask('telefone', element.get('telefone')?.value)" />
                         <mat-error>{{getErrorMessage(element.get('telefone'))}} </mat-error>
                     </mat-form-field>
                 </mat-cell>
