@@ -132,7 +132,7 @@ export class HomePageComponent implements OnInit, AfterViewInit {
       if (mes != this.mesInicial || ano != this.anoInicial) {
         this.mesInicial = mes;
         this.anoInicial = ano;
-        this.getAgendamentosPorData(false);
+        this.getAgendamentosPorData(this.mesInicial, this.anoInicial);
       }
 
       mes = range.end?.getMonth() + 1; // Janeiro é 0
@@ -144,19 +144,23 @@ export class HomePageComponent implements OnInit, AfterViewInit {
       ) {
         this.mesFinal = mes;
         this.anoFinal = ano;
-        this.getAgendamentosPorData(true);
+        this.getAgendamentosPorData(this.mesFinal, this.anoFinal);
+      }
+
+      // Se pegou um range maior de data (calendário formato mês)
+      // 1 -> pegou os 2 meses || 0 -> mesmo mês
+      if (this.mesFinal - this.mesInicial !== 1 || this.mesFinal - this.mesInicial !== 0) {
+        if (this.mesInicial === 12) {
+          this.getAgendamentosPorData(1, ++this.anoInicial);
+        }
+        else {
+          this.getAgendamentosPorData(++this.mesInicial, this.anoInicial);
+        }
       }
     }
   }
 
-  async getAgendamentosPorData(isFinal: boolean) {
-    let mes = this.mesInicial;
-    let ano = this.anoInicial;
-    if (isFinal) {
-      mes = this.mesFinal;
-      ano = this.anoFinal;
-    }
-
+  async getAgendamentosPorData(mes: number, ano: number) {
     if (!!mes && !!ano) {
       const searchParams = {
         MesAgendamento: mes,
