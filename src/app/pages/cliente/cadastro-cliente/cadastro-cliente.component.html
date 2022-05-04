@@ -62,7 +62,7 @@
           <mat-label>Contato Principal</mat-label>
           <input matInput
                  formControlName="telefone"
-                 [textMask]="formHelper.getTextMask('telefone9')" />
+                 [textMask]="formHelper.getTextMask('telefone', mainForm.get('telefone')?.value)" />
           <mat-error *ngIf="mainForm.get('telefone')?.invalid">
             {{ getErrorMessage(mainForm.get("telefone")) }}
           </mat-error>
