@@ -18,6 +18,7 @@ import { OrcamentoComponent } from '../../orcamento/orcamento.component';
 import { DateAdapter, DateUnit } from '@matheo/datepicker/core';
 import { StatusOrcamento } from 'src/app/models/enum/status-orcamento';
 import { DialogHelper } from 'src/core/helpers/dialog-helper';
+import { CarroService } from 'src/app/services/carro.service';
 
 @Component({
   selector: 'app-cadastro-agendamento',
@@ -46,6 +47,7 @@ export class CadastroAgendamentoComponent extends BaseComponent {
     public orcamentoService: OrcamentoService,
     public atendimentoService: AtendimentoService,
     public clienteService: ClienteService,
+    public carroService: CarroService,
     public router: Router,
     private adapter: DateAdapter<Date>
   ) {
@@ -83,17 +85,20 @@ export class CadastroAgendamentoComponent extends BaseComponent {
       totalServicos: [],
       subtotal: [],
     });
-    this.clienteService.getAll().subscribe((c: Cliente[]) => {
-      this.clientes = c;
-    });
   }
 
   override setMainFormData(item: any = this.originalData) {
     super.setMainFormData(item);
 
-    // Operações após tela estar com valores
-    const clienteId = this.mainForm.get('clienteId')?.value;
-    this.carros = this.clientes.find((c) => c.id === clienteId)?.carros ?? [];
+    // Preenche lista de Clientes
+    this.clienteService.getAll().subscribe((c: Cliente[]) => {
+      this.clientes = c;
+    });
+
+    // Preenche lista de Carros
+    this.carroService.getAll().subscribe((c: Carro[]) => {
+      this.carros = c;
+    });
 
     // Calcula valores para totais das tabelas
     this.calculateCustoProdutos();
