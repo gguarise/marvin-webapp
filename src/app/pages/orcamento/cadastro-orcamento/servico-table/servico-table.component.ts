@@ -71,6 +71,11 @@ export class ServicoTableComponent extends ChildBaseTableComponent {
   // Salva no próprio orçamento
   override async save() {}
 
+  override deleteSelectedRows() {
+    super.deleteSelectedRows();
+    this.calculateCustoServicos.emit();
+  }
+
   emitCalculateCustoTotalEvent() {
     this.calculateCustoServicos.emit();
   }

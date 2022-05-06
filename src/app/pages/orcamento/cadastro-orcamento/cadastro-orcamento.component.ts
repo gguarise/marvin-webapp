@@ -16,6 +16,7 @@ import { HeaderComponent } from 'src/app/components/header/header.component';
 import { Carro } from 'src/app/models/carro';
 import { Cliente } from 'src/app/models/cliente';
 import { OrcamentoPeca } from 'src/app/models/orcamento-peca';
+import { CarroService } from 'src/app/services/carro.service';
 import { ClienteService } from 'src/app/services/cliente.service';
 import { OrcamentoService } from 'src/app/services/orcamento.service';
 import { CadastroClienteComponent } from '../../cliente/cadastro-cliente/cadastro-cliente.component';
@@ -47,6 +48,8 @@ export class CadastroOrcamentoComponent
     style: 'currency',
     currency: 'BRL',
   };
+  idCarroDesassociado: string;
+  idClienteDoCarroDesassociado: string;
 
   sumReducer = (accumulator: any, current: any) => accumulator + current;
 
@@ -65,6 +68,7 @@ export class CadastroOrcamentoComponent
     route: ActivatedRoute,
     orcamentoService: OrcamentoService,
     public clienteService: ClienteService,
+    public carroService: CarroService,
     public router: Router,
     // Ambos abaixo para controlar o comportamento para Tela de Agendamento > Selecionar Orçamento
     @Optional() public dialogRef: MatDialogRef<CadastroOrcamentoComponent>,
@@ -202,6 +206,7 @@ export class CadastroOrcamentoComponent
     this.mainForm.get('carroId')?.setValue(null);
     if (!!clienteId) {
       this.carros = this.clientes.find((c) => c.id === clienteId)?.carros ?? [];
+      this.carros = this.carros.filter((c) => c.ativo);
       this.mainForm.get('carroId')?.enable();
     } else {
       this.carros = [];
@@ -258,6 +263,26 @@ export class CadastroOrcamentoComponent
         this.carros =
           this.clientes.find((c) => c.id === clienteId)?.carros ?? [];
 
+        const carroId = this.mainForm.get('carroId')?.value;
+        this.carros = this.carros.filter(
+          (c: Carro) => c.ativo || c.id === carroId
+        );
+
+        // Caso carro tenha sido desassociado do cliente / inativado
+
+        if (!this.carros.find((c) => c.id === carroId)) {
+          await firstValueFrom(this.carroService.getById(carroId)).then(
+            (c: Carro) => {
+              this.idClienteDoCarroDesassociado = clienteId;
+              this.idCarroDesassociado = c.id;
+              this.carros.push(c);
+            }
+          );
+        } else {
+          this.idClienteDoCarroDesassociado = '';
+          this.idCarroDesassociado = '';
+        }
+
         this.mainForm.get('clienteId')?.setValue(clienteId);
         this.cdr.detectChanges();
       });
@@ -270,11 +295,12 @@ export class CadastroOrcamentoComponent
         .map((x: any) => x.valorTotal)
         .reduce(this.sumReducer);
       this.mainForm.get('totalProdutos')?.setValue(total);
-
-      // Só calcula caso não seja na abertura da tela
-      if (!onInit) {
-        this.calculateSubtotal();
-      }
+    } else {
+      this.mainForm.get('totalPecas')?.setValue(null);
+    }
+    // Só calcula caso não seja na abertura da tela para não chamar repetido
+    if (!onInit) {
+      this.calculateSubtotal();
     }
   }
 
@@ -285,11 +311,12 @@ export class CadastroOrcamentoComponent
         .map((x: any) => x.valorCobrado)
         .reduce(this.sumReducer);
       this.mainForm.get('totalPecas')?.setValue(total);
-
-      // Só calcula caso não seja na abertura da tela
-      if (!onInit) {
-        this.calculateSubtotal();
-      }
+    } else {
+      this.mainForm.get('totalPecas')?.setValue(null);
+    }
+    // Só calcula caso não seja na abertura da tela para não chamar repetido
+    if (!onInit) {
+      this.calculateSubtotal();
     }
   }
 
@@ -298,8 +325,10 @@ export class CadastroOrcamentoComponent
     if (!!tabela && tabela.length > 0) {
       const total = tabela.map((x: any) => x.valor).reduce(this.sumReducer);
       this.mainForm.get('totalServicos')?.setValue(total);
-      this.calculateSubtotal(onInit);
+    } else {
+      this.mainForm.get('totalServicos')?.setValue(null);
     }
+    this.calculateSubtotal(onInit);
   }
 
   calculateSubtotal(onInit: boolean = false) {

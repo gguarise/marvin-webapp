@@ -39,6 +39,10 @@ export abstract class ChildBaseTableComponent extends BaseTableComponent {
     this.onClear();
   }
 
+  override deleteSelectedRows() {
+    super.deleteSelectedRows();
+  }
+
   override setInitialData() {
     this.deletedData = [];
     this.clearSelections();
