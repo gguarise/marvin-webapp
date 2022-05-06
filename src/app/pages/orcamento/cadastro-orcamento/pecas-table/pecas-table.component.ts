@@ -103,6 +103,11 @@ export class PecasTableComponent extends ChildBaseTableComponent {
   // Salva no próprio orçamento
   override async save() {}
 
+  override deleteSelectedRows() {
+    super.deleteSelectedRows();
+    this.calculateCustoPecas.emit();
+  }
+
   emitCalculateCustoTotalEvent() {
     this.calculateCustoPecas.emit();
   }

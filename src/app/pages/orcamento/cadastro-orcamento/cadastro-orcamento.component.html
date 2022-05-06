@@ -68,8 +68,12 @@
                     <mat-select formControlName="carroId"
                                 [compareWith]="compareWith">
                         <ng-container *ngFor="let carro of carros">
-                            <mat-option [value]="carro.id">
-                                {{carro?.placa}} / {{carro?.modelo}}
+                            <mat-option [value]="carro.id"
+                                        [style]="!carro.ativo || (idCarroDesassociado === carro.id && mainForm.get('clienteId')?.value === idClienteDoCarroDesassociado) ? 'color: red' : 'color: black'">
+                                {{carro?.placa}} {{carro?.modelo !== '' ? ' / ' + carro?.modelo : '' }} {{carro.ativo ?
+                                '' : '(Inativo)'}} {{carro.ativo &&
+                                idCarroDesassociado === carro.id && mainForm.get('clienteId')?.value ===
+                                idClienteDoCarroDesassociado ? '(Desassociado)' : ''}}
                             </mat-option>
                         </ng-container>
                     </mat-select>

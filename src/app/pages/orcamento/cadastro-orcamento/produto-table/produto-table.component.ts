@@ -165,6 +165,11 @@ export class ProdutoTableComponent extends ChildBaseTableComponent {
     this.emitCalculateCustoTotalEvent();
   }
 
+  override deleteSelectedRows() {
+    super.deleteSelectedRows();
+    this.calculateCustoProdutos.emit();
+  }
+
   emitCalculateCustoTotalEvent() {
     this.calculateCustoProdutos.emit();
   }

@@ -113,7 +113,7 @@ export class CarrosTableComponent extends ChildBaseTableComponent {
     if (element.valid) {
       const placa = element.get('placa')?.value; // ?.replace('-', '');
 
-      if (placa?.length === 7) {
+      if (placa?.length === 8) {
         const carros = await firstValueFrom(
           this.carroService.searchByPlaca(placa)
         )
